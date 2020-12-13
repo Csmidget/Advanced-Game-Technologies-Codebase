@@ -370,12 +370,15 @@ void TutorialGame::InitMixedGridWorld(int numRows, int numCols, float rowSpacing
 	for (int x = 0; x < numCols; ++x) {
 		for (int z = 0; z < numRows; ++z) {
 			Vector3 position = Vector3(x * colSpacing, 10.0f, z * rowSpacing);
-
-			if (rand() % 2) {
+			int typeInt = rand() % 3;
+			if (typeInt == 0) {
 				AddCubeToWorld(position, cubeDims);
 			}
-			else {
+			else if (typeInt == 1) {
 				AddSphereToWorld(position, sphereRadius);
+			}
+			else {
+				AddCapsuleToWorld(position, 1, 0.5);
 			}
 		}
 	}

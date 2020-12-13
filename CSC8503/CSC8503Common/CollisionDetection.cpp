@@ -115,7 +115,39 @@ bool CollisionDetection::RayOBBIntersection(const Ray&r, const Transform& worldT
 
 bool CollisionDetection::RayCapsuleIntersection(const Ray& r, const Transform& worldTransform, const CapsuleVolume& volume, RayCollision& collision) {
 
+	float radius = volume.GetRadius();
+	Vector3 capsulePos = worldTransform.GetPosition();
+	Vector3 up = worldTransform.GetOrientation() * Vector3(0, 1, 0);
 
+	Vector3 upperSpherePos = capsulePos + up * (volume.GetHalfHeight() - radius);
+	Vector3 lowerSpherePos = capsulePos - up * (volume.GetHalfHeight() - radius);
+	Vector3 crossVec = capsulePos + Vector3::Cross(upperSpherePos - capsulePos, r.GetPosition() - capsulePos);
+
+	Plane p = Plane::PlaneFromTri(capsulePos, upperSpherePos, crossVec);
+	float t = (-(Vector3::Dot(r.GetPosition(), p.GetNormal()) + p.GetDistance())) / (Vector3::Dot(r.GetDirection(), p.GetNormal()));
+
+	//Point where ray intersects the plane
+	Vector3 pIntersect = r.GetPosition() + (r.GetDirection() * t);
+	float dist;
+	
+	if (Vector3::Dot(-up, pIntersect - upperSpherePos) < 0) {
+		dist = (pIntersect - upperSpherePos).Length();
+	}
+	else if (Vector3::Dot(up, pIntersect - lowerSpherePos) < 0) {
+		dist = (pIntersect - lowerSpherePos).Length();
+	}
+	else {
+		Vector3 lineProjection = capsulePos + up * (Vector3::Dot(pIntersect - capsulePos, up));
+		dist = (pIntersect - lineProjection).Length();
+	}
+
+	if (radius > dist) {
+		float intersectDist = (r.GetPosition() - pIntersect).Length();
+		float offset = sqrt((radius * radius) - (dist * dist));
+		collision.rayDistance = intersectDist - (offset);
+		collision.collidedAt = r.GetPosition() + (r.GetDirection() * collision.rayDistance);
+		return true;
+	}
 
 	return false;
 }
