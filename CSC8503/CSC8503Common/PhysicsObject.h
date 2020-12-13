@@ -23,6 +23,14 @@ namespace NCL {
 				return angularVelocity;
 			}
 
+			float GetElasticity() const {
+				return elasticity;
+			}
+
+			void SetElasticity(float val) {
+				elasticity = val;
+			}
+
 			Vector3 GetTorque() const {
 				return torque;
 			}
@@ -61,6 +69,7 @@ namespace NCL {
 
 			void InitCubeInertia();
 			void InitSphereInertia();
+			void InitHollowSphereInertia();
 
 			void UpdateInertiaTensor();
 

@@ -17,6 +17,14 @@ namespace NCL {
 			GameObject(string name = "");
 			~GameObject();
 
+			int GetCollisionLayer() {
+				return collisionLayer;
+			}
+			void SetCollisionLayer(int val) {
+				collisionLayer = val;
+			}
+
+
 			void SetBoundingVolume(CollisionVolume* vol) {
 				boundingVolume = vol;
 			}
@@ -82,8 +90,8 @@ namespace NCL {
 
 			bool	isActive;
 			int		worldID;
+			int collisionLayer;
 			string	name;
-
 			Vector3 broadphaseAABB;
 		};
 	}

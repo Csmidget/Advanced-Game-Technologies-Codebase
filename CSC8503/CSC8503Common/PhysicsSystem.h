@@ -21,6 +21,14 @@ namespace NCL {
 				globalDamping = d;
 			}
 
+			float GetLinearDamping() {
+				return linearDamping;
+			}
+
+			void SetLinearDamping(float val) {
+				linearDamping = val;
+			}
+
 			void SetGravity(const Vector3& g);
 		protected:
 			void BasicCollisionDetection();
@@ -38,6 +46,7 @@ namespace NCL {
 			void UpdateObjectAABBs();
 
 			void ImpulseResolveCollision(GameObject& a , GameObject&b, CollisionDetection::ContactPoint& p) const;
+			void SpringResolveCollision(GameObject& a, GameObject& b, CollisionDetection::ContactPoint& p) const;
 
 			GameWorld& gameWorld;
 
@@ -45,6 +54,7 @@ namespace NCL {
 			Vector3 gravity;
 			float	dTOffset;
 			float	globalDamping;
+			float	linearDamping;
 
 			std::set<CollisionDetection::CollisionInfo> allCollisions;
 
