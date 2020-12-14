@@ -29,8 +29,6 @@ namespace NCL {
 				linearDamping = val;
 			}
 
-			bool Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const;
-
 			void SetGravity(const Vector3& g);
 		protected:
 			void BasicCollisionDetection();
@@ -57,8 +55,6 @@ namespace NCL {
 			float	dTOffset;
 			float	globalDamping;
 			float	linearDamping;
-
-			QuadTree<GameObject*> objectTree;
 
 			std::set<CollisionDetection::CollisionInfo> allCollisions;
 			std::set<CollisionDetection::CollisionInfo> broadPhaseCollisions;

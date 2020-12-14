@@ -29,6 +29,7 @@ namespace NCL {
 		class QuadTreeNode	{
 		public:
 			typedef std::function<void(std::list<QuadTreeEntry<T>>&)> QuadTreeFunc;
+			typedef std::function<void(std::list<QuadTreeEntry<T>>&, const Vector3&, const Vector3&)> QuadTreeDetailedFunc;
 		protected:
 			friend class QuadTree<T>;
 
@@ -118,6 +119,41 @@ namespace NCL {
 				}
 			}
 
+			//This is similar to the normal OperateOnContents(), but also extracts the node position and size.
+			void OperateOnContents(QuadTreeDetailedFunc& func) {
+				if (children) {
+					for (int i = 0; i < 4; ++i) {
+						children[i].OperateOnContents(func);
+					}
+				}
+				else {
+					if (!contents.empty()) {
+						func(contents,position,size);
+					}
+				}
+			}
+
+
+			void BuildPossibleCollisions(const Vector3& objectPos, const Vector3& objectSize, std::set<T>& possibleCollisions) {
+				if (!CollisionDetection::AABBTest(objectPos,
+					Vector3(position.x, 0, position.y),
+					objectSize,
+					Vector3(size.x, 1000.0f, size.y))) {
+					return;
+				}
+
+				if (children) {//not a leaf node
+					for (int i = 0; i < 4; ++i) {
+						children[i].BuildPossibleCollisions(objectPos, objectSize, possibleCollisions);
+					}
+				}
+				else {
+					for (auto c : contents) {
+						possibleCollisions.insert(c.object);
+					}
+				}
+			}
+
 			void BuildPossibleRayCollisions(Ray &r, std::set<T>& possibleCollisions) const {			
 				RayCollision rc;
 				if (CollisionDetection::RayBoxIntersection(r, Vector3(position.x,0,position.y),Vector3(size.x, 1000, size.y), rc,true)) {
@@ -163,12 +199,6 @@ namespace NCL {
 			~QuadTree() {
 			}
 
-			std::set<T> GetPossibleRayCollisions(Ray& r) const {
-				std::set<T> possibleCollisions;
-				root.BuildPossibleRayCollisions(r, possibleCollisions);
-				return possibleCollisions;
-			}
-
 			void Clear() {
 				root.Clear();
 			}
@@ -183,6 +213,22 @@ namespace NCL {
 
 			void OperateOnContents(typename QuadTreeNode<T>::QuadTreeFunc  func) {
 				root.OperateOnContents(func);
+			}
+
+			void OperateOnContents(typename QuadTreeNode<T>::QuadTreeDetailedFunc  func) {
+				root.OperateOnContents(func);
+			}	
+
+			std::set<T> GetPossibleCollisions(const Vector3& objectPos, const Vector3& objectSize) {
+				std::set<T> possibleCollisions;
+				root.BuildPossibleCollisions(objectPos, objectSize, possibleCollisions);
+				return possibleCollisions;
+			}
+
+			std::set<T> GetPossibleRayCollisions(Ray& r) const {
+				std::set<T> possibleCollisions;
+				root.BuildPossibleRayCollisions(r, possibleCollisions);
+				return possibleCollisions;
 			}
 
 		protected:

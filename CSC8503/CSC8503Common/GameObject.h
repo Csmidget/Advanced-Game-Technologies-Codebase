@@ -37,6 +37,14 @@ namespace NCL {
 				return isActive;
 			}
 
+			bool IsStatic() const {
+				return isStatic;
+			}
+
+			void SetIsStatic(bool val) {
+				isStatic = val;
+			}
+
 			Transform& GetTransform() {
 				return transform;
 			}
@@ -89,6 +97,7 @@ namespace NCL {
 			RenderObject*		renderObject;
 
 			bool	isActive;
+			bool	isStatic;
 			int		worldID;
 			int collisionLayer;
 			string	name;

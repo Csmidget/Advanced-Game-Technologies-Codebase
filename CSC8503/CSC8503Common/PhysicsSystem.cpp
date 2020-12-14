@@ -19,7 +19,7 @@ and the forces that are added to objects to change those positions
 
 */
 
-PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g), objectTree(Vector2(1024, 1024), 7, 6)	{
+PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g)	{
 	applyGravity	= false;
 	useBroadPhase	= true;	
 	dTOffset		= 0.0f;
@@ -88,9 +88,9 @@ void PhysicsSystem::Update(float dt) {
 	GameTimer t;
 	t.GetTimeDeltaSeconds();
 
-	if (useBroadPhase) {
-		UpdateObjectAABBs();
-	}
+	//if (useBroadPhase) {
+	//	UpdateObjectAABBs();
+	//}
 
 	while(dTOffset >= realDT) {
 		IntegrateAccel(realDT); //Update accelerations from external forces
@@ -284,39 +284,34 @@ compare the collisions that we absolutely need to.
 
 void PhysicsSystem::BroadPhase() {
 	broadPhaseCollisions.clear();
-	objectTree.Clear();
-	std::vector<GameObject*>::const_iterator first;
-	std::vector<GameObject*>::const_iterator last;
-
-	gameWorld.GetObjectIterators(first, last);
-
-	for (auto i = first; i != last; ++i) {
-		Vector3 halfSizes;
-		if (!(*i)->GetBroadphaseAABB(halfSizes)) {
-			continue;
-		}
-
-		Vector3 pos = (*i)->GetTransform().GetPosition();
-		objectTree.Insert(*i, pos, halfSizes);
-	}
-
-	objectTree.OperateOnContents(
-		[&](std::list<QuadTreeEntry<GameObject*>>& data) {
+	
+	//Add possible collisions
+	gameWorld.GetObjectTree()->OperateOnContents(
+		//We also get the node pos and size so we can do a single
+		[&](std::list<QuadTreeEntry<GameObject*>>& data, const Vector3& nodePos, const Vector3& nodeSize) {
 			CollisionDetection::CollisionInfo info;
+			std::set<GameObject*> possibleStaticCollisions = gameWorld.GetStaticObjectTree()->GetPossibleCollisions(nodePos, nodeSize);
+
 			for (auto i = data.begin(); i != data.end(); ++i) {
+				//Dynamic collisions.
 				for (auto j = std::next(i); j != data.end(); ++j) {
 					info.a = min((*i).object, (*j).object);
 					info.b = max((*i).object, (*j).object);
 					broadPhaseCollisions.insert(info);
 				}
+
+				//Static collisions
+				for (auto c : possibleStaticCollisions)	{
+					info.a = min((*i).object, c);
+					info.b = max((*i).object, c);
+					broadPhaseCollisions.insert(info);
+				}
 			}
 		}
 	);
-	objectTree.DebugDraw();
 }
 
 /*
-
 The broadphase will now only give us likely collisions, so we can now go through them,
 and work out if they are truly colliding, and if so, add them into the main collision list
 */
@@ -329,39 +324,6 @@ void PhysicsSystem::NarrowPhase() {
 			allCollisions.insert(info);
 		}
 	}
-}
-
-bool PhysicsSystem::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const {
-	RayCollision collision;
-
-	std::set<GameObject*> possibleCollisions = objectTree.GetPossibleRayCollisions(r);
-
-	for (auto& i : possibleCollisions) {
-		if (!i->GetBoundingVolume() || i->GetCollisionLayer() & 1) { //objects might not be collideable etc...
-			continue;
-		}
-		RayCollision thisCollision;
-		if (CollisionDetection::RayIntersection(r, *i, thisCollision)) {
-
-			if (!closestObject) {
-				closestCollision = collision;
-				closestCollision.node = i;
-				return true;
-			}
-			else {
-				if (thisCollision.rayDistance < collision.rayDistance) {
-					thisCollision.node = i;
-					collision = thisCollision;
-				}
-			}
-		}
-	}
-	if (collision.node) {
-		closestCollision = collision;
-		closestCollision.node = collision.node;
-		return true;
-	}
-	return false;
 }
 
 /*
@@ -381,7 +343,8 @@ void PhysicsSystem::IntegrateAccel(float dt) {
 
 	for (auto i = first; i != last; ++i) {
 		PhysicsObject* object = (*i)->GetPhysicsObject();
-		if (object == nullptr) {
+
+		if ((*i)->IsStatic() || object == nullptr) {
 			continue;
 		}
 
@@ -428,7 +391,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 
 	for (auto i = first; i != last; ++i) {
 		PhysicsObject* object = (*i)->GetPhysicsObject();
-		if (object == nullptr) {
+		if ((*i)->IsStatic() || object == nullptr) {
 			continue;
 		}
 

@@ -8,15 +8,18 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-GameWorld::GameWorld()	{
+GameWorld::GameWorld() {
 	mainCamera = new Camera();
-
+	objectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
+	staticObjectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
 }
 
 GameWorld::~GameWorld()	{
+	delete objectTree;
+	delete staticObjectTree;
 }
 
 void GameWorld::Clear() {
@@ -37,6 +40,14 @@ void GameWorld::ClearAndErase() {
 void GameWorld::AddGameObject(GameObject* o) {
 	gameObjects.emplace_back(o);
 	o->SetWorldID(worldIDCounter++);
+	
+	if (o->IsStatic()) {
+		o->UpdateBroadphaseAABB();
+		Vector3 halfSize;
+		if (o->GetBroadphaseAABB(halfSize)) {
+			staticObjectTree->Insert(o, o->GetTransform().GetPosition(), halfSize);
+		}
+	}
 }
 
 void GameWorld::RemoveGameObject(GameObject* o, bool andDelete) {
@@ -61,6 +72,27 @@ void GameWorld::OperateOnContents(GameObjectFunc f) {
 }
 
 void GameWorld::UpdateWorld(float dt) {
+
+	for (auto g : gameObjects) {
+		if (!g->IsStatic()) {
+			g->UpdateBroadphaseAABB();
+		}
+	}
+
+	objectTree->Clear();
+
+	for (auto  g : gameObjects) {
+		Vector3 halfSizes;
+		if (g->IsStatic() || !g->GetBroadphaseAABB(halfSizes)) {
+			continue;
+		}
+
+		Vector3 pos = g->GetTransform().GetPosition();
+		objectTree->Insert(g, pos, halfSizes);
+	}
+	objectTree->DebugDraw();
+
+
 	if (shuffleObjects) {
 		std::random_shuffle(gameObjects.begin(), gameObjects.end());
 	}
@@ -70,19 +102,22 @@ void GameWorld::UpdateWorld(float dt) {
 	}
 }
 
+
+
 bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const {
-	//The simplest raycast just goes through each object and sees if there's a collision
 	RayCollision collision;
 
-	for (auto& i : gameObjects) {
+	std::set<GameObject*> possibleCollisions = objectTree->GetPossibleRayCollisions(r);
+
+	for (auto& i : possibleCollisions) {
 		if (!i->GetBoundingVolume() || i->GetCollisionLayer() & 1) { //objects might not be collideable etc...
 			continue;
 		}
 		RayCollision thisCollision;
 		if (CollisionDetection::RayIntersection(r, *i, thisCollision)) {
-				
-			if (!closestObject) {	
-				closestCollision		= collision;
+
+			if (!closestObject) {
+				closestCollision = collision;
 				closestCollision.node = i;
 				return true;
 			}
@@ -95,8 +130,8 @@ bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObje
 		}
 	}
 	if (collision.node) {
-		closestCollision		= collision;
-		closestCollision.node	= collision.node;
+		closestCollision = collision;
+		closestCollision.node = collision.node;
 		return true;
 	}
 	return false;
