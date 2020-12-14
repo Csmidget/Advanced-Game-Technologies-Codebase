@@ -3,6 +3,7 @@
 #include "../CSC8503Common/CollisionDetection.h"
 #include "Debug.h"
 #include <list>
+#include <set>
 #include <functional>
 
 namespace NCL {
@@ -43,6 +44,12 @@ namespace NCL {
 				delete[] children;
 			}
 
+			void Clear() {
+				delete[] children;
+				children = nullptr;
+				contents.clear();
+			}
+
 			void Insert(T& object, const Vector3& objectPos, const Vector3& objectSize, int depthLeft, int maxSize) {
 
 				if (!CollisionDetection::AABBTest(objectPos, 
@@ -74,7 +81,6 @@ namespace NCL {
 						contents.clear();
 					}
 				}
-
 			}
 
 			void Split() {
@@ -112,7 +118,24 @@ namespace NCL {
 				}
 			}
 
+			void BuildPossibleRayCollisions(Ray &r, std::set<T>& possibleCollisions) const {			
+				RayCollision rc;
+				if (CollisionDetection::RayBoxIntersection(r, Vector3(position.x,0,position.y),Vector3(size.x, 1000, size.y), rc,true)) {
+					if (children) {
+						for (int i = 0; i < 4; ++i) {
+							children[i].BuildPossibleRayCollisions(r,possibleCollisions);
+						}
+					}
+					else {
+						for (auto c : contents)	{
+							possibleCollisions.insert(c.object);
+						}
+					}
+				}
+			}
+
 		protected:
+
 			std::list< QuadTreeEntry<T> >	contents;
 
 			Vector2 position;
@@ -136,7 +159,18 @@ namespace NCL {
 				this->maxDepth	= maxDepth;
 				this->maxSize	= maxSize;
 			}
+
 			~QuadTree() {
+			}
+
+			std::set<T> GetPossibleRayCollisions(Ray& r) const {
+				std::set<T> possibleCollisions;
+				root.BuildPossibleRayCollisions(r, possibleCollisions);
+				return possibleCollisions;
+			}
+
+			void Clear() {
+				root.Clear();
 			}
 
 			void Insert(T object, const Vector3& pos, const Vector3& size) {

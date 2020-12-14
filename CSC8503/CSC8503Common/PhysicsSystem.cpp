@@ -19,7 +19,7 @@ and the forces that are added to objects to change those positions
 
 */
 
-PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g)	{
+PhysicsSystem::PhysicsSystem(GameWorld& g) : gameWorld(g), objectTree(Vector2(1024, 1024), 7, 6)	{
 	applyGravity	= false;
 	useBroadPhase	= true;	
 	dTOffset		= 0.0f;
@@ -284,8 +284,7 @@ compare the collisions that we absolutely need to.
 
 void PhysicsSystem::BroadPhase() {
 	broadPhaseCollisions.clear();
-	QuadTree<GameObject*> tree(Vector2(1024, 1024), 7, 6);
-
+	objectTree.Clear();
 	std::vector<GameObject*>::const_iterator first;
 	std::vector<GameObject*>::const_iterator last;
 
@@ -298,10 +297,10 @@ void PhysicsSystem::BroadPhase() {
 		}
 
 		Vector3 pos = (*i)->GetTransform().GetPosition();
-		tree.Insert(*i, pos, halfSizes);
+		objectTree.Insert(*i, pos, halfSizes);
 	}
 
-	tree.OperateOnContents(
+	objectTree.OperateOnContents(
 		[&](std::list<QuadTreeEntry<GameObject*>>& data) {
 			CollisionDetection::CollisionInfo info;
 			for (auto i = data.begin(); i != data.end(); ++i) {
@@ -313,7 +312,7 @@ void PhysicsSystem::BroadPhase() {
 			}
 		}
 	);
-//	tree.DebugDraw();
+	objectTree.DebugDraw();
 }
 
 /*
@@ -330,6 +329,39 @@ void PhysicsSystem::NarrowPhase() {
 			allCollisions.insert(info);
 		}
 	}
+}
+
+bool PhysicsSystem::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const {
+	RayCollision collision;
+
+	std::set<GameObject*> possibleCollisions = objectTree.GetPossibleRayCollisions(r);
+
+	for (auto& i : possibleCollisions) {
+		if (!i->GetBoundingVolume() || i->GetCollisionLayer() & 1) { //objects might not be collideable etc...
+			continue;
+		}
+		RayCollision thisCollision;
+		if (CollisionDetection::RayIntersection(r, *i, thisCollision)) {
+
+			if (!closestObject) {
+				closestCollision = collision;
+				closestCollision.node = i;
+				return true;
+			}
+			else {
+				if (thisCollision.rayDistance < collision.rayDistance) {
+					thisCollision.node = i;
+					collision = thisCollision;
+				}
+			}
+		}
+	}
+	if (collision.node) {
+		closestCollision = collision;
+		closestCollision.node = collision.node;
+		return true;
+	}
+	return false;
 }
 
 /*

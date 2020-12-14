@@ -50,12 +50,16 @@ bool CollisionDetection::RayIntersection(const Ray& r,GameObject& object, RayCol
 	return hasCollided;
 }
 
-bool CollisionDetection::RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision) {
+bool CollisionDetection::RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision, bool includeInternal) {
 	Vector3 boxMin = boxPos - boxSize;
 	Vector3 boxMax = boxPos + boxSize;
 
 	Vector3 rayPos = r.GetPosition();
 	Vector3 rayDir = r.GetDirection();
+
+	if (includeInternal && AABBTest(r.GetPosition(), boxPos, Vector3(0, 0, 0), boxSize)) {
+			return true;
+	}
 
 	Vector3 tVals(-1, -1, -1);
 

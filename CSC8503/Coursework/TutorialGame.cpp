@@ -531,7 +531,7 @@ bool TutorialGame::SelectObject() {
 				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 				
 				ray = Ray(selectionObject->GetTransform().GetPosition(), selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1));
-				if (physics->Raycast(ray, closestCollision, true)) {
+				if (world->Raycast(ray, closestCollision, true)) {
 					Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(1, 1, 0, 1), 10.0f);
 					forwardObject = (GameObject*)closestCollision.node;
 					forwardObject->GetRenderObject()->SetColour(Vector4(1, 1, 0, 1));
@@ -588,7 +588,7 @@ void TutorialGame::MoveSelectedObject() {
 		Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
 		RayCollision closestCollision;
 
-		if (physics->Raycast(ray, closestCollision, true)) {
+		if (world->Raycast(ray, closestCollision, true)) {
 			if (closestCollision.node == selectionObject) {
 				selectionObject->GetPhysicsObject()->AddForceAtPosition(ray.GetDirection() * forceMagnitude, closestCollision.collidedAt);
 			}

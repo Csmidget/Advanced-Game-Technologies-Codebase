@@ -62,8 +62,7 @@ namespace NCL {
 			const CapsuleVolume& volumeA, const Transform& worldTransformA,
 			const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
-		//TODO ADD THIS PROPERLY
-		static bool RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision);
+		static bool RayBoxIntersection(const Ray&r, const Vector3& boxPos, const Vector3& boxSize, RayCollision& collision, bool includeInternal = false);
 
 		static Ray BuildRayFromMouse(const Camera& c);
 
