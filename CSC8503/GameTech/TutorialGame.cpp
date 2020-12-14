@@ -246,6 +246,15 @@ void TutorialGame::InitWorld() {
 
 	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
 	InitGameExamples();
+	//AddSphereToWorld(Vector3(0, 10, 10),1.0f);
+	//AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, 0), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, -5), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, -10), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
 	InitDefaultFloor();
 }
 
