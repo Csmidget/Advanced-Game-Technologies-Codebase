@@ -63,6 +63,23 @@ void PhysicsObject::InitCubeInertia() {
 	inverseInertia.z = (12.0f * inverseMass) / (dimsSqr.x + dimsSqr.y);
 }
 
+//This is actually just a stretched version of the cube intertia.
+void PhysicsObject::InitCapsuleInertia(float height, float radius) {
+	Vector3 dimensions = Vector3(radius, height, radius);
+
+//	dimensions.x = dimensions.x /= 2;
+//	dimensions.z = dimensions.z /= 2;
+
+	Vector3 fullWidth = dimensions * 2;
+	Vector3 dimsSqr = fullWidth * fullWidth;
+
+
+
+	inverseInertia.x = (12.0f * inverseMass) / (dimsSqr.y + dimsSqr.z);
+	inverseInertia.y = (12.0f * inverseMass) / (dimsSqr.x + dimsSqr.z);
+	inverseInertia.z = (12.0f * inverseMass) / (dimsSqr.x + dimsSqr.y);
+}
+
 void PhysicsObject::InitSphereInertia() {
 	float radius	= transform->GetScale().GetMaxElement();
 	float i			= 2.5f * inverseMass / (radius*radius);

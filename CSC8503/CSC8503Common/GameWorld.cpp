@@ -90,7 +90,7 @@ void GameWorld::UpdateWorld(float dt) {
 		Vector3 pos = g->GetTransform().GetPosition();
 		objectTree->Insert(g, pos, halfSizes);
 	}
-	objectTree->DebugDraw();
+	//objectTree->DebugDraw();
 
 
 	if (shuffleObjects) {

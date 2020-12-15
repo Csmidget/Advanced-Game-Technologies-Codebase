@@ -245,18 +245,22 @@ void TutorialGame::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	//InitMixedGridWorld(5, 5, 3.5f, 3.5f);
-	//InitGameExamples();
-	AddSphereToWorld(Vector3(0, 10, 10),1.0f);
-	AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
-	AddSphereToWorld(Vector3(0, 10, 0), 1.0f);
-	AddSphereToWorld(Vector3(0, 10, -5), 1.0f);
-	AddSphereToWorld(Vector3(0, 10, -10), 1.0f);
-	AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
-	AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
-	AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
-	AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
-	BridgeConstraintTest();
+//	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
+//	InitGameExamples();
+
+	AddCapsuleToWorld(Vector3(0, 10, 0), 1.0f, 0.5f);
+	//AddCapsuleToWorld(Vector3(0, 10, -5), 1.0f, 0.5f);
+
+	//AddSphereToWorld(Vector3(0, 10, 10),1.0f);
+	//AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, 0), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, -5), 1.0f);
+	//AddSphereToWorld(Vector3(0, 10, -10), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
+	//AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
+//	BridgeConstraintTest();
 	InitDefaultFloor();
 }
 
@@ -358,7 +362,7 @@ GameObject* TutorialGame::AddCapsuleToWorld(const Vector3& position, float halfH
 	capsule->SetPhysicsObject(new PhysicsObject(&capsule->GetTransform(), capsule->GetBoundingVolume()));
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
-	capsule->GetPhysicsObject()->InitCubeInertia();
+	capsule->GetPhysicsObject()->InitCapsuleInertia(halfHeight,radius);
 
 	world->AddGameObject(capsule);
 
