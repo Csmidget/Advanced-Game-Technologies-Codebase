@@ -108,8 +108,9 @@ void PhysicsSystem::Update(float dt) {
 		float constraintDt = realDT /  (float)constraintIterationCount;
 		for (int i = 0; i < constraintIterationCount; ++i) {
 			UpdateConstraints(constraintDt);	
+			IntegrateVelocity(constraintDt);
 		}
-		IntegrateVelocity(realDT); //update positions from new velocity changes
+	//	IntegrateVelocity(realDT); //update positions from new velocity changes
 
 		dTOffset -= realDT;
 	}
