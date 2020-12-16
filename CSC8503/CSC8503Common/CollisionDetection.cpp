@@ -438,6 +438,18 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
 		collisionInfo.b = a;
 		return AABBCapsuleIntersection((AABBVolume&)*volB, transformB, (CapsuleVolume&)*volA, transformA, collisionInfo);
 	}
+
+
+	if (volA->type == VolumeType::OBB && volB->type == VolumeType::Sphere) {
+		return OBBSphereIntersection((OBBVolume&)*volA, transformA, (SphereVolume&)*volB, transformB, collisionInfo);
+	}
+	if (volA->type == VolumeType::Sphere && volB->type == VolumeType::OBB) {
+		collisionInfo.a = b;
+		collisionInfo.b = a;
+		return OBBSphereIntersection((OBBVolume&)*volB, transformB, (SphereVolume&)*volA, transformA, collisionInfo);
+	}
+
+
 	return false;
 }
 
@@ -585,7 +597,7 @@ bool CollisionDetection::CapsuleIntersection(const CapsuleVolume& volumeA, const
 }
 
 bool CollisionDetection::BoxSphereIntersection(const Vector3& boxSize, const Vector3& boxPosition,
-	const float sphereRadius, const Vector3& spherePosition, CollisionInfo& collisionInfo) {
+	const float sphereRadius, const Vector3& spherePosition, CollisionInfo& collisionInfo, bool axisAligned) {
 
 	Vector3 delta = spherePosition - boxPosition;
 
@@ -597,7 +609,7 @@ bool CollisionDetection::BoxSphereIntersection(const Vector3& boxSize, const Vec
 		Vector3 collisionNormal = localPoint.Normalised();
 		float penetration = (sphereRadius - distance);
 
-		Vector3 localA = Vector3();
+		Vector3 localA = axisAligned ? Vector3() : -closestPointOnBox;
 		Vector3 localB = -collisionNormal * sphereRadius;
 
 		collisionInfo.AddContactPoint(localA, localB, collisionNormal, penetration);
@@ -614,9 +626,74 @@ bool CollisionDetection::AABBSphereIntersection(const AABBVolume& volumeA, const
 	return BoxSphereIntersection(volumeA.GetHalfDimensions(), worldTransformA.GetPosition(), volumeB.GetRadius(), worldTransformB.GetPosition(), collisionInfo);
 }
 
+//OBB - Sphere Collision
+bool CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
+	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+
+	Quaternion boxOrientation = worldTransformA.GetOrientation();
+	Vector3 boxPosition = worldTransformA.GetPosition();
+
+	Matrix3 transform = Matrix3(boxOrientation);
+	Matrix3 invTransform = Matrix3(boxOrientation.Conjugate());
+
+	Vector3 localSpherePos = invTransform * (worldTransformB.GetPosition() - boxPosition);
+
+	if (BoxSphereIntersection(volumeA.GetHalfDimensions(), Vector3(), volumeB.GetRadius(), localSpherePos, collisionInfo,false)) {
+		collisionInfo.point.localA = transform * collisionInfo.point.localA;
+		collisionInfo.point.localB = transform * collisionInfo.point.localB;
+		collisionInfo.point.normal = transform * collisionInfo.point.normal;
+		return true;
+	}
+
+	return false;
+}
+
+
 bool CollisionDetection::OBBIntersection(
 	const OBBVolume& volumeA, const Transform& worldTransformA,
 	const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+
+	Vector3 aPos = worldTransformA.GetPosition();
+	Quaternion aOrientation = worldTransformA.GetOrientation();
+	Vector3 aHalfSize = volumeA.GetHalfDimensions();
+
+	Vector3 bPos = worldTransformB.GetPosition();
+	Quaternion bOrientation = worldTransformB.GetOrientation();
+	Vector3 bHalfSize = volumeB.GetHalfDimensions();
+
+
+	Matrix3 transform = Matrix3(aOrientation);
+	Matrix3 invTransform = Matrix3(aOrientation.Conjugate());
+
+	Vector3 transformedBPos = invTransform * (bPos - aPos);
+	Quaternion transformedBOrientation = invTransform * bOrientation;
+
+	const Vector3 aNormals[3] {	
+		Vector3(1,0,0),
+		Vector3(0,1,0),
+		Vector3(0,0,1) 
+	};
+
+	const Vector3 aPoints[8]{
+		aHalfSize										, -aHalfSize,
+		Vector3( aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, Vector3( aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		Vector3(-aHalfSize.x, aHalfSize.y, aHalfSize.z)	, Vector3(-aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		Vector3(-aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, Vector3( aHalfSize.x,-aHalfSize.y,-aHalfSize.z),
+	};
+
+	Vector3 bNormals[3]{ transformedBOrientation * Vector3(1,0,0),
+						transformedBOrientation * Vector3(0,1,0),
+						transformedBOrientation * Vector3(0,0,1) };
+
+	const Vector3 bPoints[]{
+	transformedBOrientation * bHalfSize											, transformedBOrientation * -bHalfSize,
+	transformedBOrientation * Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, transformedBOrientation * Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+	transformedBOrientation * Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z)	, transformedBOrientation * Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+	transformedBOrientation * Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, transformedBOrientation * Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
+	};
+
+
+
 	return false;
 }
 
@@ -659,6 +736,7 @@ bool CollisionDetection::AABBCapsuleIntersection(
 
 	Vector3 capsulePos = worldTransformB.GetPosition();
 	float capsuleRadius = volumeB.GetRadius();
+
 	float capsuleHalfHeight = volumeB.GetHalfHeight();
 	Vector3 capsuleUp = worldTransformB.GetOrientation() * Vector3(0, 1, 0);
 	Vector3 capsuleTop = capsulePos + capsuleUp * (capsuleHalfHeight - capsuleRadius);
@@ -689,8 +767,8 @@ bool CollisionDetection::AABBCapsuleIntersection(
 	Vector3 closestPointOnCapsule = ProjectPointOntoLine(capsuleBottom, capsuleTop, closestPointOnBox);
 	
 
-	if (BoxSphereIntersection(boxSize, boxPos, volumeB.GetRadius(), closestPointOnCapsule, collisionInfo)) {
-		collisionInfo.point.localB = collisionInfo.point.localB + (closestPointOnCapsule - capsulePos);
+	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
+		collisionInfo.point.localB = collisionInfo.point.localB - (closestPointOnCapsule - capsulePos);
 		return true;
 	}
 

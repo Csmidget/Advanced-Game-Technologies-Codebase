@@ -97,10 +97,13 @@ namespace NCL {
 											const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 		static bool BoxSphereIntersection(	const Vector3& boxSize, const Vector3& boxPosition, 
-											const float sphereRadius, const Vector3& spherePosition, CollisionInfo& collisionInfo);
+											const float sphereRadius, const Vector3& spherePosition, CollisionInfo& collisionInfo, bool axisAligned = true);
 
 		static bool AABBSphereIntersection(	const AABBVolume& volumeA	 , const Transform& worldTransformA,
 											const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
+
+		static bool OBBSphereIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
+			const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 		static bool OBBIntersection(		const OBBVolume& volumeA, const Transform& worldTransformA,
 											const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);

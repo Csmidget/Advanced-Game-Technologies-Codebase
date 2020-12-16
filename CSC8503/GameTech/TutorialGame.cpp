@@ -248,13 +248,13 @@ void TutorialGame::InitWorld() {
 //	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
 //	InitGameExamples();
 
-	AddCapsuleToWorld(Vector3(0, 10, 0), 1.0f, 0.5f);
+	//AddCapsuleToWorld(Vector3(0, 10, 0), 1.0f, 0.5f);
 	//AddCapsuleToWorld(Vector3(0, 10, -5), 1.0f, 0.5f);
-
+	//
 	//AddSphereToWorld(Vector3(0, 10, 10),1.0f);
+	AddOBBCubeToWorld(Vector3(0, 10, -10), Vector3(1, 1, 1));
+	AddOBBCubeToWorld(Vector3(0, 10, 0), Vector3(1,1,1));
 	//AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
-	//AddSphereToWorld(Vector3(0, 10, 0), 1.0f);
-	//AddSphereToWorld(Vector3(0, 10, -5), 1.0f);
 	//AddSphereToWorld(Vector3(0, 10, -10), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
@@ -374,6 +374,29 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 	GameObject* cube = new GameObject("cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
+
+	cube->SetBoundingVolume((CollisionVolume*)volume);
+
+	cube->GetTransform()
+		.SetPosition(position)
+		.SetScale(dimensions * 2);
+
+	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
+	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+	cube->SetIsStatic(isStatic);
+
+	world->AddGameObject(cube);
+
+	return cube;
+}
+
+GameObject* TutorialGame::AddOBBCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, bool isStatic) {
+	GameObject* cube = new GameObject("cube");
+
+	OBBVolume* volume = new OBBVolume(dimensions);
 
 	cube->SetBoundingVolume((CollisionVolume*)volume);
 
