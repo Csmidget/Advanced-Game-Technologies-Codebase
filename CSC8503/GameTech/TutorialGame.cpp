@@ -252,7 +252,7 @@ void TutorialGame::InitWorld() {
 	//AddCapsuleToWorld(Vector3(0, 10, -5), 1.0f, 0.5f);
 	//
 	//AddSphereToWorld(Vector3(0, 10, 10),1.0f);
-	AddOBBCubeToWorld(Vector3(0, 10, -10), Vector3(1, 1, 1));
+	AddOBBCubeToWorld(Vector3(0, 12, 0), Vector3(1, 1, 1))->GetTransform().SetOrientation(Matrix3::Rotation(45,Vector3(0,0,1)));
 	AddOBBCubeToWorld(Vector3(0, 10, 0), Vector3(1,1,1));
 	//AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(0, 10, -10), 1.0f);

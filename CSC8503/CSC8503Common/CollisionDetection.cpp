@@ -12,7 +12,31 @@
 
 using namespace NCL;
 
-Vector3 ProjectPointOntoLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point) {
+float CollisionDetection::ProjectPointOntoAxis(Vector3 lineDir, Vector3 point) {
+	return Vector3::Dot(lineDir, point) / lineDir.LengthSquared();
+}
+
+bool CollisionDetection::TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8],const Vector3& axisDir) {
+
+	float aMin = FLT_MAX;
+	float aMax = FLT_MIN;
+	float bMin = FLT_MAX;
+	float bMax = FLT_MIN;
+	
+	for (int i = 0; i < 8; i++)	{
+		float aVal = ProjectPointOntoAxis(axisDir, aPoints[i]);
+		float bVal = ProjectPointOntoAxis(axisDir, bPoints[i]);
+
+		if (aMin > aVal) aMin = aVal;
+		if (bMin > bVal) bMin = bVal;
+		if (aMax < aVal) aMax = aVal;
+		if (bMax < bVal) bMax = bVal;
+	}
+
+	return (aMin > bMin && aMin < bMax) || (bMin > aMin && bMin < aMax);
+}
+
+Vector3 CollisionDetection::ProjectPointOntoLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point) {
 
 	Vector3 line = lineEnd - lineStart;
 
@@ -583,8 +607,8 @@ bool CollisionDetection::CapsuleIntersection(const CapsuleVolume& volumeA, const
 		closestA = aBottom;
 	}
 	
-	Vector3 closestB = ProjectPointOntoLine(bBottom, bTop, closestA);
-	closestA		 = ProjectPointOntoLine(aBottom, aTop, closestB);
+	Vector3 closestB = ProjectPointOntoLineSegment(bBottom, bTop, closestA);
+	closestA		 = ProjectPointOntoLineSegment(aBottom, aTop, closestB);
 
 	//Run sphere intersection to check for collision
 	if (SphereIntersection(volumeA.GetRadius(), closestA, volumeB.GetRadius(), closestB, collisionInfo)) {
@@ -661,33 +685,61 @@ bool CollisionDetection::OBBIntersection(
 	Quaternion bOrientation = worldTransformB.GetOrientation();
 	Vector3 bHalfSize = volumeB.GetHalfDimensions();
 
-	Matrix3 transform = Matrix3(aOrientation);
-	Matrix3 invTransform = Matrix3(aOrientation.Conjugate());
+	//Matrix3 transform = Matrix3(aOrientation);
+	//Matrix3 invTransform = Matrix3(aOrientation.Conjugate());
+	//
+	//Vector3 transformedBPos = invTransform * (bPos - aPos);
+	//Quaternion transformedBOrientation = invTransform * bOrientation;
 
-	Vector3 transformedBPos = invTransform * (bPos - aPos);
-	Quaternion transformedBOrientation = invTransform * bOrientation;
+	const Vector3 aNormals[3] {	
+		aOrientation * Vector3(1,0,0),
+		aOrientation * Vector3(0,1,0),
+		aOrientation * Vector3(0,0,1) 
+	};
 
-	const Vector3 normals[3] {	
-		Vector3(1,0,0),
-		Vector3(0,1,0),
-		Vector3(0,0,1) 
+
+	const Vector3 bNormals[3]{
+		bOrientation * Vector3(1,0,0),
+		bOrientation * Vector3(0,1,0),
+		bOrientation * Vector3(0,0,1)
 	};
 
 	const Vector3 aPoints[8]{
-		aHalfSize										, -aHalfSize,
-		Vector3( aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, Vector3( aHalfSize.x,-aHalfSize.y, aHalfSize.z),
-		Vector3(-aHalfSize.x, aHalfSize.y, aHalfSize.z)	, Vector3(-aHalfSize.x,-aHalfSize.y, aHalfSize.z),
-		Vector3(-aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, Vector3( aHalfSize.x,-aHalfSize.y,-aHalfSize.z),
+		aPos + (aOrientation * aHalfSize)										, aPos + (aOrientation * -aHalfSize),
+		aPos + aOrientation * Vector3( aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, aPos + aOrientation * Vector3( aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		aPos + aOrientation * Vector3(-aHalfSize.x, aHalfSize.y, aHalfSize.z)	, aPos + aOrientation * Vector3(-aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		aPos + aOrientation * Vector3(-aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, aPos + aOrientation * Vector3( aHalfSize.x,-aHalfSize.y,-aHalfSize.z),
 	};
 
-	const Vector3 bPoints[]{
-	 bHalfSize										,  -bHalfSize,
-	 Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	,  Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
-	 Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z),  Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
-	 Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z),  Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
+	const Vector3 bPoints[8]{
+		bPos + (bOrientation * bHalfSize)										, bPos + (bOrientation * -bHalfSize),
+		bPos + bOrientation * Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, bPos + bOrientation * Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+		bPos + bOrientation * Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z)	, bPos + bOrientation * Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+		bPos + bOrientation * Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, bPos + bOrientation * Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
 	};
 
-	return false;
+	if (!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[0]) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[1]) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[2]) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[0]) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[1]) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[2]) ||
+
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[0])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[1])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[2])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[0])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[1])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[2])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[0])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[1])) ||
+		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[2])))
+		return false;
+
+
+	static int count = 0;
+	std::cout << "OBB COLLISION " << ++count << "\n";
+	return true;
 }
 
 bool CollisionDetection::SphereCapsuleIntersection(
@@ -705,7 +757,7 @@ bool CollisionDetection::SphereCapsuleIntersection(
 	Vector3 aTop = aPos + aUp * (aHeight - aRadius);
 	Vector3 aBottom = aPos - aUp * (aHeight - aRadius);
 
-	Vector3 closestPoint = ProjectPointOntoLine(aBottom, aTop, bPos);
+	Vector3 closestPoint = ProjectPointOntoLineSegment(aBottom, aTop, bPos);
 
 
 	//Run sphere intersection to check for collision
@@ -757,7 +809,7 @@ bool CollisionDetection::AABBCapsuleIntersection(
 
 	Vector3 closestPointOnBox = Clamp(intersection, boxMin, boxMax);
 
-	Vector3 closestPointOnCapsule = ProjectPointOntoLine(capsuleBottom, capsuleTop, closestPointOnBox);
+	Vector3 closestPointOnCapsule = ProjectPointOntoLineSegment(capsuleBottom, capsuleTop, closestPointOnBox);
 	
 
 	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
