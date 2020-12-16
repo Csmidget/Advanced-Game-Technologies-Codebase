@@ -4,6 +4,7 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
+#include "Treadmill.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -255,6 +256,13 @@ void TutorialGame::InitWorld() {
 	AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
 	AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
 	AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
+
+	world->AddGameObject(new Treadmill(world, cubeMesh, basicTex, basicShader, Vector3(0, 0.1, 0), Vector3(3, 0.05, 6), Vector3(0, 0, -0.1)));
+	world->AddGameObject(new Treadmill(world, cubeMesh, basicTex, basicShader, Vector3(3, 0.1,-9), Vector3(6, 0.05, 3), Vector3(0.1, 0, 0)));
+	world->AddGameObject(new Treadmill(world, cubeMesh, basicTex, basicShader, Vector3(12, 0.1,-6), Vector3(3, 0.05, 6), Vector3(0, 0, 0.1)));
+	world->AddGameObject(new Treadmill(world, cubeMesh, basicTex, basicShader, Vector3(9, 0.1, 3), Vector3(6, 0.05, 3), Vector3(-0.1, 0, 0)));
+
+
 	InitDefaultFloor();
 }
 

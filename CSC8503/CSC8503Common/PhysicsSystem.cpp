@@ -196,24 +196,22 @@ void PhysicsSystem::BasicCollisionDetection() {
 	gameWorld.GetObjectIterators(first, last);
 
 	for (auto i = first; i != last; ++i) {
-		if ((*i)->GetPhysicsObject() == nullptr) {
-			continue;
-		}
-
 		for (auto j = i + 1; j != last; ++j) {
-			if ((*j)->GetPhysicsObject() == nullptr) {
+			if ((*i)->GetPhysicsObject() == nullptr && (*j)->GetPhysicsObject() == nullptr) {
 				continue;
 			}
 			CollisionDetection::CollisionInfo info;
 			if (CollisionDetection::ObjectIntersection(*i, *j, info)) {
-				ImpulseResolveCollision(*info.a, *info.b, info.point);
-				info.framesLeft = numCollisionFrames;
+
+				if ((*i)->GetPhysicsObject() != nullptr && (*j)->GetPhysicsObject() != nullptr) {
+					ImpulseResolveCollision(*info.a, *info.b, info.point);
+				}
+
+				info.framesLeft = numCollisionFrames;			
 				allCollisions.insert(info);
 			}
-
 		}
 	}
-
 }
 
 /*
@@ -319,9 +317,17 @@ and work out if they are truly colliding, and if so, add them into the main coll
 void PhysicsSystem::NarrowPhase() {
 	for (std::set<CollisionDetection::CollisionInfo>::iterator i = broadPhaseCollisions.begin(); i != broadPhaseCollisions.end(); ++i) {
 		CollisionDetection::CollisionInfo info = *i;
+
+		//Neither object has a physicsobject attached, so don't bother.
+		if (info.a->GetPhysicsObject() == nullptr && info.b->GetPhysicsObject() == nullptr)
+			continue;
+
 		if (CollisionDetection::ObjectIntersection(info.a, info.b, info)) {
 			info.framesLeft = numCollisionFrames;
-			ImpulseResolveCollision(*info.a, *info.b, info.point);
+			if (info.a->GetPhysicsObject() != nullptr && info.b->GetPhysicsObject() != nullptr) {
+				ImpulseResolveCollision(*info.a, *info.b, info.point);
+			}
+
 			allCollisions.insert(info);
 		}
 	}

@@ -661,14 +661,13 @@ bool CollisionDetection::OBBIntersection(
 	Quaternion bOrientation = worldTransformB.GetOrientation();
 	Vector3 bHalfSize = volumeB.GetHalfDimensions();
 
-
 	Matrix3 transform = Matrix3(aOrientation);
 	Matrix3 invTransform = Matrix3(aOrientation.Conjugate());
 
 	Vector3 transformedBPos = invTransform * (bPos - aPos);
 	Quaternion transformedBOrientation = invTransform * bOrientation;
 
-	const Vector3 aNormals[3] {	
+	const Vector3 normals[3] {	
 		Vector3(1,0,0),
 		Vector3(0,1,0),
 		Vector3(0,0,1) 
@@ -681,18 +680,12 @@ bool CollisionDetection::OBBIntersection(
 		Vector3(-aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, Vector3( aHalfSize.x,-aHalfSize.y,-aHalfSize.z),
 	};
 
-	Vector3 bNormals[3]{ transformedBOrientation * Vector3(1,0,0),
-						transformedBOrientation * Vector3(0,1,0),
-						transformedBOrientation * Vector3(0,0,1) };
-
 	const Vector3 bPoints[]{
-	transformedBOrientation * bHalfSize											, transformedBOrientation * -bHalfSize,
-	transformedBOrientation * Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, transformedBOrientation * Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
-	transformedBOrientation * Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z)	, transformedBOrientation * Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
-	transformedBOrientation * Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, transformedBOrientation * Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
+	 bHalfSize										,  -bHalfSize,
+	 Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	,  Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+	 Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z),  Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+	 Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z),  Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
 	};
-
-
 
 	return false;
 }
