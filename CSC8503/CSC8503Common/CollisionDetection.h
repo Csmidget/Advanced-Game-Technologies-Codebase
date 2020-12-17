@@ -102,10 +102,13 @@ namespace NCL {
 		static bool AABBSphereIntersection(	const AABBVolume& volumeA	 , const Transform& worldTransformA,
 											const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
-		static bool OBBSphereIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
-			const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
+		static bool OBBSphereIntersection(	const OBBVolume& volumeA, const Transform& worldTransformA,
+											const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 		static bool OBBIntersection(		const OBBVolume& volumeA, const Transform& worldTransformA,
+											const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
+
+		static bool AABBOBBIntersection(	const AABBVolume& volumeA, const Transform& worldTransformA,
 											const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
 
 		static bool AABBCapsuleIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
@@ -121,7 +124,7 @@ namespace NCL {
 	
 		static float ProjectPointOntoAxis(Vector3 lineDir, Vector3 point);
 
-		static bool TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8], const Vector3& axisDir);
+		static bool TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8], const Vector3& axisNormal, std::vector<ContactPoint>& contactPoints);
 
 		static Vector3 ProjectPointOntoLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point);
 

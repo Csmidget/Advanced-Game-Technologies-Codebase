@@ -12,11 +12,7 @@
 
 using namespace NCL;
 
-float CollisionDetection::ProjectPointOntoAxis(Vector3 lineDir, Vector3 point) {
-	return Vector3::Dot(lineDir, point) / lineDir.LengthSquared();
-}
-
-bool CollisionDetection::TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8],const Vector3& axisDir) {
+bool CollisionDetection::TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8],const Vector3& axisDirection, std::vector<ContactPoint>& contactPoints) {
 
 	float aMin = FLT_MAX;
 	float aMax = FLT_MIN;
@@ -24,8 +20,8 @@ bool CollisionDetection::TestBoxesAgainstAxis(const Vector3 aPoints[8], const Ve
 	float bMax = FLT_MIN;
 	
 	for (int i = 0; i < 8; i++)	{
-		float aVal = ProjectPointOntoAxis(axisDir, aPoints[i]);
-		float bVal = ProjectPointOntoAxis(axisDir, bPoints[i]);
+		float aVal = Vector3::Dot(axisDirection, aPoints[i]);
+		float bVal = Vector3::Dot(axisDirection, bPoints[i]);
 
 		if (aMin > aVal) aMin = aVal;
 		if (bMin > bVal) bMin = bVal;
@@ -33,7 +29,26 @@ bool CollisionDetection::TestBoxesAgainstAxis(const Vector3 aPoints[8], const Ve
 		if (bMax < bVal) bMax = bVal;
 	}
 
-	return (aMin > bMin && aMin < bMax) || (bMin > aMin && bMin < aMax);
+	if (aMin > bMin && aMin < bMax) {
+		ContactPoint contact;
+		contact.localA = Vector3();
+		contact.localB = Vector3();
+		contact.normal = axisDirection;
+		contact.penetration = bMax - aMin;
+		contactPoints.push_back(contact);
+		return true;
+	}
+	if (bMin > aMin && bMin < aMax) {
+		ContactPoint contact;
+		contact.localA = Vector3();
+		contact.localB = Vector3();
+		contact.normal = axisDirection;
+		contact.penetration = aMax - bMin;
+		contactPoints.push_back(contact);
+		return true;
+	}
+
+	return false;
 }
 
 Vector3 CollisionDetection::ProjectPointOntoLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point) {
@@ -463,6 +478,14 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
 		return AABBCapsuleIntersection((AABBVolume&)*volB, transformB, (CapsuleVolume&)*volA, transformA, collisionInfo);
 	}
 
+	if (volA->type == VolumeType::AABB && volB->type == VolumeType::OBB) {
+		return AABBOBBIntersection((AABBVolume&)*volA, transformA, (OBBVolume&)*volB, transformB, collisionInfo);
+	}
+	if (volA->type == VolumeType::OBB && volB->type == VolumeType::AABB) {
+		collisionInfo.a = b;
+		collisionInfo.b = a;
+		return AABBOBBIntersection((AABBVolume&)*volB, transformB, (OBBVolume&)*volA, transformA, collisionInfo);
+	}
 
 	if (volA->type == VolumeType::OBB && volB->type == VolumeType::Sphere) {
 		return OBBSphereIntersection((OBBVolume&)*volA, transformA, (SphereVolume&)*volB, transformB, collisionInfo);
@@ -685,23 +708,16 @@ bool CollisionDetection::OBBIntersection(
 	Quaternion bOrientation = worldTransformB.GetOrientation();
 	Vector3 bHalfSize = volumeB.GetHalfDimensions();
 
-	//Matrix3 transform = Matrix3(aOrientation);
-	//Matrix3 invTransform = Matrix3(aOrientation.Conjugate());
-	//
-	//Vector3 transformedBPos = invTransform * (bPos - aPos);
-	//Quaternion transformedBOrientation = invTransform * bOrientation;
-
 	const Vector3 aNormals[3] {	
 		aOrientation * Vector3(1,0,0),
 		aOrientation * Vector3(0,1,0),
 		aOrientation * Vector3(0,0,1) 
 	};
 
-
 	const Vector3 bNormals[3]{
-		bOrientation * Vector3(1,0,0),
-		bOrientation * Vector3(0,1,0),
-		bOrientation * Vector3(0,0,1)
+		bOrientation * -Vector3(1,0,0),
+		bOrientation * -Vector3(0,1,0),
+		bOrientation * -Vector3(0,0,1)
 	};
 
 	const Vector3 aPoints[8]{
@@ -718,28 +734,121 @@ bool CollisionDetection::OBBIntersection(
 		bPos + bOrientation * Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, bPos + bOrientation * Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
 	};
 
-	if (!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[0]) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[1]) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, aNormals[2]) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[0]) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[1]) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, bNormals[2]) ||
-
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[0])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[1])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[2])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[0])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[1])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[2])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[0])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[1])) ||
-		!TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[2])))
-		return false;
+	std::vector<ContactPoint> contactPoints;
 
 
-	static int count = 0;
-	std::cout << "OBB COLLISION " << ++count << "\n";
-	return true;
+	if (TestBoxesAgainstAxis(aPoints, bPoints, aNormals[0], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, aNormals[1], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, aNormals[2], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[0], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[1], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[2], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[2]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[2]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[2]).Normalised(), contactPoints)) {
+
+		ContactPoint minPen;
+		minPen.penetration = FLT_MAX;
+		for (auto cp : contactPoints) {
+			if (cp.penetration < minPen.penetration)
+				minPen = cp;
+		}
+
+		if (Vector3::Dot(minPen.normal, bPos - aPos) < 0) {
+			minPen.normal = -minPen.normal;
+		}
+
+		//Debug::DrawLine(aPos, bPos,Vector4(1, 1, 1, 1), 1.0f);
+		//Debug::DrawLine(aPos + (bPos - aPos) / 2, (aPos + (bPos - aPos) / 2) +  (minPen.normal * 10),Vector4(1,0,0,1),1.0f);
+		collisionInfo.point = minPen;
+
+		return true;
+	}
+		
+	return false;
+}
+
+bool CollisionDetection::AABBOBBIntersection(
+	const AABBVolume& volumeA, const Transform& worldTransformA,
+	const OBBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+
+	Vector3 aPos = worldTransformA.GetPosition();
+	Vector3 aHalfSize = volumeA.GetHalfDimensions();
+
+	Vector3 bPos = worldTransformB.GetPosition();
+	Quaternion bOrientation = worldTransformB.GetOrientation();
+	Vector3 bHalfSize = volumeB.GetHalfDimensions();
+
+	const Vector3 aNormals[3]{
+		Vector3(1,0,0),
+		Vector3(0,1,0),
+		Vector3(0,0,1)
+	};
+
+	const Vector3 bNormals[3]{
+		bOrientation * -Vector3(1,0,0),
+		bOrientation * -Vector3(0,1,0),
+		bOrientation * -Vector3(0,0,1)
+	};
+
+	const Vector3 aPoints[8]{
+		aPos + aHalfSize										, aPos - aHalfSize,
+		aPos + Vector3(aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, aPos + Vector3(aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		aPos + Vector3(-aHalfSize.x, aHalfSize.y, aHalfSize.z)	, aPos + Vector3(-aHalfSize.x,-aHalfSize.y, aHalfSize.z),
+		aPos + Vector3(-aHalfSize.x, aHalfSize.y,-aHalfSize.z)	, aPos + Vector3(aHalfSize.x,-aHalfSize.y,-aHalfSize.z),
+	};
+
+	const Vector3 bPoints[8]{
+		bPos + (bOrientation * bHalfSize)										, bPos + (bOrientation * -bHalfSize),
+		bPos + bOrientation * Vector3(bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, bPos + bOrientation * Vector3(bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+		bPos + bOrientation * Vector3(-bHalfSize.x, bHalfSize.y, bHalfSize.z)	, bPos + bOrientation * Vector3(-bHalfSize.x,-bHalfSize.y, bHalfSize.z),
+		bPos + bOrientation * Vector3(-bHalfSize.x, bHalfSize.y,-bHalfSize.z)	, bPos + bOrientation * Vector3(bHalfSize.x,-bHalfSize.y,-bHalfSize.z),
+	};
+
+	std::vector<ContactPoint> contactPoints;
+
+
+	if (TestBoxesAgainstAxis(aPoints, bPoints, aNormals[0], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, aNormals[1], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, aNormals[2], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[0], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[1], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, bNormals[2], contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[0], bNormals[2]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[1], bNormals[2]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[0]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[1]).Normalised(), contactPoints) &&
+		TestBoxesAgainstAxis(aPoints, bPoints, Vector3::Cross(aNormals[2], bNormals[2]).Normalised(), contactPoints)) {
+
+		ContactPoint minPen;
+		minPen.penetration = FLT_MAX;
+		for (auto cp : contactPoints) {
+			if (cp.penetration < minPen.penetration)
+				minPen = cp;
+		}
+
+		if (Vector3::Dot(minPen.normal, bPos - aPos) < 0) {
+			minPen.normal = -minPen.normal;
+		}
+
+		//Debug::DrawLine(aPos, bPos,Vector4(1, 1, 1, 1), 1.0f);
+		//Debug::DrawLine(aPos + (bPos - aPos) / 2, (aPos + (bPos - aPos) / 2) +  (minPen.normal * 10),Vector4(1,0,0,1),1.0f);
+		collisionInfo.point = minPen;
+
+		return true;
+	}
+
+	return false;
 }
 
 bool CollisionDetection::SphereCapsuleIntersection(
@@ -769,6 +878,7 @@ bool CollisionDetection::SphereCapsuleIntersection(
 	return false;
 }
 
+//AABB / Capsule Collision, This doesn't work in all cases (capsules much larger than cubes) but is close enough for most use cases.
 bool CollisionDetection::AABBCapsuleIntersection(
 	const AABBVolume& volumeA, const Transform& worldTransformA,
 	const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
@@ -781,13 +891,19 @@ bool CollisionDetection::AABBCapsuleIntersection(
 
 	Vector3 capsulePos = worldTransformB.GetPosition();
 	float capsuleRadius = volumeB.GetRadius();
-
 	float capsuleHalfHeight = volumeB.GetHalfHeight();
 	Vector3 capsuleUp = worldTransformB.GetOrientation() * Vector3(0, 1, 0);
 	Vector3 capsuleTop = capsulePos + capsuleUp * (capsuleHalfHeight - capsuleRadius);
 	Vector3 capsuleBottom = capsulePos - capsuleUp * (capsuleHalfHeight - capsuleRadius);
 
-	Vector3 tVals(0, 0, 0);
+//	Vector3 closestPointOnCapsule = ProjectPointOntoLineSegment(capsuleBottom, capsuleTop, boxPos);
+//
+//	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
+//		collisionInfo.point.localB = collisionInfo.point.localB - (closestPointOnCapsule - capsulePos);
+//		return true;
+//	}
+
+	Vector3 tVals(FLT_MAX, FLT_MAX, FLT_MAX);
 
 	Vector3 posDiff = boxPos - capsulePos;
 	for (int i = 0; i < 3; ++i) {
@@ -810,7 +926,7 @@ bool CollisionDetection::AABBCapsuleIntersection(
 	Vector3 closestPointOnBox = Clamp(intersection, boxMin, boxMax);
 
 	Vector3 closestPointOnCapsule = ProjectPointOntoLineSegment(capsuleBottom, capsuleTop, closestPointOnBox);
-	
+
 
 	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
 		collisionInfo.point.localB = collisionInfo.point.localB - (closestPointOnCapsule - capsulePos);
