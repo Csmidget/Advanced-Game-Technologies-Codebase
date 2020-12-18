@@ -124,7 +124,7 @@ namespace NCL {
 	
 		static float ProjectPointOntoAxis(Vector3 lineDir, Vector3 point);
 
-		static bool TestBoxesAgainstAxis(const Vector3 aPoints[8], const Vector3 bPoints[8], const Vector3& axisNormal, std::vector<ContactPoint>& contactPoints);
+		static bool TestBoxesAgainstAxis(const Transform& aTransform, const Transform& bTransform, const Vector3& axisDirection, std::vector<ContactPoint>& contactPoints);
 
 		static Vector3 ProjectPointOntoLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point);
 

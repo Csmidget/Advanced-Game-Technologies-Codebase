@@ -252,14 +252,13 @@ void TutorialGame::InitWorld() {
 	//capsule->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(0, 0, 1)));
 	//AddCubeToWorld(Vector3(-1.5, 8, 0), Vector3(1, 1, 1), 0.0f, true);
 
-	//AddCapsuleToWorld(Vector3(0, 10, -5), 1.0f, 0.5f);
+	AddCapsuleToWorld(Vector3(0, 10, -10), 1.0f, 0.5f);
+	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
+	AddSphereToWorld(Vector3(-5, 10, -10),1.0f);
 	//
-	//AddSphereToWorld(Vector3(0, 10, 10),1.0f);
-	AddOBBCubeToWorld(Vector3(1, 11, 5), Vector3(1, 1, 1));// ->GetTransform().SetOrientation(Matrix3::Rotation(45, Vector3(0, 0, 1)));
-	AddOBBCubeToWorld(Vector3(0, 10, 0), Vector3(1, 1, 1));
-	AddCubeToWorld(Vector3(0, 10, -5), Vector3(1,1,1));
-	//AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
-	//AddSphereToWorld(Vector3(0, 10, -10), 1.0f);
+	AddOBBCubeToWorld(Vector3(1, 10, 5), Vector3(1, 1, 1));// ->GetTransform().SetOrientation(Matrix3::Rotation(45, Vector3(0, 0, 1)));
+	AddOBBCubeToWorld(Vector3(0, 10, -5), Vector3(1,1,1));
+	AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
