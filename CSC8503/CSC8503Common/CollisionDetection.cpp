@@ -16,14 +16,12 @@ Vector3 OBBSupport(const Transform& worldTransform, Vector3 worldDir) {
 	Vector3 localDir = worldTransform.GetOrientation().Conjugate() * worldDir;
 	Vector3 vertex;
 
-	vertex.x = localDir.x < 0 ? -1.0f : 1.0f;
-	vertex.y = localDir.y < 0 ? -1.0f : 1.0f;
-	vertex.z = localDir.z < 0 ? -1.0f : 1.0f;
+	//0.5 instead of 1 because cubes are double scale in this program due to a small mesh.
+	vertex.x = localDir.x < 0 ? -0.5f : 0.5f;
+	vertex.y = localDir.y < 0 ? -0.5f : 0.5f;
+	vertex.z = localDir.z < 0 ? -0.5f : 0.5f;
 
-//	return worldTransform.GetMatrix() * vertex;
-	return 		Matrix4::Translation(worldTransform.GetPosition()) *
-				Matrix4(worldTransform.GetOrientation()) *
-				Matrix4::Scale(worldTransform.GetScale() / 2) * vertex;
+	return worldTransform.GetMatrix() * vertex;
 }
 
 bool CollisionDetection::TestBoxesAgainstAxis(const Transform& aTransform, const Transform& bTransform, const Vector3& axisDirection, std::vector<ContactPoint>& contactPoints) {
@@ -643,8 +641,8 @@ bool CollisionDetection::CapsuleIntersection(const CapsuleVolume& volumeA, const
 
 	//Run sphere intersection to check for collision
 	if (SphereIntersection(volumeA.GetRadius(), closestA, volumeB.GetRadius(), closestB, collisionInfo)) {
-		collisionInfo.point.localA = collisionInfo.point.localA + (aPos - closestA );
-		collisionInfo.point.localB = collisionInfo.point.localB + (bPos - closestB );
+		collisionInfo.point.localA = collisionInfo.point.localA + (closestA - aPos);
+		collisionInfo.point.localB = collisionInfo.point.localB + (closestB - bPos);
 		return true;
 	}
 
@@ -664,7 +662,7 @@ bool CollisionDetection::BoxSphereIntersection(const Vector3& boxSize, const Vec
 		Vector3 collisionNormal = localPoint.Normalised();
 		float penetration = (sphereRadius - distance);
 
-		Vector3 localA = axisAligned ? Vector3() : -closestPointOnBox;
+		Vector3 localA = axisAligned ? Vector3() : closestPointOnBox;
 		Vector3 localB = -collisionNormal * sphereRadius;
 
 		collisionInfo.AddContactPoint(localA, localB, collisionNormal, penetration);
@@ -908,7 +906,7 @@ bool CollisionDetection::AABBCapsuleIntersection(
 
 
 	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
-		collisionInfo.point.localB = collisionInfo.point.localB - (closestPointOnCapsule - capsulePos);
+		collisionInfo.point.localB = collisionInfo.point.localB + (closestPointOnCapsule - capsulePos);
 		return true;
 	}
 

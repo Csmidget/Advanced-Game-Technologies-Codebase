@@ -11,6 +11,42 @@
 using namespace NCL;
 using namespace CSC8503;
 
+
+void TestStateMachine() {
+	StateMachine* testMachine = new StateMachine();
+	int data = 0;
+
+	State* A = new GenericState([](float, void* data)->void {
+		std::cout << "I'm in state A!\n";
+		auto intData = (int*)data;
+		(*intData)++;
+		}, &data);
+
+	State* B = new GenericState([](float, void* data) {
+		std::cout << "I'm in state B!\n";
+		auto intData = (int*)data;
+		(*intData)--;
+		}, & data);
+
+	StateTransition* stateAB = new GenericTransition<int*, void*>([](int* d1,void*)->bool {
+			return *d1 > 10;
+		},&data,nullptr,A,B);
+
+	StateTransition* stateBA = new GenericTransition<int*, void*>([](int* d1, void*)->bool {
+			return *d1 < 0;
+		},&data,nullptr,B,A);
+
+	testMachine->AddState(A);
+	testMachine->AddState(B);
+	testMachine->AddTransition(stateAB);
+	testMachine->AddTransition(stateBA);
+
+	for (int i = 0; i < 100; ++i) {
+		testMachine->Update(0.0f);
+	}
+
+}
+
 /*
 
 The main function should look pretty familar to you!
@@ -26,6 +62,8 @@ hide or show the
 int main() {
 	Window*w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
 
+
+	TestStateMachine();
 	if (!w->HasInitialised()) {
 		return -1;
 	}	

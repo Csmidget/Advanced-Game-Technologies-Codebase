@@ -156,6 +156,10 @@ rocket launcher, gaining a point when the player hits the gold coin, and so on).
 */
 void PhysicsSystem::UpdateCollisionList() {
 	for (std::set<CollisionDetection::CollisionInfo>::iterator i = allCollisions.begin(); i != allCollisions.end(); ) {
+		if (!i->a || !i->b) {
+			i = allCollisions.erase(i);
+		}
+
 		if ((*i).framesLeft == numCollisionFrames) {
 			i->a->OnCollisionBegin(i->b);
 			i->b->OnCollisionBegin(i->a);
@@ -263,8 +267,8 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 	physA->ApplyLinearImpulse(-fullImpulse);
 	physB->ApplyLinearImpulse(fullImpulse);
 	
-	physA->ApplyAngularImpulse(Vector3::Cross(relativeA, fullImpulse));
-	physB->ApplyAngularImpulse(Vector3::Cross(relativeB, -fullImpulse));
+	physA->ApplyAngularImpulse(Vector3::Cross(relativeA,-fullImpulse));
+	physB->ApplyAngularImpulse(Vector3::Cross(relativeB, fullImpulse));
 }
 
 void PhysicsSystem::SpringResolveCollision(GameObject& a, GameObject& b, CollisionDetection::ContactPoint& p) const {
@@ -418,7 +422,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 		Quaternion orientation = transform.GetOrientation();
 		Vector3 angVel = object->GetAngularVelocity();
 
-		orientation = orientation + (Quaternion(angVel * dt * 0.5f, 0.05) * orientation);
+		orientation = orientation + (Quaternion(angVel * dt * 0.5f, 0.0f) * orientation);
 		orientation.Normalise();
 
 		transform.SetOrientation(orientation);

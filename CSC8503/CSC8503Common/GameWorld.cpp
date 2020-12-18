@@ -25,6 +25,8 @@ GameWorld::~GameWorld()	{
 void GameWorld::Clear() {
 	gameObjects.clear();
 	constraints.clear();
+	staticObjectTree->Clear();
+	objectTree->Clear();
 }
 
 void GameWorld::ClearAndErase() {
@@ -74,6 +76,7 @@ void GameWorld::OperateOnContents(GameObjectFunc f) {
 void GameWorld::UpdateWorld(float dt) {
 
 	for (auto g : gameObjects) {
+		g->Update(dt);
 		if (!g->IsStatic()) {
 			g->UpdateBroadphaseAABB();
 		}

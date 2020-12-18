@@ -241,9 +241,13 @@ void TutorialGame::InitCamera() {
 	lockedObject = nullptr;
 }
 
-void TutorialGame::InitWorld() {
+void TutorialGame::Clear() {
 	world->ClearAndErase();
 	physics->Clear();
+}
+
+void TutorialGame::InitWorld() {
+	Clear();
 
 //	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
 //	InitGameExamples();
@@ -254,11 +258,12 @@ void TutorialGame::InitWorld() {
 
 	AddCapsuleToWorld(Vector3(0, 10, -10), 1.0f, 0.5f);
 	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
-	AddSphereToWorld(Vector3(-5, 10, -10),1.0f);
+	//AddSphereToWorld(Vector3(-5, 10, -10),1.0f);
 	//
 	AddOBBCubeToWorld(Vector3(1, 10, 5), Vector3(1, 1, 1));// ->GetTransform().SetOrientation(Matrix3::Rotation(45, Vector3(0, 0, 1)));
 	AddOBBCubeToWorld(Vector3(0, 10, -5), Vector3(1,1,1));
-	AddSphereToWorld(Vector3(0, 10, 5), 1.0f);
+//	AddSphereToWorld(Vector3(-1, 15, -6), 1.0f);
+	//AddStateObjectToWorld(Vector3(0, 10, -15));
 	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
@@ -545,6 +550,26 @@ GameObject* TutorialGame::AddBonusToWorld(const Vector3& position) {
 	return apple;
 }
 
+StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
+	StateGameObject* stateobj = new StateGameObject();
+
+	SphereVolume* volume = new SphereVolume(0.25f);
+	stateobj->SetBoundingVolume((CollisionVolume*)volume);
+	stateobj->GetTransform()
+		.SetScale(Vector3(0.25, 0.25, 0.25))
+		.SetPosition(position);
+
+	stateobj->SetRenderObject(new RenderObject(&stateobj->GetTransform(), sphereMesh, nullptr, basicShader));
+	stateobj->SetPhysicsObject(new PhysicsObject(&stateobj->GetTransform(), stateobj->GetBoundingVolume()));
+
+	stateobj->GetPhysicsObject()->SetInverseMass(1.0f);
+	stateobj->GetPhysicsObject()->InitSphereInertia();
+
+	world->AddGameObject(stateobj);
+
+	return stateobj;
+}
+
 /*
 
 Every frame, this code will let you perform a raycast, to see if there's an object
@@ -554,6 +579,12 @@ letting you move the camera around.
 
 */
 bool TutorialGame::SelectObject() {
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		world->ClearAndErase();
+		physics->Clear();
+	}
+
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q)) {
 		inSelectionMode = !inSelectionMode;
 		if (inSelectionMode) {

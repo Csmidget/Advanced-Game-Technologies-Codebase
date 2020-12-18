@@ -24,6 +24,7 @@ namespace NCL {
 				collisionLayer = val;
 			}
 
+			virtual void Update(float dt) {};
 
 			void SetBoundingVolume(CollisionVolume* vol) {
 				boundingVolume = vol;

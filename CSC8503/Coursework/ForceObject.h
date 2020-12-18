@@ -9,16 +9,17 @@ namespace NCL {
 
 		class Constraint;
 		class GameWorld;
-		class Treadmill : public GameObject {
+		class ForceObject : public GameObject {
 
 		public:
 
-			Treadmill(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Vector3 direction);
-			~Treadmill();
+			ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Vector3 direction, float strength);
+			~ForceObject();
 			void OnCollisionBegin(GameObject* otherObject) override;
 			void OnCollisionEnd(GameObject* otherObject) override;
 
 		protected: 
+			float strength;
 			Vector3 direction;
 			std::map<GameObject*, Constraint*> activeConstraints;
 			GameWorld* world;

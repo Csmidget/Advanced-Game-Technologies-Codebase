@@ -3,15 +3,15 @@
   <ItemGroup>
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="TutorialGame.cpp" />
-    <ClCompile Include="Treadmill.cpp">
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="ForceObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
-    <ClInclude Include="TutorialGame.h" />
-    <ClInclude Include="Treadmill.h">
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="ForceObject.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
   </ItemGroup>

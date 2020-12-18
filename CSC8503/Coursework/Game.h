@@ -4,14 +4,16 @@
 
 namespace NCL {
 	namespace CSC8503 {
-		class TutorialGame		{
+		class Game		{
 		public:
-			TutorialGame();
-			~TutorialGame();
+			Game();
+			~Game();
 
 			virtual void UpdateGame(float dt);
 
 		protected:
+			void Clear();
+
 			void InitialiseAssets();
 
 			void InitCamera();

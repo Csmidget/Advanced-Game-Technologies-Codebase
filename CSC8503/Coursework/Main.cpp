@@ -6,7 +6,7 @@
 
 #include "../CSC8503Common/NavigationGrid.h"
 
-#include "TutorialGame.h"
+#include "Game.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -33,7 +33,7 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	TutorialGame* g = new TutorialGame();
+	Game* g = new Game();
 	w->GetTimer()->GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
