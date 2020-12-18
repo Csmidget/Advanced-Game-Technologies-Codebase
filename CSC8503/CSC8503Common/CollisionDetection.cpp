@@ -848,7 +848,7 @@ bool CollisionDetection::SphereCapsuleIntersection(
 
 	//Run sphere intersection to check for collision
 	if (SphereIntersection(volumeA.GetRadius(), closestPoint, volumeB.GetRadius(), bPos, collisionInfo)) {
-		collisionInfo.point.localA = collisionInfo.point.localA + (aPos - closestPoint);
+		collisionInfo.point.localA = collisionInfo.point.localA + (closestPoint - aPos);
 		return true;
 	}
 
