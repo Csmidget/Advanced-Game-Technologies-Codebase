@@ -256,12 +256,13 @@ void TutorialGame::InitWorld() {
 	//capsule->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(0, 0, 1)));
 	//AddCubeToWorld(Vector3(-1.5, 8, 0), Vector3(1, 1, 1), 0.0f, true);
 
-	AddCapsuleToWorld(Vector3(0, 10, -10), 1.0f, 0.5f);
-	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
-	AddSphereToWorld(Vector3(-5, 10, -10),1.0f);
+//	AddCapsuleToWorld(Vector3(0, 10, -10), 1.0f, 0.5f);
+//	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
+	AddSphereToWorld(Vector3(-4.5, 10, -7.4),1.0f);
 	//
-	AddOBBCubeToWorld(Vector3(1, 10, 5), Vector3(1, 1, 1));// ->GetTransform().SetOrientation(Matrix3::Rotation(45, Vector3(0, 0, 1)));
-	AddOBBCubeToWorld(Vector3(0, 10, -5), Vector3(1,1,1));
+	AddOBBCubeToWorld(Vector3(-4.5, 4.5, -7.5), Vector3(1, 1, 1))->GetTransform().SetOrientation(Matrix4::Rotation(0, Vector3(0, 0, 1)));
+	AddOBBCubeToWorld(Vector3(-4.5, 0, -3.5), Vector3(1, 1, 5));
+//	AddOBBCubeToWorld(Vector3(-5, 5, -10), Vector3(1,1,1));
 //	AddSphereToWorld(Vector3(-1, 15, -6), 1.0f);
 	//AddStateObjectToWorld(Vector3(0, 10, -15));
 	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
@@ -308,7 +309,7 @@ GameObject* TutorialGame::AddFloorToWorld(const Vector3& position) {
 	GameObject* floor = new GameObject("floor");
 
 	Vector3 floorSize	= Vector3(100, 2, 100);
-	OBBVolume* volume	= new OBBVolume(floorSize);
+	AABBVolume* volume	= new AABBVolume(floorSize);
 	floor->SetBoundingVolume((CollisionVolume*)volume);
 	floor->GetTransform()
 		.SetScale(floorSize * 2)

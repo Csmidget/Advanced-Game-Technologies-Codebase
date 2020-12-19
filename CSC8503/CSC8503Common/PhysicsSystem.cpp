@@ -110,7 +110,7 @@ void PhysicsSystem::Update(float dt) {
 			UpdateConstraints(constraintDt);	
 			IntegrateVelocity(constraintDt);
 		}
-	//	IntegrateVelocity(realDT); //update positions from new velocity changes
+		//IntegrateVelocity(realDT); //update positions from new velocity changes
 
 		dTOffset -= realDT;
 	}
@@ -237,11 +237,14 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 		return; //2 static objects?
 	}
 
-	transformA.SetPosition(transformA.GetPosition() - (p.normal * p.penetration * (physA->GetInverseMass() / totalMass)));
-	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * (physB->GetInverseMass() / totalMass)));
+	float bMassPortion = (physB->GetInverseMass() / totalMass);
 
-	Vector3 relativeA = p.localA;
-	Vector3 relativeB = p.localB;
+	transformA.SetPosition(transformA.GetPosition() - (p.normal * p.penetration * (physA->GetInverseMass() / totalMass)));
+	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * bMassPortion));
+
+	//If an object is static, it has no local contact point.
+	Vector3 relativeA = a.IsStatic() ? Vector3() : p.localA;
+	Vector3 relativeB = b.IsStatic() ? Vector3() : p.localB;
 	
 	Vector3 angVelocityA = Vector3::Cross(physA->GetAngularVelocity(), relativeA);
 	Vector3 angVelocityB = Vector3::Cross(physB->GetAngularVelocity(), relativeB);

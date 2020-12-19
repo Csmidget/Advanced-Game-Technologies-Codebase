@@ -12,51 +12,6 @@
 
 using namespace NCL;
 
-Vector3 OBBSupport(const Transform& worldTransform, Vector3 worldDir) {
-	Vector3 localDir = worldTransform.GetOrientation().Conjugate() * worldDir;
-	Vector3 vertex;
-
-	//0.5 instead of 1 because cubes are double scale in this program due to a small mesh.
-	vertex.x = localDir.x < 0 ? -0.5f : 0.5f;
-	vertex.y = localDir.y < 0 ? -0.5f : 0.5f;
-	vertex.z = localDir.z < 0 ? -0.5f : 0.5f;
-
-	return worldTransform.GetMatrix() * vertex;
-}
-
-bool CollisionDetection::TestBoxesAgainstAxis(const Transform& aTransform, const Transform& bTransform, const Vector3& axisDirection, std::vector<ContactPoint>& contactPoints) {
-	Vector3 aMinVec = OBBSupport(aTransform, -axisDirection);
-	Vector3 aMaxVec = OBBSupport(aTransform, axisDirection);
-	Vector3 bMinVec = OBBSupport(bTransform, -axisDirection);
-	Vector3 bMaxVec = OBBSupport(bTransform, axisDirection) ;
-
-	float aMin = Vector3::Dot(axisDirection, aMinVec);
-	float aMax = Vector3::Dot(axisDirection, aMaxVec);
-	float bMin = Vector3::Dot(axisDirection, bMinVec);
-	float bMax = Vector3::Dot(axisDirection, bMaxVec);
-
-	if (aMin > bMin && aMin <= bMax) {
-		ContactPoint contact;
-		contact.localA = Vector3();
-		contact.localB = Vector3();
-		contact.normal = axisDirection;
-		contact.penetration = bMax - aMin;
-		contactPoints.push_back(contact);
-		return true;
-	}
-	if (bMin > aMin && bMin <= aMax) {
-		ContactPoint contact;
-		contact.localA = Vector3();
-		contact.localB = Vector3();
-		contact.normal = axisDirection;
-		contact.penetration = aMax - bMin;
-		contactPoints.push_back(contact);
-		return true;
-	}
-
-	return false;
-}
-
 Vector3 CollisionDetection::ProjectPointOntoLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point) {
 
 	Vector3 line = lineEnd - lineStart;
@@ -691,10 +646,62 @@ bool CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const T
 
 	Vector3 localSpherePos = invTransform * (worldTransformB.GetPosition() - boxPosition);
 
-	if (BoxSphereIntersection(volumeA.GetHalfDimensions(), Vector3(), volumeB.GetRadius(), localSpherePos, collisionInfo,false)) {
+	if (BoxSphereIntersection(volumeA.GetHalfDimensions(), Vector3(), volumeB.GetRadius(), localSpherePos, collisionInfo, false)) {
 		collisionInfo.point.localA = transform * collisionInfo.point.localA;
 		collisionInfo.point.localB = transform * collisionInfo.point.localB;
 		collisionInfo.point.normal = transform * collisionInfo.point.normal;
+		return true;
+	}
+
+	return false;
+}
+
+Vector3 OBBSupport(const Transform& worldTransform, Vector3 worldDir) {
+	Vector3 localDir = worldTransform.GetOrientation().Conjugate() * worldDir;
+	Vector3 vertex;
+
+	//0.5 instead of 1 because cubes are double scale in this program due to a small mesh.
+	vertex.x = localDir.x < 0 ? -0.5f : 0.5f;
+	vertex.y = localDir.y < 0 ? -0.5f : 0.5f;
+	vertex.z = localDir.z < 0 ? -0.5f : 0.5f;
+
+	return worldTransform.GetMatrix() * vertex;
+}
+
+bool CollisionDetection::TestBoxesAgainstAxis(const Transform& aTransform, const Transform& bTransform, const Vector3& axisDirection, std::vector<ContactPoint>& contactPoints) {
+
+	//Ignore this collision if the normals are exactly aligned.
+	if (axisDirection == Vector3(0, 0, 0))
+		return true;
+
+	Vector3 aMinVec = OBBSupport(aTransform, -axisDirection);
+	Vector3 aMaxVec = OBBSupport(aTransform, axisDirection);
+	Vector3 bMinVec = OBBSupport(bTransform, -axisDirection);
+	Vector3 bMaxVec = OBBSupport(bTransform, axisDirection);
+
+	float aMin = Vector3::Dot(axisDirection, aMinVec);
+	float aMax = Vector3::Dot(axisDirection, aMaxVec);
+	float bMin = Vector3::Dot(axisDirection, bMinVec);
+	float bMax = Vector3::Dot(axisDirection, bMaxVec);
+
+	//This definitely doesn't generate the correct contact point in all scenarios, but it's good enough for our use case.
+	if (aMin > bMin && aMin <= bMax) {
+		ContactPoint contact;
+		contact.penetration = bMax - aMin;
+
+		contact.localA = aMinVec - aTransform.GetPosition();
+		contact.localB = aMinVec - bTransform.GetPosition() + (axisDirection * contact.penetration);
+		contact.normal = axisDirection;
+		contactPoints.push_back(contact);
+		return true;
+	}
+	if (bMin > aMin && bMin <= aMax) {
+		ContactPoint contact;
+		contact.penetration = aMax - bMin;
+		contact.localA = bMinVec - aTransform.GetPosition() + (axisDirection * contact.penetration);
+		contact.localB = bMinVec - bTransform.GetPosition();
+		contact.normal = axisDirection;
+		contactPoints.push_back(contact);
 		return true;
 	}
 
@@ -790,29 +797,33 @@ bool CollisionDetection::AABBOBBIntersection(
 
 	std::vector<ContactPoint> contactPoints;
 
+	bool intersecting = true;
 
-	if (TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[0], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[1], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[2], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[0], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[1], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[2], contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[0]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[1]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[2]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[0]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[1]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[2]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[0]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[1]).Normalised(), contactPoints) &&
-		TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[2]).Normalised(), contactPoints)) {
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[0], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[1], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, aNormals[2], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[0], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[1], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, bNormals[2], contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[0]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[1]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[0], bNormals[2]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[0]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[1]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[1], bNormals[2]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[0]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[1]).Normalised(), contactPoints) && intersecting;
+	intersecting = TestBoxesAgainstAxis(worldTransformA, worldTransformB, Vector3::Cross(aNormals[2], bNormals[2]).Normalised(), contactPoints) && intersecting;
 
+	if (intersecting) {
 		ContactPoint minPen;
 		minPen.penetration = FLT_MAX;
 		for (auto cp : contactPoints) {
 			if (cp.penetration < minPen.penetration)
 				minPen = cp;
 		}
+
+		minPen.localA = Vector3();
 
 		if (Vector3::Dot(minPen.normal, bPos - aPos) < 0) {
 			minPen.normal = -minPen.normal;
