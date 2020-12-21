@@ -33,7 +33,7 @@ ForceObject::~ForceObject() {
 
 void ForceObject::OnCollisionBegin(GameObject* otherObject) {
 
-	Constraint* newConstraint = new ForceConstraint(otherObject, transform.GetOrientation() * direction );
+	Constraint* newConstraint = new ForceConstraint(otherObject, transform.GetOrientation() * direction * strength);
 	world->AddConstraint(newConstraint);
 	activeConstraints.emplace(otherObject, newConstraint);
 

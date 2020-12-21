@@ -261,10 +261,15 @@ void Game::InitWorld() {
 	AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
 	AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
 
-	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(0, 0.1, 0), Vector3(3, 1, 6), Vector3(0, 0, -0.1),0.1f));
-	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(3, 0.1,-9), Vector3(6, 1, 3), Vector3(0.1, 0, 0), 0.1f));
-	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(12, 0.1,-6), Vector3(3, 1, 6), Vector3(0, 0,0.1), 0.1f));
-	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(9, 0.1, 3), Vector3(6, 1, 3), Vector3(-0.1, 0, 0), 0.1f));
+	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(0, 0, 0), Vector3(3, 0.1, 6), Vector3(0, 0, -1),0.1f));
+	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(3, 0,-9), Vector3(6, 0.1, 3), Vector3(1, 0, 0), 0.1f));
+	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(12, 0,-6), Vector3(3, 0.1, 6), Vector3(0, 0,1), 0.1f));
+	world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(9, 0, 3), Vector3(6, 0.1, 3), Vector3(-1, 0, 0), 0.1f));
+
+	GameObject* rotatedForceObject = new ForceObject(world, cubeMesh, basicTex, basicShader, Vector3(6, 1, -3), Vector3(3, 0.1, 3), Vector3(0, 1, 0), 100.0f);
+	rotatedForceObject->GetTransform().SetOrientation(Matrix3::Rotation(45, Vector3(0, 0, 1)));
+
+	world->AddGameObject(rotatedForceObject);
 
 
 	InitDefaultFloor();
