@@ -42,25 +42,27 @@ void TestStateMachine() {
 	StateMachine* testMachine = new StateMachine();
 	int data = 0;
 
-	State* A = new GenericState([](float, void* data)->void {
-		std::cout << "I'm in state A!\n";
-		auto intData = (int*)data;
-		(*intData)++;
-		}, &data);
+	State* A = new State([&](float dt)->void 
+		{
+			std::cout << "I'm in state A\n";
+			data++;
+		});
 
-	State* B = new GenericState([](float, void* data) {
-		std::cout << "I'm in state B!\n";
-		auto intData = (int*)data;
-		(*intData)--;
-		}, & data);
+	State* B = new State([&](float dt)->void
+		{
+			std::cout << "I'm in state B!\n";
+			data--;
+		});
 
-	StateTransition* stateAB = new GenericTransition<int*, void*>([](int* d1,void*)->bool {
-			return *d1 > 10;
-		},&data,nullptr,A,B);
+	StateTransition* stateAB = new StateTransition(A, B, [&](void)->bool
+		{
+			return data > 10;
+		});
 
-	StateTransition* stateBA = new GenericTransition<int*, void*>([](int* d1, void*)->bool {
-			return *d1 < 0;
-		},&data,nullptr,B,A);
+	StateTransition* stateBA = new StateTransition(B, A, [&](void)->bool
+		{
+			return data < 0;
+		});
 
 	testMachine->AddState(A);
 	testMachine->AddState(B);
@@ -70,7 +72,6 @@ void TestStateMachine() {
 	for (int i = 0; i < 100; ++i) {
 		testMachine->Update(0.0f);
 	}
-
 }
 
 /*

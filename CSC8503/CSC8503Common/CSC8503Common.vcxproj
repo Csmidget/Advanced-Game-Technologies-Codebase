@@ -150,8 +150,6 @@
     <ClInclude Include="GameWorld.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsSystem.h" />
-    <ClInclude Include="PushdownMachine.h" />
-    <ClInclude Include="PushdownState.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="RenderObject.h" />
@@ -171,8 +169,6 @@
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PositionConstraint.cpp" />
-    <ClCompile Include="PushdownMachine.cpp" />
-    <ClCompile Include="PushdownState.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="StateMachine.cpp" />

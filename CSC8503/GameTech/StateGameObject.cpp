@@ -10,24 +10,29 @@ StateGameObject::StateGameObject() {
 	counter = 0.0f;
 	stateMachine = new StateMachine();
 
-	State* stateA = new GenericState([](float dt, void* data)->void {
-		((StateGameObject*)data)->MoveLeft(dt);
-		},this);
+	State* stateA = new State([&](float dt)-> void
+		{
+			this->MoveLeft(dt);
+		});
 
-	State* stateB = new GenericState([](float dt, void* data)->void {
-		((StateGameObject*)data)->MoveRight(dt);
-		}, this);
+	State* stateB = new State([&](float dt)-> void
+		{
+			this->MoveRight(dt);
+		});
 
 	stateMachine->AddState(stateA);
 	stateMachine->AddState(stateB);
 
-	stateMachine->AddTransition(new GenericTransition<float*, void*>([](float* counter, void*)->bool {
-			return (*(float*)counter) > 3.0f;
-		},&counter,nullptr,stateA,stateB));
+	stateMachine->AddTransition(new StateTransition(stateA, stateB, [&]()->bool
+		{
+			return this->counter > 3.0f;
+		}));
 
-	stateMachine->AddTransition(new GenericTransition<float*, void*>([](float* counter, void*)->bool {
-		return (*(float*)counter) < 0.0f;
-		}, &counter, nullptr, stateB, stateA));
+	stateMachine->AddTransition(new StateTransition(stateB, stateA, [&]()->bool
+		{
+			return this->counter < 0.0f;
+		}));
+
 }
 
 StateGameObject::~StateGameObject() {

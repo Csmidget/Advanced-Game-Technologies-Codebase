@@ -1,8 +1,10 @@
 #pragma once
 #include "NavigationMap.h"
 #include <string>
+#include <set>
 namespace NCL {
 	namespace CSC8503 {
+
 		struct GridNode {
 			GridNode* parent;
 
@@ -29,6 +31,10 @@ namespace NCL {
 			~GridNode() {	}
 		};
 
+		inline bool operator< (const GridNode& lhs, const GridNode& rhs) {
+			return lhs.f < rhs.f;
+		}
+
 		class NavigationGrid : public NavigationMap	{
 		public:
 			NavigationGrid();
@@ -38,8 +44,7 @@ namespace NCL {
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
 				
 		protected:
-			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
-			GridNode*	RemoveBestNode(std::vector<GridNode*>& list) const;
+			bool		NodeInSet(GridNode* n, std::set<GridNode*>& set) const;
 			float		Heuristic(GridNode* hNode, GridNode* endNode) const;
 			int nodeSize;
 			int gridWidth;

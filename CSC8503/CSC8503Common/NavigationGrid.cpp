@@ -2,6 +2,7 @@
 #include "../../Common/Assets.h"
 
 #include <fstream>
+#include <set>
 
 using namespace NCL;
 using namespace CSC8503;
@@ -96,10 +97,10 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 	GridNode* startNode = &allNodes[(fromZ * gridWidth) + fromX];
 	GridNode* endNode	= &allNodes[(toZ * gridWidth) + toX];
 
-	std::vector<GridNode*>  openList;
-	std::vector<GridNode*>  closedList;
+	std::set<GridNode*>  openSet;
+	std::set<GridNode*>  closedSet;
 
-	openList.emplace_back(startNode);
+	openSet.emplace(startNode);
 
 	startNode->f = 0;
 	startNode->g = 0;
@@ -107,8 +108,9 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 	GridNode* currentBestNode = nullptr;
 
-	while (!openList.empty()) {
-		currentBestNode = RemoveBestNode(openList);
+	while (!openSet.empty()) {
+		currentBestNode = *openSet.begin();
+		openSet.erase(openSet.begin());
 
 		if (currentBestNode == endNode) {			//we've found the path!
 			GridNode* node = endNode;
@@ -124,7 +126,7 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 				if (!neighbour) { //might not be connected...
 					continue;
 				}	
-				bool inClosed	= NodeInList(neighbour, closedList);
+				bool inClosed	= NodeInSet(neighbour, closedSet);
 				if (inClosed) {
 					continue; //already discarded this neighbour...
 				}
@@ -133,42 +135,27 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 				float g = currentBestNode->g + currentBestNode->costs[i];
 				float f = h + g;
 
-				bool inOpen		= NodeInList(neighbour, openList);
+				bool inOpen = NodeInSet(neighbour, openSet);
 
-				if (!inOpen) { //first time we've seen this neighbour
-					openList.emplace_back(neighbour);
+				if (!inOpen) {
+					openSet.emplace(neighbour);
 				}
+
 				if (!inOpen || f < neighbour->f) {//might be a better route to this neighbour
 					neighbour->parent = currentBestNode;
 					neighbour->f = f;
 					neighbour->g = g;
 				}
 			}
-			closedList.emplace_back(currentBestNode);
+			closedSet.emplace(currentBestNode);
 		}
 	}
 	return false; //open list emptied out with no path!
 }
 
-bool NavigationGrid::NodeInList(GridNode* n, std::vector<GridNode*>& list) const {
-	std::vector<GridNode*>::iterator i = std::find(list.begin(), list.end(), n);
-	return i == list.end() ? false : true;
-}
-
-GridNode*  NavigationGrid::RemoveBestNode(std::vector<GridNode*>& list) const {
-	std::vector<GridNode*>::iterator bestI = list.begin();
-
-	GridNode* bestNode = *list.begin();
-
-	for (auto i = list.begin(); i != list.end(); ++i) {
-		if ((*i)->f < bestNode->f) {
-			bestNode	= (*i);
-			bestI		= i;
-		}
-	}
-	list.erase(bestI);
-
-	return bestNode;
+bool NavigationGrid::NodeInSet(GridNode* n, std::set<GridNode*>& set) const {
+	std::set<GridNode*>::iterator i = set.find(n);
+	return i == set.end() ? false : true;
 }
 
 float NavigationGrid::Heuristic(GridNode* hNode, GridNode* endNode) const {
