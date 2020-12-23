@@ -5,6 +5,7 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PositionConstraint.h"
+#include "RespawningObject.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -249,6 +250,9 @@ void TutorialGame::Clear() {
 void TutorialGame::InitWorld() {
 	Clear();
 
+	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0,-2,0)));
+	world->AddKillPlane(new Plane(Vector3(0, 0, -1), Vector3(0,0,100)));
+
 //	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
 //	InitGameExamples();
 
@@ -256,15 +260,16 @@ void TutorialGame::InitWorld() {
 	//capsule->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(0, 0, 1)));
 	//AddCubeToWorld(Vector3(-1.5, 8, 0), Vector3(1, 1, 1), 0.0f, true);
 
-	AddCapsuleToWorld(Vector3(4.5, 100, -100), 1.0f, 0.5f);
-	AddCapsuleToWorld(Vector3(0, 100, -100), 1.0f, 0.5f)->GetTransform().SetOrientation(Matrix3::Rotation(90,Vector3(0,0,1)));
+	AddCapsuleToWorld(Vector3(4.5, 100, -150), 1.0f, 0.5f,10.0f,true);
+	AddCapsuleToWorld(Vector3(0, 100, -150), 1.0f, 0.5f,10.0f,true)->GetTransform().SetOrientation(Matrix3::Rotation(90,Vector3(0,0,1)));
 //	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
 	AddSphereToWorld(Vector3(-4.5, 10, -7.4), 1.0f);
-	AddSphereToWorld(Vector3(-4.5, 100, -100),1.0f);
+	AddSphereToWorld(Vector3(-4.5, 100, -150),1.0f,10.0f,true);
 	//
-//	AddOBBCubeToWorld(Vector3(-4.5, 104.5, -100), Vector3(1, 1, 1))->GetTransform().SetOrientation(Matrix4::Rotation(0, Vector3(0, 0, 1)));
+	AddOBBCubeToWorld(Vector3(10, 104.5, -150), Vector3(1, 1, 1), 10.0f,false,true)->GetTransform().SetOrientation(Matrix4::Rotation(0, Vector3(0, 0, 1)));
 	AddOBBCubeToWorld(Vector3(-4.5, 0, -3.5), Vector3(1, 1, 5));
-//	AddOBBCubeToWorld(Vector3(-5, 5, -10), Vector3(1,1,1));
+	AddOBBCubeToWorld(Vector3(-4.5, 5, -5), Vector3(1, 1, 1));
+	AddOBBCubeToWorld(Vector3(0, 5, -5), Vector3(1,1,1));
 //	AddSphereToWorld(Vector3(-1, 15, -6), 1.0f);
 //	AddStateObjectToWorld(Vector3(0, 10, -15));
 	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
@@ -275,9 +280,8 @@ void TutorialGame::InitWorld() {
 	InitDefaultFloor();
 
 	//Slope
-	GameObject* slope = AddOBBCubeToWorld(Vector3(0, 50, -100), Vector3(50, 2, 50), 0.0f, true);
+	GameObject* slope = AddOBBCubeToWorld(Vector3(0, 50, -150), Vector3(50, 2, 50), 0.0f, true);
 	slope->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(1, 0, 0)));
-
 }
 
 void TutorialGame::BridgeConstraintTest() {
@@ -342,8 +346,8 @@ rigid body representation. This and the cube function will let you build a lot o
 physics worlds. You'll probably need another function for the creation of OBB cubes too.
 
 */
-GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass) {
-	GameObject* sphere = new GameObject("sphere");
+GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass, bool respawning) {
+	GameObject* sphere = respawning ? new RespawningObject(position,true,"respawning sphere") : new GameObject("sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
 	SphereVolume* volume = new SphereVolume(radius);
@@ -364,8 +368,9 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 	return sphere;
 }
 
-GameObject* TutorialGame::AddCapsuleToWorld(const Vector3& position, float halfHeight, float radius, float inverseMass) {
-	GameObject* capsule = new GameObject("capsule");
+GameObject* TutorialGame::AddCapsuleToWorld(const Vector3& position, float halfHeight, float radius, float inverseMass, bool respawning) {
+	
+	GameObject* capsule = respawning ? new RespawningObject(position,true,"respawning_capsule") : new GameObject("capsule");
 
 	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
 	capsule->SetBoundingVolume((CollisionVolume*)volume);
@@ -386,8 +391,8 @@ GameObject* TutorialGame::AddCapsuleToWorld(const Vector3& position, float halfH
 
 }
 
-GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, bool isStatic) {
-	GameObject* cube = new GameObject("cube");
+GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, bool isStatic, bool respawning) {
+	GameObject* cube = respawning ? new RespawningObject(position,true,"respawning cube") : new GameObject("cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
 
@@ -409,8 +414,8 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 	return cube;
 }
 
-GameObject* TutorialGame::AddOBBCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, bool isStatic) {
-	GameObject* cube = new GameObject("cube");
+GameObject* TutorialGame::AddOBBCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass, bool isStatic, bool respawning) {
+	GameObject* cube = respawning ? new RespawningObject(position,true,"respawning cube") : new GameObject("cube");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
 

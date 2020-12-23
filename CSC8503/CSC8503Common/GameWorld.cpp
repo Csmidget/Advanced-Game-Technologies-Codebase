@@ -25,6 +25,7 @@ GameWorld::~GameWorld()	{
 void GameWorld::Clear() {
 	gameObjects.clear();
 	constraints.clear();
+	killPlanes.clear();
 	staticObjectTree->Clear();
 	objectTree->Clear();
 }
@@ -36,6 +37,10 @@ void GameWorld::ClearAndErase() {
 	for (auto& i : constraints) {
 		delete i;
 	}
+	for (auto& i : killPlanes) {
+		delete i;
+	}
+
 	Clear();
 }
 
@@ -59,6 +64,16 @@ void GameWorld::RemoveGameObject(GameObject* o, bool andDelete) {
 	}
 }
 
+void GameWorld::AddKillPlane(Plane* p) {
+	killPlanes.emplace_back(p);
+}
+
+void GameWorld::RemoveKillPlane(Plane* p, bool andDelete) {
+	killPlanes.erase(std::remove(killPlanes.begin(), killPlanes.end(), p), killPlanes.end());
+	if (andDelete)
+		delete p;
+}
+
 void GameWorld::GetObjectIterators(
 	GameObjectIterator& first,
 	GameObjectIterator& last) const {
@@ -75,23 +90,28 @@ void GameWorld::OperateOnContents(GameObjectFunc f) {
 
 void GameWorld::UpdateWorld(float dt) {
 
+	objectTree->Clear();
+	
 	for (auto g : gameObjects) {
 		g->Update(dt);
-		if (!g->IsStatic()) {
+		if (!g->IsStatic() && g->IsActive()) {
 			g->UpdateBroadphaseAABB();
-		}
-	}
 
-	objectTree->Clear();
+			for (auto p : killPlanes) {
+				if (p->IsBehindPlane(g->GetTransform().GetPosition())) {
+					std::cout << "Object \"" << g->GetName() << "\" is out of bounds.\n";
+					g->OnKill();
+				}
+			}
 
-	for (auto  g : gameObjects) {
-		Vector3 halfSizes;
-		if (g->IsStatic() || !g->GetBroadphaseAABB(halfSizes)) {
-			continue;
-		}
+			Vector3 halfSizes;
+			if (!g->GetBroadphaseAABB(halfSizes)) {
+				continue;
+			}
 
-		Vector3 pos = g->GetTransform().GetPosition();
-		objectTree->Insert(g, pos, halfSizes);
+			Vector3 pos = g->GetTransform().GetPosition();
+			objectTree->Insert(g, pos, halfSizes);
+		}	
 	}
 	//objectTree->DebugDraw();
 
@@ -104,8 +124,6 @@ void GameWorld::UpdateWorld(float dt) {
 		std::random_shuffle(constraints.begin(), constraints.end());
 	}
 }
-
-
 
 bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const {
 	RayCollision collision;

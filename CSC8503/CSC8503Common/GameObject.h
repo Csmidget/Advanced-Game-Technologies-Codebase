@@ -26,6 +26,8 @@ namespace NCL {
 
 			virtual void Update(float dt) {};
 
+			virtual void OnKill() { isActive = false; }
+
 			void SetBoundingVolume(CollisionVolume* vol) {
 				boundingVolume = vol;
 			}
@@ -36,6 +38,10 @@ namespace NCL {
 
 			bool IsActive() const {
 				return isActive;
+			}
+
+			void SetIsActive(bool val) {
+				isActive = val;
 			}
 
 			bool IsStatic() const {

@@ -25,6 +25,9 @@ namespace NCL {
 			void AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
+			void AddKillPlane(Plane* p);
+			void RemoveKillPlane(Plane* p, bool andDelete = false);
+
 			void AddConstraint(Constraint* c);
 			void RemoveConstraint(Constraint* c, bool andDelete = false);
 
@@ -66,6 +69,7 @@ namespace NCL {
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
+			std::vector<Plane*>		 killPlanes;
 
 			QuadTree<GameObject*>* objectTree;
 			QuadTree<GameObject*>* staticObjectTree;

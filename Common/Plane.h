@@ -13,7 +13,8 @@ namespace NCL {
 		class Plane {
 		public:
 			Plane(void);
-			Plane(const Vector3 &normal, float distance, bool normalise = false);
+			Plane(const Vector3& normal, float distance, bool normalise = false);
+			Plane(const Vector3 &normal, const Vector3& position, bool normalise = false);
 
 			~Plane(void) {};
 
@@ -30,7 +31,8 @@ namespace NCL {
 			//Performs a simple sphere / point test
 			bool PointInPlane(const Vector3 &position) const;
 
-			float	DistanceFromPlane(const Vector3 &in) const;
+			float	DistanceFromPlane(const Vector3& in) const;
+			bool	IsBehindPlane(const Vector3 &in) const;
 
 			Vector3 GetPointOnPlane() const {
 				return normal * -distance;

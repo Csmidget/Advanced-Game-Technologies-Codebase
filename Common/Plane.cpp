@@ -31,6 +31,28 @@ Plane::Plane(const Vector3 &normal, float distance, bool normalise) {
 	}
 }
 
+Plane::Plane(const Vector3& normal, const Vector3& position, bool normalise) {
+
+	distance = position.Length();
+
+	if (Vector3::Dot(normal, position))
+		distance = -distance;
+
+	if (normalise) {
+		float length = normal.Length();
+
+		this->normal = normal;
+		this->normal.Normalise();
+		distance = distance / length;
+	}
+	else {
+		this->normal = normal;
+	}
+
+
+
+}
+
 bool Plane::SphereInPlane(const Vector3 &position, float radius) const {
 	if(Vector3::Dot(position,normal)+distance <= -radius) {
 		return false;
@@ -60,6 +82,12 @@ Plane Plane::PlaneFromTri(const Vector3 &v0, const Vector3 &v1, const Vector3 &v
 
 float	Plane::DistanceFromPlane(const Vector3 &in) const{
 	return Vector3::Dot(in,normal)+distance;
+}
+
+bool	Plane::IsBehindPlane(const Vector3& in) const {
+	Vector3 planePos = normal * distance;
+	float dot = Vector3::Dot(normal, in - planePos);
+	return dot < 0;
 }
 
 Vector3 Plane::ProjectPointOntoPlane(const Vector3 &point) const {
