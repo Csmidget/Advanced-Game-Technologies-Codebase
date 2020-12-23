@@ -237,10 +237,9 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 		return; //2 static objects?
 	}
 
-	float bMassPortion = (physB->GetInverseMass() / totalMass);
 
 	transformA.SetPosition(transformA.GetPosition() - (p.normal * p.penetration * (physA->GetInverseMass() / totalMass)));
-	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * bMassPortion));
+	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * (physB->GetInverseMass() / totalMass)));
 
 	//If an object is static, it has no local contact point.
 	Vector3 relativeA = a.IsStatic() ? Vector3() : p.localA;
@@ -264,8 +263,13 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 	float cRestitution = physA->GetElasticity() * physB->GetElasticity(); //disperse some kinetic energy
 	
 	float j = ( -(1.0f + cRestitution) * impulseForce) / (totalMass + angularEffect);
-	
-	Vector3 fullImpulse = p.normal * j;
+
+	Vector3 tangent = (contactVelocity - (p.normal * (Vector3::Dot(contactVelocity, p.normal)))).Normalised();
+
+	float cFriction = physA->GetFriction() * physB->GetFriction();
+	float jt = (-(cFriction * Vector3::Dot(contactVelocity, tangent))) / (totalMass + angularEffect);
+
+	Vector3 fullImpulse = p.normal * j + tangent * jt;
 	
 	physA->ApplyLinearImpulse(-fullImpulse);
 	physB->ApplyLinearImpulse(fullImpulse);

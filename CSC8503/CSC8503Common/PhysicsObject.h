@@ -31,6 +31,14 @@ namespace NCL {
 				elasticity = val;
 			}
 
+			float GetFriction() const {
+				return friction;
+			}
+
+			void SetFriction(float val) {
+				friction = val;
+			}
+
 			Vector3 GetTorque() const {
 				return torque;
 			}
