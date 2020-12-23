@@ -457,6 +457,14 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
 		return OBBSphereIntersection((OBBVolume&)*volB, transformB, (SphereVolume&)*volA, transformA, collisionInfo);
 	}
 
+	if (volA->type == VolumeType::OBB && volB->type == VolumeType::Capsule) {
+		return OBBCapsuleIntersection((OBBVolume&)*volA, transformA, (CapsuleVolume&)*volB, transformB, collisionInfo);
+	}
+	if (volA->type == VolumeType::Capsule && volB->type == VolumeType::OBB) {
+		collisionInfo.a = b;
+		collisionInfo.b = a;
+		return OBBCapsuleIntersection((OBBVolume&)*volB, transformB, (CapsuleVolume&)*volA, transformA, collisionInfo);
+	}
 
 	return false;
 }
@@ -918,6 +926,70 @@ bool CollisionDetection::AABBCapsuleIntersection(
 
 	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
 		collisionInfo.point.localB = collisionInfo.point.localB + (closestPointOnCapsule - capsulePos);
+		return true;
+	}
+
+	return false;
+}
+
+//OBB / Capsule Collision, Basically the same as AABB capsule collision.
+bool CollisionDetection::OBBCapsuleIntersection(
+	const OBBVolume& volumeA, const Transform& worldTransformA,
+	const CapsuleVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+
+	Vector3 boxPos = worldTransformA.GetPosition();
+	Vector3 boxSize = volumeA.GetHalfDimensions();
+	Quaternion boxOrientation = worldTransformA.GetOrientation();
+
+	Matrix3 transform = Matrix3(boxOrientation);
+	Matrix3 invTransform = Matrix3(boxOrientation.Conjugate());
+
+	Vector3 boxMin = -boxSize;
+	Vector3 boxMax = boxSize;
+
+	Vector3 capsulePos = invTransform * (worldTransformB.GetPosition() - boxPos);
+	float capsuleRadius = volumeB.GetRadius();
+	float capsuleHalfHeight = volumeB.GetHalfHeight();
+	Vector3 capsuleUp = invTransform * (worldTransformB.GetOrientation() * Vector3(0, 1, 0));
+	Vector3 capsuleTop = capsulePos + capsuleUp * (capsuleHalfHeight - capsuleRadius);
+	Vector3 capsuleBottom = capsulePos - capsuleUp * (capsuleHalfHeight - capsuleRadius);
+
+	//	Vector3 closestPointOnCapsule = ProjectPointOntoLineSegment(capsuleBottom, capsuleTop, boxPos);
+	//
+	//	if (BoxSphereIntersection(boxSize, boxPos, capsuleRadius, closestPointOnCapsule, collisionInfo)) {
+	//		collisionInfo.point.localB = collisionInfo.point.localB - (closestPointOnCapsule - capsulePos);
+	//		return true;
+	//	}
+
+	Vector3 tVals(FLT_MAX, FLT_MAX, FLT_MAX);
+
+	Vector3 posDiff = -capsulePos;
+	for (int i = 0; i < 3; ++i) {
+		if (posDiff[i] > 0) {
+			tVals[i] = (boxMin[i] - capsulePos[i]) / capsuleUp[i];
+		}
+		else if (posDiff[i] < 0) {
+			tVals[i] = (boxMax[i] - capsulePos[i]) / capsuleUp[i];
+		}
+	}
+
+	float bestT = tVals.x;
+	if (abs(tVals.y) < abs(bestT))
+		bestT = tVals.y;
+	if (abs(tVals.z) < abs(bestT))
+		bestT = tVals.z;
+
+	Vector3 intersection = capsulePos + (capsuleUp * bestT);
+
+	Vector3 closestPointOnBox = Clamp(intersection, boxMin, boxMax);
+
+	Vector3 closestPointOnCapsule = ProjectPointOntoLineSegment(capsuleBottom, capsuleTop, closestPointOnBox);
+
+
+	if (BoxSphereIntersection(boxSize, Vector3(), capsuleRadius, closestPointOnCapsule, collisionInfo,false)) {
+		collisionInfo.point.localA = transform * collisionInfo.point.localA;
+		collisionInfo.point.localB = transform * (collisionInfo.point.localB + (closestPointOnCapsule - capsulePos));
+		collisionInfo.point.normal = transform * collisionInfo.point.normal;
 		return true;
 	}
 
