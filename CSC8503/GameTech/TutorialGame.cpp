@@ -5,6 +5,7 @@
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
 #include "../CSC8503Common/PositionConstraint.h"
+#include "../CSC8503Common/OrientationConstraint.h"
 #include "RespawningObject.h"
 
 using namespace NCL;
@@ -276,12 +277,20 @@ void TutorialGame::InitWorld() {
 	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
-	//BridgeConstraintTest();
+	BridgeConstraintTest();
+	DoorConstraintTest();
 	InitDefaultFloor();
 
 	//Slope
 	GameObject* slope = AddOBBCubeToWorld(Vector3(0, 50, -150), Vector3(50, 2, 50), 0.0f, true);
 	slope->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(1, 0, 0)));
+}
+
+void TutorialGame::DoorConstraintTest() {
+	GameObject* hinge = AddOBBCubeToWorld(Vector3(-30, 10, -30), Vector3(1, 1, 1), 10.0f, true);
+	GameObject* door = AddOBBCubeToWorld(Vector3(-30, 10, -40), Vector3(2, 2, 2), 10.0f, false);
+	world->AddConstraint(new OrientationConstraint(hinge, door, Vector3(0, 1, 0)));
+	world->AddConstraint(new PositionConstraint(hinge, door, 5.0f));
 }
 
 void TutorialGame::BridgeConstraintTest() {

@@ -25,11 +25,14 @@ namespace NCL {
 
 			void InitGameExamples();
 
+			void InitSlopeLevel();
+
 			void InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius);
 			void InitMixedGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing);
 			void InitCubeGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, const Vector3& cubeDims);
 			void InitDefaultFloor();
 			void BridgeConstraintTest();
+			void DoorConstraintTest();
 	
 			bool SelectObject();
 			void MoveSelectedObject();

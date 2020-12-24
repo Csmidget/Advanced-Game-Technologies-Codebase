@@ -7,6 +7,9 @@
     <ClCompile Include="ForceObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="PrefabGenerator.cpp">
+      <Filter>Prefabs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -14,10 +17,16 @@
     <ClInclude Include="ForceObject.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="PrefabGenerator.h">
+      <Filter>Prefabs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GameObjects">
       <UniqueIdentifier>{e67735bf-1869-4050-8403-eacb8c3d056d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prefabs">
+      <UniqueIdentifier>{be00578a-ea85-4e5f-95c2-bb9ae50ea7ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

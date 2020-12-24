@@ -21,12 +21,11 @@ namespace NCL {
 
 			void InitWorld();
 
+			void InitSlopeLevel();
+
 			void InitGameExamples();
 
-			void InitSphereGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, float radius);
-			void InitMixedGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing);
-			void InitCubeGridWorld(int numRows, int numCols, float rowSpacing, float colSpacing, const Vector3& cubeDims);
-			void InitDefaultFloor();
+
 			void BridgeConstraintTest();
 	
 			bool SelectObject();
@@ -56,17 +55,6 @@ namespace NCL {
 			GameObject* selectionObject = nullptr;
 			GameObject* forwardObject = nullptr;
 
-			OGLMesh*	capsuleMesh = nullptr;
-			OGLMesh*	cubeMesh	= nullptr;
-			OGLMesh*	sphereMesh	= nullptr;
-			OGLTexture* basicTex	= nullptr;
-			OGLShader*	basicShader = nullptr;
-
-			//Coursework Meshes
-			OGLMesh*	charMeshA	= nullptr;
-			OGLMesh*	charMeshB	= nullptr;
-			OGLMesh*	enemyMesh	= nullptr;
-			OGLMesh*	bonusMesh	= nullptr;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;

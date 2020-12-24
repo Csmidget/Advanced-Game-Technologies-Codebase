@@ -3,7 +3,6 @@
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
-#include "../../Common/TextureLoader.h"
 #include "ForceObject.h"
 
 using namespace NCL;
@@ -31,37 +30,14 @@ for this module, even in the coursework, but you can add it if you like!
 
 */
 void Game::InitialiseAssets() {
-	auto loadFunc = [](const string& name, OGLMesh** into) {
-		*into = new OGLMesh(name);
-		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
-		(*into)->UploadToGPU();
-	};
-
-	loadFunc("cube.msh"		 , &cubeMesh);
-	loadFunc("sphere.msh"	 , &sphereMesh);
-	loadFunc("Male1.msh"	 , &charMeshA);
-	loadFunc("courier.msh"	 , &charMeshB);
-	loadFunc("security.msh"	 , &enemyMesh);
-	loadFunc("coin.msh"		 , &bonusMesh);
-	loadFunc("capsule.msh"	 , &capsuleMesh);
-
-	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	
 
 	InitCamera();
 	InitWorld();
 }
 
 Game::~Game()	{
-	delete cubeMesh;
-	delete sphereMesh;
-	delete charMeshA;
-	delete charMeshB;
-	delete enemyMesh;
-	delete bonusMesh;
 
-	delete basicTex;
-	delete basicShader;
 
 	delete physics;
 	delete renderer;
