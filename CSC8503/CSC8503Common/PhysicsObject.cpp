@@ -18,8 +18,9 @@ PhysicsObject::~PhysicsObject()	{
 }
 
 void PhysicsObject::ApplyAngularImpulse(const Vector3& force) {
-	//if (volume->type == VolumeType::AABB)
-	//	return;
+	//We don't want to ever rotate AABBs
+	if (volume->type == VolumeType::AABB)
+		return;
 
  	angularVelocity += inverseInteriaTensor * force;
 }

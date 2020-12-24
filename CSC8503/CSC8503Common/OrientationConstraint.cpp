@@ -6,40 +6,32 @@ using namespace NCL;
 using namespace CSC8503;
 
 void OrientationConstraint::UpdateConstraint(float dt) {
-	Vector3 relativePosAxis = (objectA->GetTransform().GetPosition() -
-		objectB->GetTransform().GetPosition()).Normalised();
 
-	Vector3 bAxis = (objectB->GetTransform().GetOrientation() * axis).Normalised();
+	Vector3 targetOrientation = (targetObject->GetTransform().GetPosition() -
+		object->GetTransform().GetPosition()).Normalised();
 
-	Vector3 rotationAxis = Vector3::Cross(relativePosAxis, bAxis);
+	Vector3 currentOrientation = (object->GetTransform().GetOrientation() * axis).Normalised();
 
+	Vector3 rotationAxis = Vector3::Cross(targetOrientation, currentOrientation);
 
+	//Length of axis indicated how far out of alignment the target orientation and current orientation are
 	if (rotationAxis.Length() > 0.0f) {
 
-		PhysicsObject* physA = objectA->GetPhysicsObject();
-		PhysicsObject* physB = objectB->GetPhysicsObject();
+		PhysicsObject* physObject = object->GetPhysicsObject();
 
-		Vector3 relativeVelocity = physA->GetAngularVelocity() -
-			physB->GetAngularVelocity(); 
-
-		float constraintMass = physA->GetInverseMass() +
-			physB->GetInverseMass();
+		float constraintMass = physObject->GetInverseMass();
 
 		if (constraintMass > 0.0f) {
-			//how much of their relative force is affecting the constraint
-			float velocityDot = Vector3::Dot(relativeVelocity, rotationAxis);
+			//how much of the current angular velocity is affecting the constraint axis
+			float velocityDot = Vector3::Dot(physObject->GetAngularVelocity(), rotationAxis.Normalised());
 
 			float biasFactor = 0.1f;
-			float bias = -(biasFactor / dt) * rotationAxis.Length();
+
+			float bias = (biasFactor / dt) * rotationAxis.Length();
 			float lambda = -(velocityDot + bias) / constraintMass;
+			Vector3 impulse = rotationAxis * lambda;
 
-			Vector3 aImpulse = rotationAxis * lambda;
-			Vector3 bImpulse = -rotationAxis * lambda;
-
-			physA->ApplyAngularImpulse(aImpulse); //Will multiply by mass
-			physB->ApplyAngularImpulse(bImpulse); //Will multiply by mass
+			physObject->ApplyAngularImpulse(impulse); //Will multiply by intertia tensor
 		}
-
-		Debug::DrawLine(objectB->GetTransform().GetPosition(), objectB->GetTransform().GetPosition() + bAxis * 10);
 	}
 }

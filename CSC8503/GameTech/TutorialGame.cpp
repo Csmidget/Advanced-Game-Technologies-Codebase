@@ -251,7 +251,7 @@ void TutorialGame::Clear() {
 void TutorialGame::InitWorld() {
 	Clear();
 
-	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0,-2,0)));
+	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0,-100,0)));
 	world->AddKillPlane(new Plane(Vector3(0, 0, -1), Vector3(0,0,100)));
 
 //	InitMixedGridWorld(5, 5, 3.5f, 3.5f);
@@ -287,10 +287,16 @@ void TutorialGame::InitWorld() {
 }
 
 void TutorialGame::DoorConstraintTest() {
-	GameObject* hinge = AddOBBCubeToWorld(Vector3(-30, 10, -30), Vector3(1, 1, 1), 10.0f, true);
-	GameObject* door = AddOBBCubeToWorld(Vector3(-30, 10, -40), Vector3(2, 2, 2), 10.0f, false);
-	world->AddConstraint(new OrientationConstraint(hinge, door, Vector3(0, 1, 0)));
-	world->AddConstraint(new PositionConstraint(hinge, door, 5.0f));
+	GameObject* hinge = AddOBBCubeToWorld(Vector3(-30, 19, -30), Vector3(1, 1, 1), 0.0f, true);
+//	GameObject* hinge2 = AddOBBCubeToWorld(Vector3(-30, 30, -40), Vector3(1, 1, 1), 0.0f, true);
+//	GameObject* hinge3 = AddOBBCubeToWorld(Vector3(-30, 20, -50), Vector3(1, 1, 1), 0.0f, true);
+	GameObject* door = AddOBBCubeToWorld(Vector3(-30, 20, -40), Vector3(2, 2, 2), 10.0f, false);
+	world->AddConstraint(new OrientationConstraint(door, hinge, Vector3(0, 1, 0)));
+//	world->AddConstraint(new OrientationConstraint(door, hinge2, Vector3(0, 1, 0)));
+//	world->AddConstraint(new OrientationConstraint(door, hinge3, Vector3(0, 1, 0)));
+	world->AddConstraint(new PositionConstraint(hinge, door, 10.0f));
+//	world->AddConstraint(new PositionConstraint(hinge2, door, 10.0f));
+//	world->AddConstraint(new PositionConstraint(hinge3, door, 10.0f));
 }
 
 void TutorialGame::BridgeConstraintTest() {
@@ -311,6 +317,10 @@ void TutorialGame::BridgeConstraintTest() {
 	for (int i = 0; i < numLinks; ++i) {
 		GameObject* block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
 		PositionConstraint* constraint = new PositionConstraint(previous, block, maxDistance);
+
+		if (i == 5)
+			block->GetTransform().SetPosition(block->GetTransform().GetPosition() + Vector3(0, -1, 0));
+
 		world->AddConstraint(constraint);
 		previous = block;
 	}

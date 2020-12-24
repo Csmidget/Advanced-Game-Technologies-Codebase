@@ -11,9 +11,9 @@ namespace NCL {
 
 		class OrientationConstraint : public Constraint {
 		public:
-			OrientationConstraint(GameObject* a, GameObject* b, Vector3 axis) {
-				objectA = a;
-				objectB = b;
+			OrientationConstraint(GameObject* o, GameObject* t, Vector3 axis) {
+				object = o;
+				targetObject = t;
 				this->axis = axis;
 			}
 			~OrientationConstraint() {};
@@ -21,8 +21,8 @@ namespace NCL {
 			void UpdateConstraint(float dt) override;
 
 		protected:
-			GameObject* objectA;
-			GameObject* objectB;
+			GameObject* object;
+			GameObject* targetObject;
 
 			Vector3 axis;
 		};
