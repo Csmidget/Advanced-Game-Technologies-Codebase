@@ -298,9 +298,9 @@ void PhysicsSystem::BroadPhase() {
 	//Add possible collisions
 	gameWorld.GetObjectTree()->OperateOnContents(
 		//We also get the node pos and size so we can do a single
-		[&](std::list<QuadTreeEntry<GameObject*>>& data, const Vector3& nodePos, const Vector3& nodeSize) {
+		[&](std::list<QuadTreeEntry<GameObject*>>& data, const Vector2& nodePos, const Vector2& nodeSize) {
 			CollisionDetection::CollisionInfo info;
-			std::set<GameObject*> possibleStaticCollisions = gameWorld.GetStaticObjectTree()->GetPossibleCollisions(nodePos, nodeSize);
+			std::set<GameObject*> possibleStaticCollisions = gameWorld.GetStaticObjectTree()->GetPossibleCollisions(Vector3(nodePos.x,0,nodePos.y), Vector3(nodeSize.x,0,nodeSize.y));
 
 			for (auto i = data.begin(); i != data.end(); ++i) {
 				//Dynamic collisions.

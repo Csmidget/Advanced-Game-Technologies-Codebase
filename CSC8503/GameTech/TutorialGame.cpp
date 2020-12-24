@@ -277,7 +277,7 @@ void TutorialGame::InitWorld() {
 	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
-	BridgeConstraintTest();
+//	BridgeConstraintTest();
 	DoorConstraintTest();
 	InitDefaultFloor();
 
@@ -288,15 +288,12 @@ void TutorialGame::InitWorld() {
 
 void TutorialGame::DoorConstraintTest() {
 	GameObject* hinge = AddOBBCubeToWorld(Vector3(-30, 19, -30), Vector3(1, 1, 1), 0.0f, true);
-//	GameObject* hinge2 = AddOBBCubeToWorld(Vector3(-30, 30, -40), Vector3(1, 1, 1), 0.0f, true);
-//	GameObject* hinge3 = AddOBBCubeToWorld(Vector3(-30, 20, -50), Vector3(1, 1, 1), 0.0f, true);
+	GameObject* hinge2 = AddOBBCubeToWorld(Vector3(-30, 30, -40), Vector3(1, 1, 1), 0.0f, true);
 	GameObject* door = AddOBBCubeToWorld(Vector3(-30, 20, -40), Vector3(2, 2, 2), 10.0f, false);
 	world->AddConstraint(new OrientationConstraint(door, hinge, Vector3(0, 1, 0)));
-//	world->AddConstraint(new OrientationConstraint(door, hinge2, Vector3(0, 1, 0)));
-//	world->AddConstraint(new OrientationConstraint(door, hinge3, Vector3(0, 1, 0)));
+	//world->AddConstraint(new OrientationConstraint(door, hinge2, Vector3(0, 1, 0)));
 	world->AddConstraint(new PositionConstraint(hinge, door, 10.0f));
-//	world->AddConstraint(new PositionConstraint(hinge2, door, 10.0f));
-//	world->AddConstraint(new PositionConstraint(hinge3, door, 10.0f));
+	//world->AddConstraint(new PositionConstraint(hinge2, door, 10.0f));
 }
 
 void TutorialGame::BridgeConstraintTest() {
@@ -317,9 +314,6 @@ void TutorialGame::BridgeConstraintTest() {
 	for (int i = 0; i < numLinks; ++i) {
 		GameObject* block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
 		PositionConstraint* constraint = new PositionConstraint(previous, block, maxDistance);
-
-		if (i == 5)
-			block->GetTransform().SetPosition(block->GetTransform().GetPosition() + Vector3(0, -1, 0));
 
 		world->AddConstraint(constraint);
 		previous = block;
