@@ -35,11 +35,10 @@ void Game::InitialiseAssets() {
 }
 
 Game::~Game()	{
-
-
 	delete physics;
 	delete renderer;
 	delete world;
+	delete prefabGenerator;
 }
 
 void Game::UpdateGame(float dt) {
@@ -223,10 +222,15 @@ void Game::Clear() {
 void Game::InitWorld() {
 	Clear();
 
+	InitKillPlanes();
 	InitBaseGeometry();
 	InitGauntlet1();
 	InitSlope();
 	InitGauntlet2();
+}
+
+void Game::InitKillPlanes() {
+	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0, -5, 0)));
 }
 
 void Game::InitBaseGeometry() {
@@ -241,10 +245,16 @@ void Game::InitBaseGeometry() {
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(0, -0.5f, -200.0f), Vector2(25, 25)));
 
 	//Slope
-	world->AddGameObject(prefabGenerator->CreateOrientedFloor(Vector3(100.0f, 26.8f, -200.0f), Quaternion::EulerAnglesToQuaternion(0, 0, 20), Vector2(80, 12.5)));
+	world->AddGameObject(prefabGenerator->CreateOrientedFloor(Vector3(100.0f, 43.0f, -200.0f), Quaternion::EulerAnglesToQuaternion(0, 0, 30), Vector2(87, 12.5)));
 
 	//Checkpoint2
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(200.0f, 54.0f, -200.0f), Vector2(25, 25)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(200.0f, 60.0f, -200.0f), Vector2(25, 25)));
+
+	//Second Gauntlet
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(200.0f, 60.0f, -100.0f), Vector2(12.5, 75)));
+
+	//Goal
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(200.0f, 54.0f, 0), Vector2(25, 25)));
 
 }
 
@@ -253,6 +263,50 @@ void Game::InitGauntlet1() {
 }
 
 void Game::InitSlope() {
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 100.0f, -210.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 100.0f, -205.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 100.0f, -200.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 100.0f, -195.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 100.0f, -190.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 200.0f, -210.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 200.0f, -205.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 200.0f, -200.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 200.0f, -195.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 200.0f, -190.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 300.0f, -210.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 300.0f, -205.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 300.0f, -200.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 300.0f, -195.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 300.0f, -190.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 400.0f, -210.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 400.0f, -205.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 400.0f, -200.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 400.0f, -195.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3(170.0f, 400.0f, -190.0f), Quaternion(), 1.0f, 0.5f, 500.0f, true));
+
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 150.0f, -210.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 150.0f, -205.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 150.0f, -200.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 150.0f, -195.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 150.0f, -190.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 250.0f, -210.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 250.0f, -205.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 250.0f, -200.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 250.0f, -195.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 250.0f, -190.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 350.0f, -210.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 350.0f, -205.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 350.0f, -200.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 350.0f, -195.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 350.0f, -190.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 450.0f, -210.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 450.0f, -205.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 450.0f, -200.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 450.0f, -195.0f), 1.0f, 1000.0f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(170.0f, 450.0f, -190.0f), 1.0f, 1000.0f, true));
+
+
+
 
 }
 

@@ -1,5 +1,6 @@
 #include "PrefabGenerator.h"
 #include "ForceObject.h"
+#include "RespawningObject.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
@@ -107,30 +108,31 @@ GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
 	return floor;
 }
 GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions) {
-	GameObject* cube = new GameObject("orientedFloor");
+	GameObject* floor = new GameObject("orientedFloor");
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5f, dimensions.y);
 	OBBVolume* volume = new OBBVolume(Vector3(floorSize));
 
-	cube->SetBoundingVolume((CollisionVolume*)volume);
+	floor->SetBoundingVolume((CollisionVolume*)volume);
 
-	cube->GetTransform()
+	floor->GetTransform()
 		.SetPosition(position)
 		.SetScale(floorSize * 2)
 		.SetOrientation(orientation);
 
-	cube->SetRenderObject(new RenderObject(&cube->GetTransform(), cubeMesh, basicTex, basicShader));
-	cube->SetPhysicsObject(new PhysicsObject(&cube->GetTransform(), cube->GetBoundingVolume()));
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, basicTex, basicShader));
+	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
 
-	cube->GetPhysicsObject()->SetInverseMass(0);
-	cube->GetPhysicsObject()->InitCubeInertia();
+	floor->GetPhysicsObject()->SetInverseMass(0);
+	floor->GetPhysicsObject()->InitCubeInertia();
+	floor->GetPhysicsObject()->SetFriction(0.1f);
 
-	cube->SetIsStatic(true);
+	floor->SetIsStatic(true);
 
-	return cube;
+	return floor;
 }
-GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool isStatic) {
-	GameObject* capsule = new GameObject("capsule");
+GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) {
+	GameObject* capsule = respawning ? new RespawningObject(position,true,"respawningCapsule") : new GameObject("capsule");
 
 	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
 	capsule->SetBoundingVolume((CollisionVolume*)volume);
@@ -144,14 +146,15 @@ GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientat
 
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitCubeInertia();
+	capsule->GetPhysicsObject()->SetElasticity(1.0f);
 
 	capsule->SetIsStatic(isStatic);
 
 	return capsule;
 }
 
-GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float inverseMass, bool isStatic) {
-	GameObject* sphere = new GameObject("sphere");
+GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) {
+	GameObject* sphere = respawning ? new RespawningObject(position,true,"respawningSphere") : new GameObject("sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
 	SphereVolume* volume = new SphereVolume(radius);
@@ -166,6 +169,8 @@ GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float 
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitHollowSphereInertia();
+	sphere->GetPhysicsObject()->SetElasticity(1.0f);
+
 
 	sphere->SetIsStatic(isStatic);
 

@@ -146,12 +146,14 @@
     <ClCompile Include="ForceObject.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="PrefabGenerator.cpp" />
+    <ClCompile Include="RespawningObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="ForceObject.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="PrefabGenerator.h" />
+    <ClInclude Include="RespawningObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

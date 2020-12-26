@@ -21,6 +21,7 @@ namespace NCL {
 			void UpdateKeys();
 
 			void InitWorld();
+			void InitKillPlanes();
 			void InitBaseGeometry();
 			void InitGauntlet1();
 			void InitSlope();
