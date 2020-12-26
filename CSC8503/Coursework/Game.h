@@ -1,6 +1,7 @@
 #pragma once
 #include "GameTechRenderer.h"
 #include "../CSC8503Common/PhysicsSystem.h"
+#include "PrefabGenerator.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -20,29 +21,17 @@ namespace NCL {
 			void UpdateKeys();
 
 			void InitWorld();
-
-			void InitSlopeLevel();
-
-			void InitGameExamples();
-
-
-			void BridgeConstraintTest();
+			void InitBaseGeometry();
+			void InitGauntlet1();
+			void InitSlope();
+			void InitGauntlet2();
 	
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement();
 
-			GameObject* AddFloorToWorld(const Vector3& position);
-			GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
-			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
-			
-			GameObject* AddCapsuleToWorld(const Vector3& position, float halfHeight, float radius, float inverseMass = 10.0f);
-
-			GameObject* AddPlayerToWorld(const Vector3& position);
-			GameObject* AddEnemyToWorld(const Vector3& position);
-			GameObject* AddBonusToWorld(const Vector3& position);
-
+			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;
 			PhysicsSystem*		physics;
 			GameWorld*			world;

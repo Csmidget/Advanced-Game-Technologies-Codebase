@@ -5,14 +5,17 @@
 using namespace NCL;
 using namespace CSC8503;
 
-ForceObject::ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Vector3 direction, float strength) {
+ForceObject::ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength) {
 	this->world = world;
 	this->direction = direction;
 	this->strength = strength;
 	OBBVolume* volume = new OBBVolume(dimensions);
 	boundingVolume = (CollisionVolume*)volume;
 
-	transform.SetPosition(position).SetScale(dimensions * 2);
+	transform
+		.SetPosition(position)
+		.SetScale(dimensions * 2)
+		.SetOrientation(orientation);
 
 	renderObject = new RenderObject(&transform, mesh, tex, shader);
 	renderObject->SetColour(Vector4(0.2f, 0.2f, 0.2f, 1.0f));

@@ -13,7 +13,7 @@ namespace NCL {
 
 		public:
 
-			ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Vector3 direction, float strength);
+			ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength);
 			~ForceObject();
 			void OnCollisionBegin(GameObject* otherObject) override;
 			void OnCollisionEnd(GameObject* otherObject) override;
