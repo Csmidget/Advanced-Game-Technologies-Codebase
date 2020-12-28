@@ -113,7 +113,7 @@ void GameWorld::UpdateWorld(float dt) {
 			objectTree->Insert(g, pos, halfSizes);
 		}	
 	}
-	//objectTree->DebugDraw();
+	objectTree->DebugDraw();
 
 
 	if (shuffleObjects) {

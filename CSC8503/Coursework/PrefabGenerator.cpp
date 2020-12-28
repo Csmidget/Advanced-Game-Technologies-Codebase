@@ -64,8 +64,8 @@ GameObject* PrefabGenerator::CreateAABBCube(Vector3 position, Vector3 dimensions
 	return cube;
 }
 
-GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass, bool isStatic) {
-	GameObject* cube = new GameObject("orientedCube");
+GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) {
+	GameObject* cube = respawning ? new RespawningObject(position,true,"respawningOrientedCube") : new GameObject("orientedCube");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
 
@@ -81,6 +81,9 @@ GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientat
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
+	cube->GetPhysicsObject()->SetElasticity(1.2f);
+	cube->GetPhysicsObject()->SetFriction(0.4f);
+
 
 	cube->SetIsStatic(isStatic);
 
@@ -147,6 +150,7 @@ GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientat
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitCubeInertia();
 	capsule->GetPhysicsObject()->SetElasticity(1.0f);
+	capsule->GetPhysicsObject()->SetFriction(0.1f);
 
 	capsule->SetIsStatic(isStatic);
 
@@ -170,6 +174,7 @@ GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitHollowSphereInertia();
 	sphere->GetPhysicsObject()->SetElasticity(1.0f);
+	sphere->GetPhysicsObject()->SetFriction(0.1f);
 
 
 	sphere->SetIsStatic(isStatic);

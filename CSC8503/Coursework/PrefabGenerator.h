@@ -12,7 +12,7 @@ namespace NCL {
 
 
 			GameObject* CreateAABBCube(Vector3 position, Vector3 dimensions, float inverseMass = 10.0f, bool isStatic = false);
-			GameObject* CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass = 10.0f, bool isStatic = false);
+			GameObject* CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass = 10.0f, bool respawning = false, bool isStatic = false);
 			GameObject* CreateFloor(Vector3 position, Vector2 dimensions);
 			GameObject* CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions);
 			GameObject* CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass = 10.0f, bool respawning = false, bool isStatic = false);
