@@ -8,13 +8,13 @@ namespace NCL {
 		
 		using namespace Maths;
 
-		class ForceConstraint : public Constraint {
+		class LinearImpulseConstraint : public Constraint {
 		public:
-			ForceConstraint(GameObject* obj, Vector3 force) {
+			LinearImpulseConstraint(GameObject* obj, Vector3 force) {
 				object = obj;
 				this->force = force;
 			}
-			~ForceConstraint() {};
+			~LinearImpulseConstraint() {};
 
 			void UpdateConstraint(float dt) override;
 

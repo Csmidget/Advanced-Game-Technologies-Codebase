@@ -273,9 +273,9 @@ void TutorialGame::InitWorld() {
 	AddOBBCubeToWorld(Vector3(0, 5, -5), Vector3(1,1,1));
 //	AddSphereToWorld(Vector3(-1, 15, -6), 1.0f);
 //	AddStateObjectToWorld(Vector3(0, 10, -15));
-	//AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
-	//AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
-	//AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
+	AddSphereToWorld(Vector3(5, 10, 10), 1.0f);
+	AddSphereToWorld(Vector3(5, 10, 5), 1.0f);
+	AddSphereToWorld(Vector3(5, 10, 0), 1.0f);
 	//AddSphereToWorld(Vector3(5, 10, -5), 1.0f);
 //	BridgeConstraintTest();
 	DoorConstraintTest();

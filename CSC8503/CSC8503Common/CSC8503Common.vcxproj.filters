@@ -99,10 +99,13 @@
     <ClInclude Include="PositionConstraint.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="ForceConstraint.h">
+    <ClInclude Include="OrientationConstraint.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="OrientationConstraint.h">
+    <ClInclude Include="LinearImpulseConstraint.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="AngularImpulseConstraint.h">
       <Filter>Physics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,10 +152,13 @@
     <ClCompile Include="PositionConstraint.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="ForceConstraint.cpp">
+    <ClCompile Include="OrientationConstraint.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="OrientationConstraint.cpp">
+    <ClCompile Include="LinearImpulseConstraint.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="AngularImpulseConstraint.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

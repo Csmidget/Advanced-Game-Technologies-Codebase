@@ -1,6 +1,6 @@
 #include "ForceObject.h"
 #include "../CSC8503Common/GameWorld.h"
-#include "../CSC8503Common/ForceConstraint.h"
+#include "../CSC8503Common/LinearImpulseConstraint.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -36,7 +36,7 @@ ForceObject::~ForceObject() {
 
 void ForceObject::OnCollisionBegin(GameObject* otherObject) {
 
-	Constraint* newConstraint = new ForceConstraint(otherObject, transform.GetOrientation() * direction * strength);
+	Constraint* newConstraint = new LinearImpulseConstraint(otherObject, transform.GetOrientation() * direction * strength);
 	world->AddConstraint(newConstraint);
 	activeConstraints.emplace(otherObject, newConstraint);
 

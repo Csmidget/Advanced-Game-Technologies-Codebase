@@ -22,7 +22,7 @@ namespace NCL {
 			void Clear();
 			void ClearAndErase();
 
-			void AddGameObject(GameObject* o);
+			GameObject* AddGameObject(GameObject* o);
 			void RemoveGameObject(GameObject* o, bool andDelete = false);
 
 			void AddKillPlane(Plane* p);

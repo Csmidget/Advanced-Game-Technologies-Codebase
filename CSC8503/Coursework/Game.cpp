@@ -1,7 +1,11 @@
 #include "Game.h"
-#include "../CSC8503Common/GameWorld.h"
-
 #include "ForceObject.h"
+
+#include "../CSC8503Common/GameWorld.h"
+#include "../CSC8503Common/PositionConstraint.h"
+#include "../CSC8503Common/OrientationConstraint.h"
+#include "../CSC8503Common/AngularImpulseConstraint.h"
+
 
 using namespace NCL;
 using namespace CSC8503;
@@ -252,7 +256,7 @@ void Game::InitBaseGeometry() {
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, -100.0f), Vector2(25, 25)));
 
 	//Second Gauntlet
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, 0.0f), Vector2(12.5, 75)));
+	//world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, 0.0f), Vector2(12.5, 75)));
 
 	//Goal
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, 100.0f), Vector2(25, 25)));
@@ -261,6 +265,9 @@ void Game::InitBaseGeometry() {
 
 void Game::InitGauntlet1() {
 
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, -30.0f), Vector3(0, 1, 0), -100.0f);
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 0.0f), Vector3(0, 1, 0), 100.0f);
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 30.0f), Vector3(0, 1, 0), -100.0f);
 }
 
 void Game::InitSlope() {
@@ -287,7 +294,10 @@ void Game::InitSlope() {
 }
 
 void Game::InitGauntlet2() {
-
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(100, 90, -100), 2.0f, 10.0f));
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(118.75f, 86.35f, -55.0f), Quaternion(), Vector2(6.25f, 20.0f)));
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, 86.35f, -41.25f), Quaternion(), Vector2(12.5f, 6.25f)));
+	world->AddGameObject(prefabGenerator->AddTreadmill(world, Vector3(81.25f, 86.75f, -26.25f), Quaternion(), 10.0f, Vector2(6.25f, 21.25f)));
 }
 
 //GameObject* Game::AddPlayerToWorld(const Vector3& position) {

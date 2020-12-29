@@ -10,7 +10,12 @@
     <ClCompile Include="PrefabGenerator.cpp">
       <Filter>Prefabs</Filter>
     </ClCompile>
-    <ClCompile Include="RespawningObject.cpp" />
+    <ClCompile Include="RespawningObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BonusObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -21,7 +26,12 @@
     <ClInclude Include="PrefabGenerator.h">
       <Filter>Prefabs</Filter>
     </ClInclude>
-    <ClInclude Include="RespawningObject.h" />
+    <ClInclude Include="RespawningObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="BonusObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GameObjects">

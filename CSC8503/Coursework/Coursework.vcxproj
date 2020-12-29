@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BonusObject.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ForceObject.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="RespawningObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BonusObject.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="ForceObject.h" />
     <ClInclude Include="Game.h" />

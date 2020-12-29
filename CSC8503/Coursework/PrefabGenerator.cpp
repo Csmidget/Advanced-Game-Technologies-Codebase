@@ -1,6 +1,10 @@
 #include "PrefabGenerator.h"
 #include "ForceObject.h"
 #include "RespawningObject.h"
+#include "../CSC8503Common/PositionConstraint.h"
+#include "../CSC8503Common/OrientationConstraint.h"
+#include "../CSC8503Common/AngularImpulseConstraint.h"
+
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
@@ -81,8 +85,8 @@ GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientat
 
 	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
 	cube->GetPhysicsObject()->InitCubeInertia();
-	cube->GetPhysicsObject()->SetElasticity(1.2f);
-	cube->GetPhysicsObject()->SetFriction(0.4f);
+	cube->GetPhysicsObject()->SetElasticity(1.5f);
+	cube->GetPhysicsObject()->SetFriction(0.7f);
 
 
 	cube->SetIsStatic(isStatic);
@@ -134,6 +138,18 @@ GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion or
 
 	return floor;
 }
+
+GameObject* PrefabGenerator::CreateSlipperyFloor(const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) {
+	GameObject* floor = CreateOrientedFloor(position, orientation, dimensions);
+	PhysicsObject* phys = floor->GetPhysicsObject();
+
+	phys->SetFriction(0.0f);
+	
+	floor->GetRenderObject()->SetColour(Vector4(5, 5, 5, 1));
+
+	return floor;
+}
+
 GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) {
 	GameObject* capsule = respawning ? new RespawningObject(position,true,"respawningCapsule") : new GameObject("capsule");
 
@@ -181,11 +197,39 @@ GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float 
 
 	return sphere;
 }
-GameObject* PrefabGenerator::CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x,0.1,dimensions.y),orientation, Vector3(0, 0, -1), strength);
+
+GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
+	GameObject* anchor = new GameObject("anchor");
+
+	anchor->GetTransform().SetPosition(position);
+
+	anchor->SetPhysicsObject(new PhysicsObject(&anchor->GetTransform(), nullptr));
+	anchor->GetPhysicsObject()->SetInverseMass(0.0f);
+	anchor->SetIsStatic(true);
+
+	return anchor;
 }
 
-GameObject* PrefabGenerator::CreateBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.1, dimensions.y), orientation, Vector3(0, 1, 0), strength);
 
+GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x,0.1,dimensions.y),orientation, Vector3(0, 0, -1), strength));
+}
+
+GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.1, dimensions.y), orientation, Vector3(0, 1, 0), strength));
+}
+
+GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force) {
+
+	GameObject* spinningBlock = world->AddGameObject(CreateOBBCube(position, Quaternion(), Vector3(12.5, 2, 2), 0.01f));
+
+	GameObject* positionAnchor = world->AddGameObject(CreateAnchor(position));
+	world->AddConstraint(new PositionConstraint(positionAnchor, spinningBlock, 0.0f));
+
+	GameObject* orientationAnchor = world->AddGameObject(CreateAnchor(position + upVector));
+	world->AddConstraint(new OrientationConstraint(spinningBlock, orientationAnchor, Vector3(0, 1, 0)));
+
+	world->AddConstraint(new AngularImpulseConstraint(spinningBlock, Vector3(0,force,0)));
+
+	return spinningBlock;
 }

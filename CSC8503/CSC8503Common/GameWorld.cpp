@@ -44,7 +44,7 @@ void GameWorld::ClearAndErase() {
 	Clear();
 }
 
-void GameWorld::AddGameObject(GameObject* o) {
+GameObject* GameWorld::AddGameObject(GameObject* o) {
 	gameObjects.emplace_back(o);
 	o->SetWorldID(worldIDCounter++);
 	
@@ -55,6 +55,8 @@ void GameWorld::AddGameObject(GameObject* o) {
 			staticObjectTree->Insert(o, o->GetTransform().GetPosition(), halfSize);
 		}
 	}
+
+	return o;
 }
 
 void GameWorld::RemoveGameObject(GameObject* o, bool andDelete) {
