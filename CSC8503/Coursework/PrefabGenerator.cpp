@@ -1,6 +1,7 @@
 #include "PrefabGenerator.h"
 #include "ForceObject.h"
 #include "RespawningObject.h"
+#include "PlayerObject.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
@@ -232,4 +233,38 @@ GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& p
 	world->AddConstraint(new AngularImpulseConstraint(spinningBlock, Vector3(0,force,0)));
 
 	return spinningBlock;
+}
+
+PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& position) {
+	float meshSize = 1.0f;
+	float inverseMass = 0.5f;
+
+	PlayerObject* player = new PlayerObject(position,world->GetMainCamera());
+
+	CapsuleVolume* volume = new CapsuleVolume(meshSize,0.3f);
+	
+	player->SetBoundingVolume((CollisionVolume*)volume);
+	
+	player->GetTransform()
+		.SetScale(Vector3(meshSize, meshSize, meshSize))
+		.SetPosition(position);
+	
+	if (rand() % 2) {
+		player->SetRenderObject(new RenderObject(&player->GetTransform(), charMeshA, nullptr, basicShader));
+	}
+	else {
+		player->SetRenderObject(new RenderObject(&player->GetTransform(), charMeshB, nullptr, basicShader));
+	}
+	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
+	
+	player->GetPhysicsObject()->SetInverseMass(5.0f);
+	player->GetPhysicsObject()->InitCubeInertia();
+	player->GetPhysicsObject()->SetElasticity(1.0f);
+	player->GetPhysicsObject()->SetFriction(0.5f);
+
+
+	
+	world->AddGameObject(player);
+		
+	return player;
 }

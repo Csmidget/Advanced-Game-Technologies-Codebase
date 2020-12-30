@@ -5,6 +5,10 @@
 
 namespace NCL {
 	namespace CSC8503 {
+
+		enum class CameraState { PlayerMode = 0, FreeMode = 1, SelectionMode = 2 };
+		class PlayerObject;
+
 		class Game		{
 		public:
 			Game();
@@ -26,6 +30,7 @@ namespace NCL {
 			void InitGauntlet1();
 			void InitSlope();
 			void InitGauntlet2();
+			void InitPlayers();
 	
 			bool SelectObject();
 			void MoveSelectedObject();
@@ -38,13 +43,15 @@ namespace NCL {
 			GameWorld*			world;
 
 			bool useGravity;
-			bool inSelectionMode;
 
 			float		forceMagnitude;
 
 			GameObject* selectionObject = nullptr;
 			GameObject* forwardObject = nullptr;
 
+			CameraState cameraState;
+
+			PlayerObject* player;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject	= nullptr;

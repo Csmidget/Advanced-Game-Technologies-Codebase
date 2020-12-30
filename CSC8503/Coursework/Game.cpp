@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "ForceObject.h"
-
+#include "PlayerObject.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
@@ -18,7 +18,7 @@ Game::Game() {
 
 	forceMagnitude	= 10.0f;
 	useGravity		= false;
-	inSelectionMode = false;
+	cameraState = CameraState::FreeMode;
 
 	Debug::SetRenderer(renderer);
 
@@ -46,7 +46,8 @@ Game::~Game()	{
 }
 
 void Game::UpdateGame(float dt) {
-	if (!inSelectionMode) {
+
+	if (cameraState == CameraState::FreeMode) {
 		world->GetMainCamera()->UpdateCamera(dt);
 	}
 
@@ -172,7 +173,7 @@ void Game::LockedObjectMovement() {
 
 void Game::DebugObjectMovement() {
 //If we've selected an object, we can manipulate it with some key presses
-	if (inSelectionMode && selectionObject) {
+	if (cameraState == CameraState::SelectionMode && selectionObject) {
 		//Twist the selected object!
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT)) {
 			selectionObject->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
@@ -231,6 +232,7 @@ void Game::InitWorld() {
 	InitGauntlet1();
 	InitSlope();
 	InitGauntlet2();
+	InitPlayers();
 }
 
 void Game::InitKillPlanes() {
@@ -298,6 +300,10 @@ void Game::InitGauntlet2() {
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(118.75f, 86.35f, -55.0f), Quaternion(), Vector2(6.25f, 20.0f)));
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, 86.35f, -41.25f), Quaternion(), Vector2(12.5f, 6.25f)));
 	world->AddGameObject(prefabGenerator->AddTreadmill(world, Vector3(81.25f, 86.75f, -26.25f), Quaternion(), 10.0f, Vector2(6.25f, 21.25f)));
+}
+
+void Game::InitPlayers() {
+	player = prefabGenerator->AddPlayer(world, Vector3(-100, 5, 100));
 }
 
 //GameObject* Game::AddPlayerToWorld(const Vector3& position) {
@@ -386,17 +392,26 @@ letting you move the camera around.
 */
 bool Game::SelectObject() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q)) {
-		inSelectionMode = !inSelectionMode;
-		if (inSelectionMode) {
+
+		if (cameraState == CameraState::SelectionMode) {
+			cameraState = CameraState::PlayerMode;
+			Window::GetWindow()->ShowOSPointer(false);
+			Window::GetWindow()->LockMouseToWindow(true);
+			player->SetControlEnabled(true);
+
+		}
+		else if (cameraState == CameraState::PlayerMode) {
+			cameraState = CameraState::FreeMode;
+			player->SetControlEnabled(false);
+		}
+		else {
+			cameraState = CameraState::SelectionMode;
 			Window::GetWindow()->ShowOSPointer(true);
 			Window::GetWindow()->LockMouseToWindow(false);
 		}
-		else {
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-		}
 	}
-	if (inSelectionMode) {
+
+	if (cameraState == CameraState::SelectionMode) {
 		renderer->DrawString("Press Q to change to camera mode!", Vector2(5, 85));
 
 		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT)) {

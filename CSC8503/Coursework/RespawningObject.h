@@ -2,9 +2,7 @@
 
 #include "../CSC8503Common/GameObject.h"
 
-
 namespace NCL {
-
 	namespace CSC8503 {
 
 		class RespawningObject : public GameObject {

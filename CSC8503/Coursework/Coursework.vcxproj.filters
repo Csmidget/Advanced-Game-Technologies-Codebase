@@ -16,6 +16,9 @@
     <ClCompile Include="BonusObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -30,6 +33,9 @@
       <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="BonusObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
