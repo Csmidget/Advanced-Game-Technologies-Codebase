@@ -143,6 +143,8 @@
     <ClInclude Include="OBBVolume.h" />
     <ClInclude Include="OrientationConstraint.h" />
     <ClInclude Include="PositionConstraint.h" />
+    <ClInclude Include="PushdownMachine.h" />
+    <ClInclude Include="PushdownState.h" />
     <ClInclude Include="SphereVolume.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="CollisionDetection.h" />
@@ -173,6 +175,7 @@
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PositionConstraint.cpp" />
+    <ClCompile Include="PushdownMachine.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="StateMachine.cpp" />

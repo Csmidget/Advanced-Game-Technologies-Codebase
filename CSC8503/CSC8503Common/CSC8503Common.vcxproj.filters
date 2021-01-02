@@ -108,6 +108,12 @@
     <ClInclude Include="AngularImpulseConstraint.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="PushdownState.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="PushdownMachine.h">
+      <Filter>AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWorld.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="AngularImpulseConstraint.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PushdownMachine.cpp">
+      <Filter>AI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
