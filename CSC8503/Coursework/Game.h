@@ -20,6 +20,9 @@ namespace NCL {
 			const GameWorld* GetWorld() { return world;	}
 			PlayerObject* GetPlayerObject() { return player; }
 
+			bool GetUseGravity() const { return useGravity; }
+			void SetUseGravity(bool val);
+
 			void ResetWorld();
 
 			void SetPause(bool val) { pause = val; }
@@ -37,11 +40,6 @@ namespace NCL {
 			void InitSlope();
 			void InitGauntlet2();
 			void InitPlayers();
-	
-			bool SelectObject();
-			void MoveSelectedObject();
-			void DebugObjectMovement();
-			void LockedObjectMovement();
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;
@@ -53,22 +51,7 @@ namespace NCL {
 			bool pause;
 			bool quit;
 
-			float		forceMagnitude;
-
-			GameObject* selectionObject = nullptr;
-			GameObject* forwardObject = nullptr;
-
-			CameraState cameraState;
-
 			PlayerObject* player;
-
-			//Coursework Additional functionality	
-			GameObject* lockedObject	= nullptr;
-			Vector3 lockedOffset		= Vector3(0, 14, 20);
-			void LockCameraToObject(GameObject* o) {
-				lockedObject = o;
-			}
-
 		};
 	}
 }

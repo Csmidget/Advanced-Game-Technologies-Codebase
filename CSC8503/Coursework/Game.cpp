@@ -17,11 +17,8 @@ Game::Game() {
 	physics		= new PhysicsSystem(*world);
 	prefabGenerator = new PrefabGenerator();
 
-	forceMagnitude	= 10.0f;
 	useGravity		= true;
 	physics->UseGravity(true);
-
-	cameraState = CameraState::FreeMode;
 
 	pause = false;
 	quit = false;
@@ -43,22 +40,9 @@ Game::~Game()	{
 
 void Game::UpdateGame(float dt) {
 
-	if (cameraState == CameraState::FreeMode) {
-		world->GetMainCamera()->UpdateCamera(dt);
-	}
-
 	UpdateKeys();
 
-	if (useGravity) {
-		Debug::Print("(G)ravity on", Vector2(5, 95));
-	}
-	else {
-		Debug::Print("(G)ravity off", Vector2(5, 95));
-	}
-
 	if (!pause) {
-		SelectObject();
-		MoveSelectedObject();
 		physics->Update(dt);
 	}
 
@@ -68,47 +52,28 @@ void Game::UpdateGame(float dt) {
 	}
 
 	if (!pause) {
-		if (lockedObject != nullptr) {
-			Vector3 objPos = lockedObject->GetTransform().GetPosition();
-			Vector3 camPos = objPos + lockedOffset;
-
-			Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-			Matrix4 modelMat = temp.Inverse();
-
-			Quaternion q(modelMat);
-			Vector3 angles = q.ToEuler(); //nearly there now!
-
-			world->GetMainCamera()->SetPosition(camPos);
-			world->GetMainCamera()->SetPitch(angles.x);
-			world->GetMainCamera()->SetYaw(angles.y);
-
-			//Debug::DrawAxisLines(lockedObject->GetTransform().GetMatrix(), 2.0f);
-		}
-
 		world->UpdateWorld(dt);
 	}
-	renderer->Update(dt);
 
+	renderer->Update(dt);
 	Debug::FlushRenderables(dt);
 	renderer->Render();
+}
+
+void Game::SetUseGravity(bool val) {
+	useGravity = val;
+	physics->UseGravity(val);
 }
 
 void Game::UpdateKeys() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1)) {
 		InitWorld(); //We can reset the simulation at any time with F1
-		selectionObject = nullptr;
-		lockedObject	= nullptr;
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2)) {
 		InitCamera(); //F2 will reset the camera to a specific default place
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::G)) {
-		useGravity = !useGravity; //Toggle gravity!
-		physics->UseGravity(useGravity);
-	}
 	//Running certain physics updates in a consistent order might cause some
 	//bias in the calculations - the same objects might keep 'winning' the constraint
 	//allowing the other one to stretch too much etc. Shuffling the order so that it
@@ -127,92 +92,6 @@ void Game::UpdateKeys() {
 		world->ShuffleObjects(false);
 	}
 
-	if (lockedObject) {
-		LockedObjectMovement();
-	}
-	else {
-		DebugObjectMovement();
-	}
-}
-
-void Game::LockedObjectMovement() {
-	Matrix4 view		= world->GetMainCamera()->BuildViewMatrix();
-	Matrix4 camWorld	= view.Inverse();
-
-	Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
-
-	//forward is more tricky -  camera forward is 'into' the screen...
-	//so we can take a guess, and use the cross of straight up, and
-	//the right axis, to hopefully get a vector that's good enough!
-
-	Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-	fwdAxis.y = 0.0f;
-	fwdAxis.Normalise();
-
-	Vector3 charForward  = lockedObject->GetTransform().GetOrientation() * Vector3(0, 0, 1);
-	Vector3 charForward2 = lockedObject->GetTransform().GetOrientation() * Vector3(0, 0, 1);
-
-	float force = 100.0f;
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT)) {
-		lockedObject->GetPhysicsObject()->AddForce(-rightAxis * force);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT)) {
-		Vector3 worldPos = selectionObject->GetTransform().GetPosition();
-		lockedObject->GetPhysicsObject()->AddForce(rightAxis * force);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP)) {
-		lockedObject->GetPhysicsObject()->AddForce(fwdAxis * force);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN)) {
-		lockedObject->GetPhysicsObject()->AddForce(-fwdAxis * force);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NEXT)) {
-		lockedObject->GetPhysicsObject()->AddForce(Vector3(0,-10,0));
-	}
-}
-
-void Game::DebugObjectMovement() {
-//If we've selected an object, we can manipulate it with some key presses
-	if (cameraState == CameraState::SelectionMode && selectionObject) {
-		//Twist the selected object!
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::LEFT)) {
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(-10, 0, 0));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT)) {
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(10, 0, 0));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM7)) {
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, 10, 0));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM8)) {
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(0, -10, 0));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::RIGHT)) {
-			selectionObject->GetPhysicsObject()->AddTorque(Vector3(10, 0, 0));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::UP)) {
-			selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 0, -10));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::DOWN)) {
-			selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 0, 10));
-		}
-
-		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::NUM5)) {
-			selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
-		}
-	}
-
 }
 
 void Game::InitCamera() {
@@ -221,7 +100,6 @@ void Game::InitCamera() {
 	world->GetMainCamera()->SetPitch(-15.0f);
 	world->GetMainCamera()->SetYaw(315.0f);
 	world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
-	lockedObject = nullptr;
 }
 
 void Game::Clear() {
@@ -393,135 +271,3 @@ void Game::InitPlayers() {
 //
 //	return apple;
 //}
-
-/*
-
-Every frame, this code will let you perform a raycast, to see if there's an object
-underneath the cursor, and if so 'select it' into a pointer, so that it can be 
-manipulated later. Pressing Q will let you toggle between this behaviour and instead
-letting you move the camera around. 
-
-*/
-bool Game::SelectObject() {
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::Q)) {
-
-		if (cameraState == CameraState::SelectionMode) {
-			cameraState = CameraState::PlayerMode;
-			Window::GetWindow()->ShowOSPointer(false);
-			Window::GetWindow()->LockMouseToWindow(true);
-
-		}
-		else if (cameraState == CameraState::PlayerMode) {
-			cameraState = CameraState::FreeMode;
-		}
-		else {
-			cameraState = CameraState::SelectionMode;
-			Window::GetWindow()->ShowOSPointer(true);
-			Window::GetWindow()->LockMouseToWindow(false);
-		}
-	}
-
-	if (cameraState == CameraState::SelectionMode) {
-		renderer->DrawString("Press Q to change to camera mode!", Vector2(5, 85));
-
-		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT)) {
-			if (selectionObject) {	//set colour to deselected;
-				selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-
-				if(forwardObject)
-					forwardObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-
-				selectionObject = nullptr;
-				forwardObject = nullptr;
-				lockedObject	= nullptr;
-			}
-
-			Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
-			RayCollision closestCollision;
-			if (world->Raycast(ray, closestCollision, true)) {
-				Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(0, 1, 0, 1), 10.0f);
-				selectionObject = (GameObject*)closestCollision.node;
-				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
-				
-				ray = Ray(selectionObject->GetTransform().GetPosition(), selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1));
-				if (world->Raycast(ray, closestCollision, true)) {
-					Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(1, 1, 0, 1), 10.0f);
-					forwardObject = (GameObject*)closestCollision.node;
-					forwardObject->GetRenderObject()->SetColour(Vector4(1, 1, 0, 1));
-				}
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-	else {
-		renderer->DrawString("Press Q to change to select mode!", Vector2(5, 85));
-	}
-
-	if (lockedObject) {
-		renderer->DrawString("Press L to unlock object!", Vector2(5, 80));
-	}
-
-	else if(selectionObject){
-		renderer->DrawString("Press L to lock selected object object!", Vector2(5, 80));
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::L)) {
-		if (selectionObject) {
-			if (lockedObject == selectionObject) {
-				lockedObject = nullptr;
-			}
-			else {
-				lockedObject = selectionObject;
-			}
-		}
-
-	}
-
-	return false;
-}
-
-/*
-If an object has been clicked, it can be pushed with the right mouse button, by an amount
-determined by the scroll wheel. In the first tutorial this won't do anything, as we haven't
-added linear motion into our physics system. After the second tutorial, objects will move in a straight
-line - after the third, they'll be able to twist under torque aswell.
-*/
-void Game::MoveSelectedObject() {
-	renderer->DrawString("Click Force: " + std::to_string(forceMagnitude), Vector2(5, 90));
-	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 100.0f;
-
-	if (!selectionObject) {
-		return;
-	}
-
-	if (Window::GetMouse()->ButtonPressed(NCL::MouseButtons::RIGHT)) {
-		Ray ray = CollisionDetection::BuildRayFromMouse(*world->GetMainCamera());
-		RayCollision closestCollision;
-
-		if (world->Raycast(ray, closestCollision, true)) {
-			if (closestCollision.node == selectionObject) {
-				selectionObject->GetPhysicsObject()->AddForceAtPosition(ray.GetDirection() * forceMagnitude, closestCollision.collidedAt);
-			}
-		}
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::UP)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(0,0,-1) * forceMagnitude);
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::DOWN)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(0, 0, 1) * forceMagnitude);
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::LEFT)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(-1, 0, 0) * forceMagnitude);
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(NCL::KeyboardKeys::RIGHT)) {
-		selectionObject->GetPhysicsObject()->AddForce(Vector3(1, 0, 0) * forceMagnitude);
-	}
-
-}

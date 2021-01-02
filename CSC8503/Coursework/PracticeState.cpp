@@ -1,5 +1,6 @@
 #include "PracticeState.h"
 #include "PlayerObject.h"
+#include "PauseState.h"
 #include "Game.h"
 
 using namespace NCL::CSC8503;
@@ -16,6 +17,12 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;
+	}
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		*newState = new PauseState(game);
+		return PushdownResult::Push;
+
 	}
 
 	PlayerObject* player = game->GetPlayerObject();
