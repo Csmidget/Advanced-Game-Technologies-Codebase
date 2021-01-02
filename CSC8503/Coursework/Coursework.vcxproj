@@ -146,16 +146,23 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ForceObject.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="PracticeState.cpp" />
     <ClCompile Include="PrefabGenerator.cpp" />
     <ClCompile Include="RespawningObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BonusObject.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="ForceObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="PauseState.h" />
     <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="PracticeState.h" />
     <ClInclude Include="PrefabGenerator.h" />
     <ClInclude Include="RespawningObject.h" />
   </ItemGroup>

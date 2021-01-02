@@ -6,6 +6,7 @@ using namespace NCL;
 using namespace CSC8503;
 
 ForceObject::ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength) {
+	this->name = "force object";
 	this->world = world;
 	this->direction = direction;
 	this->strength = strength;

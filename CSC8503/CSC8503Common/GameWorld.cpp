@@ -31,8 +31,8 @@ void GameWorld::Clear() {
 }
 
 void GameWorld::ClearAndErase() {
-	for (auto& i : gameObjects) {
-		delete i;
+	for (int i = 0; i < gameObjects.size(); ++i) {
+		delete gameObjects[i];
 	}
 	for (auto& i : constraints) {
 		delete i;

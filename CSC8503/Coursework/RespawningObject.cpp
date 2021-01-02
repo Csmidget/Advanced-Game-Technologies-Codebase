@@ -10,10 +10,6 @@ RespawningObject::RespawningObject(Vector3 spawnPosition, bool randomizeOrientat
 	Respawn();
 }
 
-RespawningObject::~RespawningObject() {
-
-}
-
 void RespawningObject::Respawn() {
 	respawnTimer = 0.0f;
 

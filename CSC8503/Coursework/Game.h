@@ -1,7 +1,8 @@
 #pragma once
 #include "GameTechRenderer.h"
-#include "../CSC8503Common/PhysicsSystem.h"
 #include "PrefabGenerator.h"
+#include "../CSC8503Common/PhysicsSystem.h"
+#include "../CSC8503Common/PushdownMachine.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -9,17 +10,22 @@ namespace NCL {
 		enum class CameraState { PlayerMode = 0, FreeMode = 1, SelectionMode = 2 };
 		class PlayerObject;
 
-		class Game		{
+		class Game {
 		public:
 			Game();
 			~Game();
 
 			virtual void UpdateGame(float dt);
+			bool ShouldQuit() { return quit; }
+			const GameWorld* GetWorld() { return world;	}
+			PlayerObject* GetPlayerObject() { return player; }
+
+			void ResetWorld();
+
+			void SetPause(bool val) { pause = val; }
 
 		protected:
 			void Clear();
-
-			void InitialiseAssets();
 
 			void InitCamera();
 			void UpdateKeys();
@@ -41,8 +47,11 @@ namespace NCL {
 			GameTechRenderer*	renderer;
 			PhysicsSystem*		physics;
 			GameWorld*			world;
+			PushdownMachine*    gameStateMachine;
 
 			bool useGravity;
+			bool pause;
+			bool quit;
 
 			float		forceMagnitude;
 

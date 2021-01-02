@@ -5,6 +5,7 @@
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
+#include "MainMenuState.h"
 
 
 using namespace NCL;
@@ -17,25 +18,19 @@ Game::Game() {
 	prefabGenerator = new PrefabGenerator();
 
 	forceMagnitude	= 10.0f;
-	useGravity		= false;
+	useGravity		= true;
+	physics->UseGravity(true);
+
 	cameraState = CameraState::FreeMode;
 
+	pause = false;
+	quit = false;
+
+	gameStateMachine = new PushdownMachine(new MainMenuState(this));
+		
 	Debug::SetRenderer(renderer);
 
-	InitialiseAssets();
-}
-
-/*
-
-Each of the little demo scenarios used in the game uses the same 2 meshes, 
-and the same texture and shader. There's no need to ever load in anything else
-for this module, even in the coursework, but you can add it if you like!
-
-*/
-void Game::InitialiseAssets() {
-
 	InitCamera();
-	InitWorld();
 }
 
 Game::~Game()	{
@@ -43,6 +38,7 @@ Game::~Game()	{
 	delete renderer;
 	delete world;
 	delete prefabGenerator;
+	delete gameStateMachine;
 }
 
 void Game::UpdateGame(float dt) {
@@ -60,29 +56,38 @@ void Game::UpdateGame(float dt) {
 		Debug::Print("(G)ravity off", Vector2(5, 95));
 	}
 
-	SelectObject();
-	MoveSelectedObject();
-	physics->Update(dt);
-
-	if (lockedObject != nullptr) {
-		Vector3 objPos = lockedObject->GetTransform().GetPosition();
-		Vector3 camPos = objPos + lockedOffset;
-
-		Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0,1,0));
-
-		Matrix4 modelMat = temp.Inverse();
-
-		Quaternion q(modelMat);
-		Vector3 angles = q.ToEuler(); //nearly there now!
-
-		world->GetMainCamera()->SetPosition(camPos);
-		world->GetMainCamera()->SetPitch(angles.x);
-		world->GetMainCamera()->SetYaw(angles.y);
-
-		//Debug::DrawAxisLines(lockedObject->GetTransform().GetMatrix(), 2.0f);
+	if (!pause) {
+		SelectObject();
+		MoveSelectedObject();
+		physics->Update(dt);
 	}
 
-	world->UpdateWorld(dt);
+	if (!gameStateMachine->Update(dt) || Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
+		quit = true;
+		return;
+	}
+
+	if (!pause) {
+		if (lockedObject != nullptr) {
+			Vector3 objPos = lockedObject->GetTransform().GetPosition();
+			Vector3 camPos = objPos + lockedOffset;
+
+			Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
+
+			Matrix4 modelMat = temp.Inverse();
+
+			Quaternion q(modelMat);
+			Vector3 angles = q.ToEuler(); //nearly there now!
+
+			world->GetMainCamera()->SetPosition(camPos);
+			world->GetMainCamera()->SetPitch(angles.x);
+			world->GetMainCamera()->SetYaw(angles.y);
+
+			//Debug::DrawAxisLines(lockedObject->GetTransform().GetMatrix(), 2.0f);
+		}
+
+		world->UpdateWorld(dt);
+	}
 	renderer->Update(dt);
 
 	Debug::FlushRenderables(dt);
@@ -222,6 +227,13 @@ void Game::InitCamera() {
 void Game::Clear() {
 	world->ClearAndErase();
 	physics->Clear();
+
+	//As this is a game object it will be deleted by  world ClearAndErase()
+	player = nullptr;
+}
+
+void Game::ResetWorld() {
+	InitWorld();
 }
 
 void Game::InitWorld() {
@@ -397,12 +409,10 @@ bool Game::SelectObject() {
 			cameraState = CameraState::PlayerMode;
 			Window::GetWindow()->ShowOSPointer(false);
 			Window::GetWindow()->LockMouseToWindow(true);
-			player->SetControlEnabled(true);
 
 		}
 		else if (cameraState == CameraState::PlayerMode) {
 			cameraState = CameraState::FreeMode;
-			player->SetControlEnabled(false);
 		}
 		else {
 			cameraState = CameraState::SelectionMode;
@@ -480,7 +490,7 @@ added linear motion into our physics system. After the second tutorial, objects 
 line - after the third, they'll be able to twist under torque aswell.
 */
 void Game::MoveSelectedObject() {
-	renderer->DrawString("Click Force: " + std::to_string(forceMagnitude), Vector2(10, 20));
+	renderer->DrawString("Click Force: " + std::to_string(forceMagnitude), Vector2(5, 90));
 	forceMagnitude += Window::GetMouse()->GetWheelMovement() * 100.0f;
 
 	if (!selectionObject) {

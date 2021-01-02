@@ -36,9 +36,7 @@ void DisplayPathfinding() {
 
 		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
 	}
-
 }
-
 
 void TestStateMachine() {
 	StateMachine* testMachine = new StateMachine();

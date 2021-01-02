@@ -9,12 +9,13 @@ namespace NCL {
 
 		public:
 			RespawningObject(Vector3 spawnPosition,bool randomizeOrientation = false, string name = "");
-			~RespawningObject();
 
-			void OnKill() override;
-			void Update(float dt) override;
+			virtual void OnKill() override;
+			virtual void Update(float dt) override;
 
-		protected:
+			void SetRespawnPosition(Vector3 val) { spawnPosition = val; }
+
+		private:
 			void Respawn();
 
 			Vector3 spawnPosition;
