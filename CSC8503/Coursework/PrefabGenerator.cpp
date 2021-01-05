@@ -213,11 +213,11 @@ GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
 
 
 GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x,0.1,dimensions.y),orientation, Vector3(0, 0, -1), strength);
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x,0.1,dimensions.y),orientation, Vector3(0, 0, -1), strength));
 }
 
 GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.1, dimensions.y), orientation, Vector3(0, 1, 0), strength);
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.1, dimensions.y), orientation, Vector3(0, 1, 0), strength));
 }
 
 GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force) {
@@ -261,8 +261,6 @@ PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& positi
 	player->GetPhysicsObject()->InitCubeInertia();
 	player->GetPhysicsObject()->SetElasticity(1.0f);
 	player->GetPhysicsObject()->SetFriction(0.5f);
-
-
 	
 	world->AddGameObject(player);
 		

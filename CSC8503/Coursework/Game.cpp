@@ -44,15 +44,12 @@ void Game::UpdateGame(float dt) {
 
 	if (!pause) {
 		physics->Update(dt);
+		world->UpdateWorld(dt);
 	}
 
 	if (!gameStateMachine->Update(dt) || Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		quit = true;
 		return;
-	}
-
-	if (!pause) {
-		world->UpdateWorld(dt);
 	}
 
 	renderer->Update(dt);
@@ -188,8 +185,10 @@ void Game::InitSlope() {
 void Game::InitGauntlet2() {
 	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(100, 90, -100), 2.0f, 10.0f));
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(118.75f, 86.35f, -55.0f), Quaternion(), Vector2(6.25f, 20.0f)));
-	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, 86.35f, -41.25f), Quaternion(), Vector2(12.5f, 6.25f)));
-	world->AddGameObject(prefabGenerator->AddTreadmill(world, Vector3(81.25f, 86.75f, -26.25f), Quaternion(), 10.0f, Vector2(6.25f, 21.25f)));
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, 86.35f, -41.25f), Quaternion(), Vector2(12.5f, 1.5f)));
+
+	prefabGenerator->AddTreadmill(world, Vector3(81.25f, 86.75f, -26.25f), Quaternion(), 20.0f, Vector2(6.25f, 21.25f));
+	prefabGenerator->AddBouncePad(world, Vector3(81.25f, 86.75f, 1.25f), Quaternion(), 1000.0f, Vector2(6.25f, 6.25f));
 }
 
 void Game::InitPlayers() {
@@ -224,7 +223,7 @@ void Game::InitPlayers() {
 //	world->AddGameObject(character);
 //
 //	//lockedObject = character;
-//
+///
 //	return character;
 //}
 

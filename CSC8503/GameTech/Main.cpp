@@ -8,7 +8,11 @@
 #include "../CSC8503Common/PushdownState.h"
 #include "../CSC8503Common/PushdownMachine.h"
 
+#include "../CSC8503Common/BehaviourSequence.h"
+#include "../CSC8503Common/BehaviourAction.h"
+
 #include "TutorialGame.h"
+#include "../CSC8503Common/BehaviourSelector.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -147,6 +151,121 @@ void TestPushdownAutomata(Window* w) {
 	}
 }
 
+void TestBehaviourTree() {
+	float behaviourTimer;
+	float distanceToTarget;
+
+	BehaviourAction* findKey = new BehaviourAction("Find Key", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == BehaviourState::Initialise) {
+			std::cout << "Looking for a key!\n";
+			behaviourTimer = rand() % 100;
+			state = BehaviourState::Ongoing;
+		}
+		else if (state == BehaviourState::Ongoing) {
+			behaviourTimer -= dt;
+			if (behaviourTimer <= 0.0f) {
+				std::cout << "Found a key!\n";
+				return BehaviourState::Success;
+			}
+		}
+		return state;
+	});
+
+	BehaviourAction* goToRoom = new BehaviourAction("Go to room", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == BehaviourState::Initialise) {
+			std::cout << "Going to the loot room!\n";
+			state = BehaviourState::Ongoing;
+		}
+		else if (state == BehaviourState::Ongoing) {
+			distanceToTarget -= dt;
+			if (distanceToTarget <= 0.0f) {
+				std::cout << "Reached room!\n";
+				return BehaviourState::Success;
+			}
+		}
+		return state;
+	});
+
+	BehaviourAction* openDoor = new BehaviourAction("Open Door", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == BehaviourState::Initialise) {
+			std::cout << "Opening Door!\n";
+			return BehaviourState::Success;
+		}
+		return state;
+	});
+
+	BehaviourAction* lookForTreasure = new BehaviourAction("Look For Treasure", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == BehaviourState::Initialise) {
+			std::cout << "Looking for treasure!\n";
+			return BehaviourState::Ongoing;
+		}
+		else if (state == BehaviourState::Ongoing) {
+			bool found = rand() % 2;
+			if (found) {
+				std::cout << "I found some treasure!\n";
+				return BehaviourState::Success;
+			}
+			std::cout << "No treasure in here...\n";
+			return BehaviourState::Failure;
+		}
+		return state;
+		});
+
+	BehaviourAction* lookForItems = new BehaviourAction("Look For Items", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == BehaviourState::Initialise) {
+			std::cout << "Looking for items!\n";
+			return BehaviourState::Ongoing;
+		}
+		else if (state == BehaviourState::Ongoing) {
+			bool found = rand() % 2;
+			if (found) {
+				std::cout << "I found some items!\n";
+				return BehaviourState::Success;
+			}
+			std::cout << "No items in here...\n";
+			return BehaviourState::Failure;
+		}
+		return state;
+	});
+
+	BehaviourSequence* sequence =
+		new BehaviourSequence("Room Sequence");
+	sequence->AddChild(findKey);
+	sequence->AddChild(goToRoom);
+	sequence->AddChild(openDoor);
+
+	BehaviourSelector* selection =
+		new BehaviourSelector("Loot Selection");
+	selection->AddChild(lookForTreasure);
+	selection->AddChild(lookForItems);
+
+	BehaviourSequence* rootSequence =
+		new BehaviourSequence("Root Sequence");
+	rootSequence->AddChild(sequence);
+	rootSequence->AddChild(selection);
+
+	for (int i = 0; i < 5; ++i) {
+		rootSequence->Reset();
+		behaviourTimer = 0.0f;
+		distanceToTarget = rand() % 250;
+		BehaviourState state = BehaviourState::Ongoing;
+		std::cout << "We're going on an adventure!\n";
+		
+		while (state == BehaviourState::Ongoing) {
+			state = rootSequence->Execute(1.0f);
+		}
+		if (state == BehaviourState::Success) {
+			std::cout << "What a successful adventure!\n";
+		}
+		else if (state == BehaviourState::Failure) {
+			std::cout << "What a waste of time!\n";
+		}
+	}
+	std::cout << "All done!\n";
+}
+
+
+
 /*
 
 The main function should look pretty familar to you!
@@ -162,10 +281,10 @@ hide or show the
 int main() {
 	Window*w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
 
-
-	TestPathfinding();
-	TestStateMachine();
-	TestPushdownAutomata(w);
+    TestPathfinding();
+	TestBehaviourTree();
+	//TestStateMachine();
+	//TestPushdownAutomata(w);
 	if (!w->HasInitialised()) {
 		return -1;
 	}	
