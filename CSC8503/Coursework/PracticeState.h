@@ -21,7 +21,7 @@ namespace NCL {
 			float yaw;
 			float pitch;
 			float cameraDistance;
-
+			float scoreTracker;
 		};
 
 	}

@@ -3,6 +3,7 @@
 #include "PrefabGenerator.h"
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "../CSC8503Common/PushdownMachine.h"
+#include "Checkpoint.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -40,6 +41,7 @@ namespace NCL {
 			void InitSlope();
 			void InitGauntlet2();
 			void InitPlayers();
+			void InitCheckpoints();
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;
@@ -52,6 +54,7 @@ namespace NCL {
 			bool quit;
 
 			PlayerObject* player;
+			std::vector<Checkpoint*> checkpoints;
 		};
 	}
 }

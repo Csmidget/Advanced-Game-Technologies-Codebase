@@ -13,6 +13,8 @@
 
 #include "TutorialGame.h"
 #include "../CSC8503Common/BehaviourSelector.h"
+#include "../CSC8503Common/BehaviourParallel.h"
+#include "../CSC8503Common/BehaviourDecorator.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -234,15 +236,27 @@ void TestBehaviourTree() {
 	sequence->AddChild(goToRoom);
 	sequence->AddChild(openDoor);
 
-	BehaviourSelector* selection =
-		new BehaviourSelector("Loot Selection");
+	BehaviourParallel* selection =
+		new BehaviourParallel("Loot Selection");
 	selection->AddChild(lookForTreasure);
 	selection->AddChild(lookForItems);
+
+	BehaviourDecorator* inverter = new BehaviourDecorator("Inverter", [](BehaviourState state)->BehaviourState {
+		switch (state) {
+			case BehaviourState::Failure:
+				return BehaviourState::Success;
+			case BehaviourState::Success:
+				return BehaviourState::Failure;
+			default:
+				return state;
+		}
+	});
+	inverter->SetChild(selection);
 
 	BehaviourSequence* rootSequence =
 		new BehaviourSequence("Root Sequence");
 	rootSequence->AddChild(sequence);
-	rootSequence->AddChild(selection);
+	rootSequence->AddChild(inverter);
 
 	for (int i = 0; i < 5; ++i) {
 		rootSequence->Reset();
@@ -253,13 +267,14 @@ void TestBehaviourTree() {
 		
 		while (state == BehaviourState::Ongoing) {
 			state = rootSequence->Execute(1.0f);
+			Sleep(10);
 		}
 		if (state == BehaviourState::Success) {
 			std::cout << "What a successful adventure!\n";
 		}
 		else if (state == BehaviourState::Failure) {
 			std::cout << "What a waste of time!\n";
-		}
+		}	
 	}
 	std::cout << "All done!\n";
 }

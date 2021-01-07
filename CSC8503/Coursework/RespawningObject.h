@@ -8,16 +8,15 @@ namespace NCL {
 		class RespawningObject : public GameObject {
 
 		public:
-			RespawningObject(Vector3 spawnPosition,bool randomizeOrientation = false, string name = "");
+			RespawningObject(Vector3 spawnPosition, string name, bool randomizeOrientation = false);
 
-			virtual void OnKill() override;
+			virtual void Respawn();
 			virtual void Update(float dt) override;
 
 			void SetRespawnPosition(Vector3 val) { spawnPosition = val; }
 
 		private:
-			void Respawn();
-
+			void OnKill() override;
 			Vector3 spawnPosition;
 			bool randomizeOrientation;
 

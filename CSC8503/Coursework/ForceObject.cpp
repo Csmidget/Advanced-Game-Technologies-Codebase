@@ -37,7 +37,7 @@ ForceObject::~ForceObject() {
 
 void ForceObject::OnCollisionBegin(GameObject* otherObject) {
 
-	Constraint* newConstraint = new LinearImpulseConstraint(otherObject, transform.GetOrientation() * direction * strength);
+	Constraint* newConstraint = new LinearImpulseConstraint(otherObject, (transform.GetOrientation() * direction) * strength);
 	world->AddConstraint(newConstraint);
 	activeConstraints.emplace(otherObject, newConstraint);
 

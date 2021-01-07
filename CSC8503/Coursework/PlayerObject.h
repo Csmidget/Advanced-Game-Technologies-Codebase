@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RespawningObject.h"
+#include "ActorObject.h"
 #include "../../Common/Vector2.h"
 
 namespace NCL {
@@ -9,13 +9,13 @@ namespace NCL {
 
 	namespace CSC8503 {
 
-		class PlayerObject : public RespawningObject {
+		class PlayerObject : public ActorObject {
 
 		public:
-			PlayerObject(Vector3 respawnPosition);
+			PlayerObject(GameWorld* world, Vector3 respawnPosition);
 			~PlayerObject();
 
-			void Update(float dt) override;
+			void OnUpdate(float dt) override;
 			void UpdateControls();
 			void OnCollisionBegin(GameObject* otherObject) override;
 

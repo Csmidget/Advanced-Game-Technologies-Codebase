@@ -15,9 +15,16 @@ namespace NCL {
 	public:
 		CollisionVolume() {
 			type = VolumeType::Invalid;
+			active = true;
 		}
 		~CollisionVolume() {}
 
+		bool IsActive() const { return active; }
+		void SetActive(bool val) { active = val; }
+
 		VolumeType type;
+
+	protected:
+		bool active;
 	};
 }

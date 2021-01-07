@@ -5,15 +5,15 @@
 using namespace NCL;
 using namespace CSC8503;
 
-PlayerObject::PlayerObject(Vector3 respawnPosition) : RespawningObject(respawnPosition, false, "player") {
-
+PlayerObject::PlayerObject(GameWorld* world, Vector3 respawnPosition) : ActorObject(world, respawnPosition, "player") {
+	lastCollisionTimer = 0.0f;
 }
 
 PlayerObject::~PlayerObject() {
 
 }
 
-void PlayerObject::Update(float dt) {
+void PlayerObject::OnUpdate(float dt) {
 	lastCollisionTimer += dt;
 }
 

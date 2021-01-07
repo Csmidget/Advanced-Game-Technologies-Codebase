@@ -13,12 +13,6 @@
     <ClCompile Include="RespawningObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="BonusObject.cpp">
-      <Filter>GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerObject.cpp">
-      <Filter>GameObjects</Filter>
-    </ClCompile>
     <ClCompile Include="MainMenuState.cpp">
       <Filter>Game States</Filter>
     </ClCompile>
@@ -27,6 +21,21 @@
     </ClCompile>
     <ClCompile Include="PauseState.cpp">
       <Filter>Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="PendulumObject.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorObject.cpp">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BonusObject.cpp">
+      <Filter>GameObjects\Bonus Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreBonusObject.cpp">
+      <Filter>GameObjects\Bonus Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -41,12 +50,6 @@
     <ClInclude Include="RespawningObject.h">
       <Filter>GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="BonusObject.h">
-      <Filter>GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerObject.h">
-      <Filter>GameObjects</Filter>
-    </ClInclude>
     <ClInclude Include="MainMenuState.h">
       <Filter>Game States</Filter>
     </ClInclude>
@@ -59,6 +62,25 @@
     <ClInclude Include="PauseState.h">
       <Filter>Game States</Filter>
     </ClInclude>
+    <ClInclude Include="PendulumObject.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Powerup.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorObject.h">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BonusObject.h">
+      <Filter>GameObjects\Bonus Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreBonusObject.h">
+      <Filter>GameObjects\Bonus Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Checkpoint.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GameObjects">
@@ -69,6 +91,12 @@
     </Filter>
     <Filter Include="Game States">
       <UniqueIdentifier>{70cfff44-507c-4815-8a04-d51642863890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Bonus Objects">
+      <UniqueIdentifier>{5c399838-519c-4275-92f1-b86176dc88fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Actor Objects">
+      <UniqueIdentifier>{fc8cc4e1-2c38-4c9a-9661-0bef652258e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

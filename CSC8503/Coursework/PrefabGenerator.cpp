@@ -2,14 +2,17 @@
 #include "ForceObject.h"
 #include "RespawningObject.h"
 #include "PlayerObject.h"
+#include "ScoreBonusObject.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
+#include "../CSC8503Common/LinearImpulseConstraint.h"
 
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
+#include "PendulumObject.h"
 
 
 using namespace NCL;
@@ -27,7 +30,8 @@ PrefabGenerator::PrefabGenerator() {
 	loadFunc("Male1.msh", &charMeshA);
 	loadFunc("courier.msh", &charMeshB);
 	loadFunc("security.msh", &enemyMesh);
-	loadFunc("coin.msh", &bonusMesh);
+	loadFunc("coin.msh", &coinMesh);
+	loadFunc("apple.msh", &bonusMesh);
 	loadFunc("capsule.msh", &capsuleMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
@@ -70,7 +74,7 @@ GameObject* PrefabGenerator::CreateAABBCube(Vector3 position, Vector3 dimensions
 }
 
 GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) {
-	GameObject* cube = respawning ? new RespawningObject(position,true,"respawningOrientedCube") : new GameObject("orientedCube");
+	GameObject* cube = respawning ? new RespawningObject(position,"respawningOrientedCube",true) : new GameObject("orientedCube");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
 
@@ -152,7 +156,7 @@ GameObject* PrefabGenerator::CreateSlipperyFloor(const Vector3& position, const 
 }
 
 GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) {
-	GameObject* capsule = respawning ? new RespawningObject(position,true,"respawningCapsule") : new GameObject("capsule");
+	GameObject* capsule = respawning ? new RespawningObject(position,"respawningCapsule",true) : new GameObject("capsule");
 
 	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
 	capsule->SetBoundingVolume((CollisionVolume*)volume);
@@ -175,7 +179,7 @@ GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientat
 }
 
 GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) {
-	GameObject* sphere = respawning ? new RespawningObject(position,true,"respawningSphere") : new GameObject("sphere");
+	GameObject* sphere = respawning ? new RespawningObject(position,"respawningSphere",true) : new GameObject("sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
 	SphereVolume* volume = new SphereVolume(radius);
@@ -213,16 +217,16 @@ GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
 
 
 GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x,0.1,dimensions.y),orientation, Vector3(0, 0, -1), strength));
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f,dimensions.y),orientation, Vector3(0, 0, -1), strength));
 }
 
 GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.1, dimensions.y), orientation, Vector3(0, 1, 0), strength));
+	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 1, 0), strength));
 }
 
 GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force) {
 
-	GameObject* spinningBlock = world->AddGameObject(CreateOBBCube(position, Quaternion(), Vector3(12.5, 2, 2), 0.01f));
+	GameObject* spinningBlock = world->AddGameObject(CreateOBBCube(position, Quaternion(), Vector3(10.0f, 2, 2), 0.01f));
 
 	GameObject* positionAnchor = world->AddGameObject(CreateAnchor(position));
 	world->AddConstraint(new PositionConstraint(positionAnchor, spinningBlock, 0.0f));
@@ -239,7 +243,7 @@ PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& positi
 	float meshSize = 1.0f;
 	float inverseMass = 0.5f;
 
-	PlayerObject* player = new PlayerObject(position);
+	PlayerObject* player = new PlayerObject(world, position);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize,0.3f);
 	
@@ -265,4 +269,52 @@ PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& positi
 	world->AddGameObject(player);
 		
 	return player;
+}
+
+void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) {
+
+	Vector3 dimensions = Vector3(1, 1, 1);
+	float inverseMass = 0.5f;
+
+	GameObject* anchor = world->AddGameObject(CreateAnchor(position));
+
+	PendulumObject* pendulum = new PendulumObject(world, anchor, distance, force);
+
+	OBBVolume* volume = new OBBVolume(dimensions);
+	pendulum->SetBoundingVolume((CollisionVolume*)volume);
+
+	pendulum->GetTransform()
+		.SetPosition(position)
+		.SetScale(dimensions * 2);
+
+	pendulum->SetRenderObject(new RenderObject(&pendulum->GetTransform(), cubeMesh, basicTex, basicShader));
+	pendulum->SetPhysicsObject(new PhysicsObject(&pendulum->GetTransform(), pendulum->GetBoundingVolume()));
+
+	pendulum->GetPhysicsObject()->SetInverseMass(inverseMass);
+	pendulum->GetPhysicsObject()->InitCubeInertia();
+	pendulum->GetPhysicsObject()->SetElasticity(1.5f);
+	pendulum->GetPhysicsObject()->SetFriction(0.7f);
+
+	world->AddGameObject(pendulum);
+
+	world->AddConstraint(new PositionConstraint(anchor, pendulum, distance));
+	world->AddConstraint(new OrientationConstraint(pendulum, anchor, Vector3(0, 1, 0)));
+}
+
+GameObject* PrefabGenerator::AddScoreBonus(GameWorld* world, Vector3 position) {
+
+	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,4);
+
+	SphereVolume* volume = new SphereVolume(1.0f);
+	scoreObject->SetBoundingVolume((CollisionVolume*)volume);
+	scoreObject->GetTransform()
+		.SetScale(Vector3(0.1f,0.1f,0.1f))
+		.SetPosition(position);
+
+	scoreObject->SetRenderObject(new RenderObject(&scoreObject->GetTransform(), coinMesh, nullptr, basicShader));
+	scoreObject->GetRenderObject()->SetColour(Vector4(1, 1, 0, 1));
+
+	world->AddGameObject(scoreObject);
+
+	return scoreObject;
 }

@@ -135,8 +135,10 @@
     <ClInclude Include="AABBVolume.h" />
     <ClInclude Include="AngularImpulseConstraint.h" />
     <ClInclude Include="BehaviourAction.h" />
+    <ClInclude Include="BehaviourDecorator.h" />
     <ClInclude Include="BehaviourNode.h" />
     <ClInclude Include="BehaviourNodeWithChildren.h" />
+    <ClInclude Include="BehaviourParallel.h" />
     <ClInclude Include="BehaviourSelector.h" />
     <ClInclude Include="BehaviourSequence.h" />
     <ClInclude Include="CapsuleVolume.h" />

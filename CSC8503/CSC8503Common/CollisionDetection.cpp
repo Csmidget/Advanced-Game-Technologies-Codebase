@@ -46,7 +46,7 @@ bool CollisionDetection::RayIntersection(const Ray& r,GameObject& object, RayCol
 	const Transform& worldTransform = object.GetTransform();
 	const CollisionVolume* volume	= object.GetBoundingVolume();
 
-	if (!volume) {
+	if (!volume || volume->IsActive()) {
 		return false;
 	}
 
@@ -384,7 +384,7 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
 	const CollisionVolume* volA = a->GetBoundingVolume();
 	const CollisionVolume* volB = b->GetBoundingVolume();
 
-	if (!volA || !volB) {
+	if (!volA || !volB || !volA->IsActive() || !volB->IsActive()) {
 		return false;
 	}
 

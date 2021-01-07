@@ -1,30 +1,31 @@
 #pragma once
-
 #include "BehaviourNodeWithChildren.h"
 
 namespace NCL {
 	namespace CSC8503 {
-		class BehaviourSelector : public BehaviourNodeWithChildren {
+		
+		class BehaviourParallel : public BehaviourNodeWithChildren {
 		public:
-			BehaviourSelector(const std::string& nodeName) : BehaviourNodeWithChildren(nodeName) {};
-			~BehaviourSelector() {};
+			BehaviourParallel(const std::string& nodeName) : BehaviourNodeWithChildren(nodeName) {};
+			~BehaviourParallel() {};
 
 			BehaviourState Execute(float dt) override {
+				currentState = BehaviourState::Failure;
 				for (auto& i : childNodes) {
 					BehaviourState nodeState = i->Execute(dt);
 					switch (nodeState) {
 						case BehaviourState::Failure: continue;
-						case BehaviourState::Success:
 						case BehaviourState::Ongoing:
-						{
 							currentState = nodeState;
-							return currentState;
+						case BehaviourState::Success:
+						{
+							if (currentState != BehaviourState::Ongoing)
+								currentState = nodeState;
 						}
 					}
 				}
-				return BehaviourState::Failure;
+				return currentState;
 			}
 		};
-
 	}
 }

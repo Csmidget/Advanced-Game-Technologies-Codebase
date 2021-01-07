@@ -5,6 +5,8 @@
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
+#include "../CSC8503Common/LinearImpulseConstraint.h"
+#include "../CSC8503Common/CollisionDetection.h"
 #include "MainMenuState.h"
 
 
@@ -45,6 +47,17 @@ void Game::UpdateGame(float dt) {
 	if (!pause) {
 		physics->Update(dt);
 		world->UpdateWorld(dt);
+	}
+
+	Vector3 playerBroadphase;
+	if (player && player->GetBroadphaseAABB(playerBroadphase)) {
+		for (auto cp : checkpoints) {
+			if (CollisionDetection::AABBTest(player->GetTransform().GetPosition(), cp->GetPosition(), playerBroadphase, cp->GetHalfDims())) {
+				//player is inside checkpoint area
+				if (!player->GetCheckpoint() || cp->GetPriority() >= player->GetCheckpoint()->GetPriority())
+					player->SetCheckpoint(cp);
+			}
+		}
 	}
 
 	if (!gameStateMachine->Update(dt) || Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
@@ -105,6 +118,12 @@ void Game::Clear() {
 
 	//As this is a game object it will be deleted by  world ClearAndErase()
 	player = nullptr;
+	
+	for (auto cp : checkpoints) {
+		delete cp;
+	}
+	checkpoints.clear();
+
 }
 
 void Game::ResetWorld() {
@@ -120,6 +139,7 @@ void Game::InitWorld() {
 	InitSlope();
 	InitGauntlet2();
 	InitPlayers();
+	InitCheckpoints();
 }
 
 void Game::InitKillPlanes() {
@@ -130,25 +150,25 @@ void Game::InitKillPlanes() {
 void Game::InitBaseGeometry() {
 
 	//Starting zone
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 100), Vector2(25, 25)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 100), Vector2(20, 20)));
 
 	//First Gauntlet
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(12.5, 75)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(10, 80)));
 
 	//Checkpoint1
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(25, 25)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(20, 20)));
 
 	//Slope
-	world->AddGameObject(prefabGenerator->CreateOrientedFloor(Vector3(0.0f, 43.0f, -100.0f), Quaternion::EulerAnglesToQuaternion(0, 0, 30), Vector2(87, 12.5)));
+	world->AddGameObject(prefabGenerator->CreateOrientedFloor(Vector3(0.0f, 50.5f, -100.0f), Quaternion::EulerAnglesToQuaternion(0, 0, 32.5), Vector2(95.15, 10)));
 
 	//Checkpoint2
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, -100.0f), Vector2(25, 25)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 101.5f, -100.0f), Vector2(20, 20)));
 
 	//Second Gauntlet
 	//world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, 0.0f), Vector2(12.5, 75)));
 
 	//Goal
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 86.35f, 100.0f), Vector2(25, 25)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(100.0f, 101.5f, 100.0f), Vector2(20, 20)));
 
 }
 
@@ -157,6 +177,7 @@ void Game::InitGauntlet1() {
 	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, -30.0f), Vector3(0, 1, 0), -100.0f);
 	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 0.0f), Vector3(0, 1, 0), 100.0f);
 	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 30.0f), Vector3(0, 1, 0), -100.0f);
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 50.0f));
 }
 
 void Game::InitSlope() {
@@ -164,17 +185,17 @@ void Game::InitSlope() {
 	for (int i = 1; i <= 4; ++i) { 
 		float height = i * 150;
 
-		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -110.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
+//		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -110.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -105.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -100.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, - 95.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
-		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, - 90.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
+	//	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, - 90.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 
-		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -110.0f), 1.0f, 0.2f, true));
+//		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -110.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -105.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -100.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, - 95.0f), 1.0f, 0.2f, true));
-		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, - 90.0f), 1.0f, 0.2f, true));
+//		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, - 90.0f), 1.0f, 0.2f, true));
 
 		world->AddGameObject(prefabGenerator->CreateOBBCube(Vector3(70.0f, height + 100, -107.0f), Quaternion(), Vector3(1, 1, 1), 0.1f, true));
 		world->AddGameObject(prefabGenerator->CreateOBBCube(Vector3(70.0f, height + 100, -100.0f), Quaternion(), Vector3(1, 1, 1), 0.1f, true));
@@ -183,90 +204,35 @@ void Game::InitSlope() {
 }
 
 void Game::InitGauntlet2() {
-	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(100, 90, -100), 2.0f, 10.0f));
-	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(118.75f, 86.35f, -55.0f), Quaternion(), Vector2(6.25f, 20.0f)));
-	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, 86.35f, -41.25f), Quaternion(), Vector2(12.5f, 1.5f)));
+	float y = 101.5f;
 
-	prefabGenerator->AddTreadmill(world, Vector3(81.25f, 86.75f, -26.25f), Quaternion(), 20.0f, Vector2(6.25f, 21.25f));
-	prefabGenerator->AddBouncePad(world, Vector3(81.25f, 86.75f, 1.25f), Quaternion(), 1000.0f, Vector2(6.25f, 6.25f));
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.0f, y, -60.0f), Quaternion(), Vector2(5.0f, 20.0f)));
+	prefabGenerator->AddBouncePad(world, Vector3(115.0f, y, -38.0f), Quaternion(), 400.0f, Vector2(5.0f, 2.0f));
+
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, y, -45.0f), Quaternion(), Vector2(10.0f, 1.5f)));
+
+	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, -25.0f), Quaternion(), 20.0f, Vector2(5.0f, 25.0f));
+
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(103.0f, y, -5.0f), Quaternion(), Vector2(13.0f, 1.0f)));
+
+//	prefabGenerator->AddPendulum(world, Vector3(106.25f, 96.35f, 1.25f), 8.0f, Vector3(0, 0, 30));
+
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.5f, y, 3.0f), Quaternion(), Vector2(0.5f,7.0f)));
+
+	prefabGenerator->AddTreadmill(world, Vector3(105.0f, y, 15.0f), Matrix4::Rotation(90,Vector3(0,1,0)), 30.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, 25.0f), Matrix4::Rotation(180, Vector3(0, 1, 0)), 30.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(95.0f, y, 45.0f), Matrix4::Rotation(-90, Vector3(0, 1, 0)), 30.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(115.0f, y, 35.0f), Quaternion(), 30.0f, Vector2(5.0f, 15.0f));
+
+	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, y, 65.0f), Quaternion(), Vector2(2.0f, 15.0f)));
+
 }
 
 void Game::InitPlayers() {
 	player = prefabGenerator->AddPlayer(world, Vector3(-100, 5, 100));
 }
 
-//GameObject* Game::AddPlayerToWorld(const Vector3& position) {
-//	float meshSize = 3.0f;
-//	float inverseMass = 0.5f;
-//
-//	GameObject* character = new GameObject("player");
-//
-//	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.85f, 0.3f) * meshSize);
-//
-//	character->SetBoundingVolume((CollisionVolume*)volume);
-//
-//	character->GetTransform()
-//		.SetScale(Vector3(meshSize, meshSize, meshSize))
-//		.SetPosition(position);
-//
-//	if (rand() % 2) {
-//		character->SetRenderObject(new RenderObject(&character->GetTransform(), charMeshA, nullptr, basicShader));
-//	}
-//	else {
-//		character->SetRenderObject(new RenderObject(&character->GetTransform(), charMeshB, nullptr, basicShader));
-//	}
-//	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-//
-//	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-//	character->GetPhysicsObject()->InitSphereInertia();
-//
-//	world->AddGameObject(character);
-//
-//	//lockedObject = character;
-///
-//	return character;
-//}
-
-//GameObject* Game::AddEnemyToWorld(const Vector3& position) {
-//	float meshSize		= 3.0f;
-//	float inverseMass	= 0.5f;
-//
-//	GameObject* character = new GameObject("enemy");
-//
-//	AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
-//	character->SetBoundingVolume((CollisionVolume*)volume);
-//
-//	character->GetTransform()
-//		.SetScale(Vector3(meshSize, meshSize, meshSize))
-//		.SetPosition(position);
-//
-//	character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));
-//	character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-//
-//	character->GetPhysicsObject()->SetInverseMass(inverseMass);
-//	character->GetPhysicsObject()->InitSphereInertia();
-//
-//	world->AddGameObject(character);
-//
-//	return character;
-//}
-
-//GameObject* Game::AddBonusToWorld(const Vector3& position) {
-//	GameObject* apple = new GameObject();
-//
-//	SphereVolume* volume = new SphereVolume(0.25f);
-//	apple->SetBoundingVolume((CollisionVolume*)volume);
-//	apple->GetTransform()
-//		.SetScale(Vector3(0.25, 0.25, 0.25))
-//		.SetPosition(position);
-//
-//	apple->SetRenderObject(new RenderObject(&apple->GetTransform(), bonusMesh, nullptr, basicShader));
-//	apple->SetPhysicsObject(new PhysicsObject(&apple->GetTransform(), apple->GetBoundingVolume()));
-//
-//	apple->GetPhysicsObject()->SetInverseMass(1.0f);
-//	apple->GetPhysicsObject()->InitSphereInertia();
-//
-//	world->AddGameObject(apple);
-//
-//	return apple;
-//}
+void Game::InitCheckpoints() {
+	checkpoints.push_back(new Checkpoint(Vector3(-100, 10, -100), Vector3(20, 10, 20), 1));
+	checkpoints.push_back(new Checkpoint(Vector3( 100, 111, -100), Vector3(20, 10, 20), 2));
+}

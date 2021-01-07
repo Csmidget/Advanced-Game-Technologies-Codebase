@@ -11,6 +11,7 @@ PracticeState::PracticeState(Game* game) : GameState(game) {
 	yaw = 0.0f;
 	cameraDistance = 10.0f;
 	game->ResetWorld();
+	scoreTracker = 0.0f;
 }
 
 PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** newState) {
@@ -22,10 +23,29 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
 		*newState = new PauseState(game);
 		return PushdownResult::Push;
-
 	}
 
 	PlayerObject* player = game->GetPlayerObject();
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1)) {
+		player->GetTransform().SetPosition(Vector3(-100, 10, 100));
+	}
+	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM2)) {
+		player->GetTransform().SetPosition(Vector3(-100, 10, -100));
+	}
+	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM3)) {
+		player->GetTransform().SetPosition(Vector3(100, 110.0f, -100));
+	}
+	
+	scoreTracker += dt;
+
+	if (scoreTracker > 1) {
+		int score = std::floor(scoreTracker);
+		player->AddScore(-score);
+		scoreTracker -= score;
+	}
+
+	Debug::Print("Score: " + std::to_string(player->GetScore()), Vector2(5, 5));
 
 	pitch += (Window::GetMouse()->GetRelativePosition().y);
 	yaw -= Window::GetMouse()->GetRelativePosition().x;

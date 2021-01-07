@@ -52,6 +52,10 @@ namespace NCL {
 				isStatic = val;
 			}
 
+			bool HasTag(std::string tag) {
+				return std::find(tags.begin(), tags.end(), tag) != tags.end();			
+			}
+
 			Transform& GetTransform() {
 				return transform;
 			}
@@ -109,6 +113,7 @@ namespace NCL {
 			int collisionLayer;
 			string	name;
 			Vector3 broadphaseAABB;
+			std::vector<std::string> tags;
 		};
 	}
 }

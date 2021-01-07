@@ -25,10 +25,12 @@ namespace NCL {
 			GameObject* CreateSlipperyFloor(const Vector3& position,const Quaternion& orientation,const Vector2& dimensions);
 
 			//These functions add objects directly to a world (multiple component objects, or objects including constraints).
-			GameObject* AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 10.0f, const Vector2& dimensions = { 1,1 });
-			GameObject* AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 0.1f, const Vector2& dimensions = { 1,2 });
-			GameObject* AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
-			PlayerObject* AddPlayer(GameWorld* world, const Vector3& position);
+			GameObject*		AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 10.0f, const Vector2& dimensions = { 1,1 });
+			GameObject*		AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 0.1f, const Vector2& dimensions = { 1,2 });
+			GameObject*		AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
+			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position);
+			PlayerObject*	AddPlayer(GameWorld* world, const Vector3& position);
+			void			AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force);
 
 		protected:
 
@@ -42,6 +44,7 @@ namespace NCL {
 			OGLMesh* charMeshA = nullptr;
 			OGLMesh* charMeshB = nullptr;
 			OGLMesh* enemyMesh = nullptr;
+			OGLMesh* coinMesh = nullptr;
 			OGLMesh* bonusMesh = nullptr;
 		};
 	}

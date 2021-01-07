@@ -3,7 +3,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-RespawningObject::RespawningObject(Vector3 spawnPosition, bool randomizeOrientation, string name) : GameObject(name) {
+RespawningObject::RespawningObject(Vector3 spawnPosition, string name, bool randomizeOrientation) : GameObject(name) {
 	this->spawnPosition = spawnPosition;
 	this->randomizeOrientation = randomizeOrientation;
 
