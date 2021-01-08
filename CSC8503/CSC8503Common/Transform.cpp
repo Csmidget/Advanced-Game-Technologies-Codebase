@@ -1,4 +1,7 @@
 #include "Transform.h"
+#include <iomanip>
+#include <sstream>
+#include "Debug.h"
 
 using namespace NCL::CSC8503;
 
@@ -35,4 +38,22 @@ Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	orientation = worldOrientation;
 	UpdateMatrix();
 	return *this;
+}
+
+void Transform::PrintDebugInfo(int& currLine) {
+	std::stringstream stream;
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "Position: "  << position;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
+
+	stream << "Orientation: " << orientation;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
+
+	stream << "Scale: " << scale;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
 }

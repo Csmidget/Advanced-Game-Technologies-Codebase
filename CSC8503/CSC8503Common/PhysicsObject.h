@@ -55,6 +55,8 @@ namespace NCL {
 				return inverseMass;
 			}
 
+			void PrintDebugInfo(int& currLine);
+
 			void ApplyAngularImpulse(const Vector3& force);
 			void ApplyLinearImpulse(const Vector3& force);
 			

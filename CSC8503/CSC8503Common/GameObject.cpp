@@ -1,5 +1,7 @@
 #include "GameObject.h"
 #include "CollisionDetection.h"
+#include "Debug.h"
+#include <sstream>
 
 using namespace NCL::CSC8503;
 
@@ -52,4 +54,21 @@ void GameObject::UpdateBroadphaseAABB() {
 		Vector3 halfSizes = Vector3(volume.GetRadius(), volume.GetHalfHeight(),volume.GetRadius());
 		broadphaseAABB = mat * halfSizes;
 	}
+}
+
+void GameObject::PrintDebugInfo() {
+	int currLine = 0;
+
+	std::stringstream stream;
+
+	stream << "Name: " << name;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
+		
+	transform.PrintDebugInfo(currLine);
+	
+	if(physicsObject)
+		physicsObject->PrintDebugInfo(currLine);
+
+	ObjectSpecificDebugInfo(currLine);
 }

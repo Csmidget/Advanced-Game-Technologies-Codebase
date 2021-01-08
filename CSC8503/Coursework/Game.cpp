@@ -44,7 +44,7 @@ Game::~Game()	{
 void Game::UpdateGame(float dt) {
 
 	UpdateKeys();
-	//Sleep(16)
+
 	if (!pause) {
 		physics->Update(dt);
 		world->UpdateWorld(dt);

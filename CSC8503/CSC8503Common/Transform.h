@@ -38,6 +38,9 @@ namespace NCL {
 				return matrix;
 			}
 			void UpdateMatrix();
+
+			void PrintDebugInfo(int& currLine);
+
 		protected:
 			Matrix4		matrix;
 			Quaternion	orientation;

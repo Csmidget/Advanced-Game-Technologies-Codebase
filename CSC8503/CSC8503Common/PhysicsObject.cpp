@@ -1,6 +1,11 @@
 #include "PhysicsObject.h"
 #include "PhysicsSystem.h"
-#include "../CSC8503Common/Transform.h"
+#include "Transform.h"
+#include <iomanip>
+#include <sstream>
+#include "Debug.h"
+
+
 using namespace NCL;
 using namespace CSC8503;
 
@@ -102,4 +107,19 @@ void PhysicsObject::UpdateInertiaTensor() {
 	Matrix3 orientation		= Matrix3(q);
 
 	inverseInteriaTensor = orientation * Matrix3::Scale(inverseInertia) *invOrientation;
+}
+
+void PhysicsObject::PrintDebugInfo(int& currLine) {
+	std::stringstream stream;
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "LinVel: " << linearVelocity;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
+
+	stream << "AngVel: " << angularVelocity;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	stream.str("");
+
 }

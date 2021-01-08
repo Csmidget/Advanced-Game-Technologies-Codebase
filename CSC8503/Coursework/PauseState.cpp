@@ -55,6 +55,9 @@ PushdownState::PushdownResult PauseState::OnUpdate(float dt, PushdownState** new
 		Debug::Print("(G)ravity off", Vector2(5, 95));
 	}
 
+	if (selectionObject)
+		selectionObject->PrintDebugInfo();
+
 	if (!selectionMode) {
 		camera->UpdateCamera(dt);
 	}

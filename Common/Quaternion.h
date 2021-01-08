@@ -119,7 +119,7 @@ namespace NCL {
 				<< q.x; o << ","
 				<< q.y; o << ","
 				<< q.z; o << ","
-				<< q.w;
+				<< q.w << ")";
 			return o;
 		}
 

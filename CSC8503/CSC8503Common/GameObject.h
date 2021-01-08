@@ -26,6 +26,11 @@ namespace NCL {
 
 			virtual void Update(float dt) {};
 
+			void PrintDebugInfo();
+			
+			//Override to add debug info
+			virtual void ObjectSpecificDebugInfo(int& currLine) {};
+
 			virtual void OnKill() { isActive = false; }
 
 			void SetBoundingVolume(CollisionVolume* vol) {
