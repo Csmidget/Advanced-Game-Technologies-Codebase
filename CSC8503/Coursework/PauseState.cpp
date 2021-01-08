@@ -8,6 +8,7 @@ PauseState::PauseState(Game* game) : GameState(game) {
 	camera = world->GetMainCamera();
 	selectionMode = false;
 	selectionObject = nullptr;
+	selectionObjectColour = Vector4(1, 1, 1, 1);
 }
 
 PauseState::~PauseState() {
@@ -60,7 +61,7 @@ PushdownState::PushdownResult PauseState::OnUpdate(float dt, PushdownState** new
 	else {
 		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT)) {
 			if (selectionObject) {	//set colour to deselected;
-				selectionObject->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+				selectionObject->GetRenderObject()->SetColour(selectionObjectColour);
 				selectionObject = nullptr;
 			}
 
@@ -69,6 +70,7 @@ PushdownState::PushdownResult PauseState::OnUpdate(float dt, PushdownState** new
 			if (world->Raycast(ray, closestCollision, true)) {
 				Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(0, 1, 0, 1), 10.0f);
 				selectionObject = (GameObject*)closestCollision.node;
+				selectionObjectColour = selectionObject->GetRenderObject()->GetColour();
 				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
 			}
 		}

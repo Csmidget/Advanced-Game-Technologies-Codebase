@@ -8,6 +8,7 @@ void LinearImpulseConstraint::UpdateConstraint(float dt) {
 
 	PhysicsObject* physA = object->GetPhysicsObject();
 
-	physA->ApplyLinearImpulse(force / physA->GetInverseMass() * dt); //Will multiply by mass
+	if (physA)
+		physA->ApplyLinearImpulse(force * dt);
 
 }

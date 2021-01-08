@@ -8,6 +8,7 @@ void AngularImpulseConstraint::UpdateConstraint(float dt) {
 
 	PhysicsObject* physA = object->GetPhysicsObject();
 
-	physA->ApplyAngularImpulse(force / physA->GetInverseMass() * dt); //Will multiply by mass
+	if (physA)
+		physA->ApplyAngularImpulse(force * dt);
 
 }

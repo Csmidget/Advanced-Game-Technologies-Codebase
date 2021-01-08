@@ -24,6 +24,8 @@ namespace NCL {
 			bool GetUseGravity() const { return useGravity; }
 			void SetUseGravity(bool val);
 
+			const Checkpoint* GetGoal() const { return goal; }
+
 			void ResetWorld();
 
 			void SetPause(bool val) { pause = val; }
@@ -55,6 +57,7 @@ namespace NCL {
 
 			PlayerObject* player;
 			std::vector<Checkpoint*> checkpoints;
+			Checkpoint* goal;
 		};
 	}
 }

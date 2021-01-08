@@ -37,6 +37,9 @@
     <ClCompile Include="ScoreBonusObject.cpp">
       <Filter>GameObjects\Bonus Objects</Filter>
     </ClCompile>
+    <ClCompile Include="EndState.cpp">
+      <Filter>Game States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -81,6 +84,9 @@
       <Filter>GameObjects\Actor Objects</Filter>
     </ClInclude>
     <ClInclude Include="Checkpoint.h" />
+    <ClInclude Include="EndState.h">
+      <Filter>Game States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GameObjects">

@@ -171,7 +171,7 @@ GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientat
 	capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
 	capsule->GetPhysicsObject()->InitCubeInertia();
 	capsule->GetPhysicsObject()->SetElasticity(1.0f);
-	capsule->GetPhysicsObject()->SetFriction(0.1f);
+	capsule->GetPhysicsObject()->SetFriction(0.5f);
 
 	capsule->SetIsStatic(isStatic);
 
@@ -195,7 +195,7 @@ GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
 	sphere->GetPhysicsObject()->InitHollowSphereInertia();
 	sphere->GetPhysicsObject()->SetElasticity(1.0f);
-	sphere->GetPhysicsObject()->SetFriction(0.1f);
+	sphere->GetPhysicsObject()->SetFriction(0.4f);
 
 
 	sphere->SetIsStatic(isStatic);
@@ -217,7 +217,10 @@ GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
 
 
 GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f,dimensions.y),orientation, Vector3(0, 0, -1), strength));
+	GameObject* treadmill = new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
+	treadmill->GetPhysicsObject()->SetFriction(1.0f);
+
+	return world->AddGameObject(treadmill);
 }
 
 GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
@@ -241,7 +244,7 @@ GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& p
 
 PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& position) {
 	float meshSize = 1.0f;
-	float inverseMass = 0.5f;
+	float inverseMass = 5.0f;
 
 	PlayerObject* player = new PlayerObject(world, position);
 
@@ -261,7 +264,7 @@ PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& positi
 	}
 	player->SetPhysicsObject(new PhysicsObject(&player->GetTransform(), player->GetBoundingVolume()));
 	
-	player->GetPhysicsObject()->SetInverseMass(5.0f);
+	player->GetPhysicsObject()->SetInverseMass(inverseMass);
 	player->GetPhysicsObject()->InitCubeInertia();
 	player->GetPhysicsObject()->SetElasticity(1.0f);
 	player->GetPhysicsObject()->SetFriction(0.5f);
@@ -303,7 +306,7 @@ void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float dist
 
 GameObject* PrefabGenerator::AddScoreBonus(GameWorld* world, Vector3 position) {
 
-	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,4);
+	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,25);
 
 	SphereVolume* volume = new SphereVolume(1.0f);
 	scoreObject->SetBoundingVolume((CollisionVolume*)volume);

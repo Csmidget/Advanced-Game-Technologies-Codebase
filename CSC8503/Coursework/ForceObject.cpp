@@ -24,7 +24,6 @@ ForceObject::ForceObject(GameWorld* world, MeshGeometry* mesh, TextureBase* tex,
 	physicsObject = new PhysicsObject(&transform, boundingVolume);
 	physicsObject->SetInverseMass(0);
 	physicsObject->InitCubeInertia();
-
 	isStatic = true;
 }
 
@@ -37,13 +36,17 @@ ForceObject::~ForceObject() {
 
 void ForceObject::OnCollisionBegin(GameObject* otherObject) {
 
-	Constraint* newConstraint = new LinearImpulseConstraint(otherObject, (transform.GetOrientation() * direction) * strength);
-	world->AddConstraint(newConstraint);
-	activeConstraints.emplace(otherObject, newConstraint);
+	//Constraint* newConstraint = new LinearImpulseConstraint(otherObject, (transform.GetOrientation() * direction) * strength);
+//	world->AddConstraint(newConstraint);
+//	activeConstraints.emplace(otherObject, newConstraint);
+	PhysicsObject* otherPhys = otherObject->GetPhysicsObject();
+	if (otherPhys) {
+		otherPhys->ApplyLinearImpulse((transform.GetOrientation() * direction) * strength);
+	}
 
 }
 void ForceObject::OnCollisionEnd(GameObject* otherObject) {
-	world->RemoveConstraint(activeConstraints[otherObject], true);
-	activeConstraints.erase(otherObject);
+//	world->RemoveConstraint(activeConstraints[otherObject], true);
+//	activeConstraints.erase(otherObject);
 }
 

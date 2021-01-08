@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.h"
-#include "../../Common/Vector4.h"
+#include <string>
 
 namespace NCL {
 
@@ -11,11 +11,13 @@ namespace NCL {
 		class GameWorld;
 		class GameObject;
 
-		class PauseState : public GameState {
+		class EndState : public GameState {
 
 		public:
-			PauseState(Game* game);
-			~PauseState();
+			EndState(Game* game, std::string mainText, std::string subText) : GameState(game) {
+				this->mainText = mainText;
+				this->subText = subText;
+			}
 
 		protected:
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;
@@ -25,9 +27,9 @@ namespace NCL {
 			Camera* camera;
 			const GameWorld* world;
 
-			bool selectionMode;
-			Maths::Vector4 selectionObjectColour;
-			GameObject* selectionObject;
+			std::string mainText;
+			std::string subText;
+
 		};
 
 	}

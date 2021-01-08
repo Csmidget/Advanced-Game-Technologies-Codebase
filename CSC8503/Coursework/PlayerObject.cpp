@@ -37,5 +37,8 @@ void PlayerObject::UpdateControls() {
 }
 
 void PlayerObject::OnCollisionBegin(GameObject* otherObject) {
-	lastCollisionTimer = 0.0f;
+
+	//When we collide with collectables we don't want to reset the collision timer...
+	if (otherObject->GetPhysicsObject())
+		lastCollisionTimer = 0.0f;
 }

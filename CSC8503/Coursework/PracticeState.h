@@ -22,6 +22,7 @@ namespace NCL {
 			float pitch;
 			float cameraDistance;
 			float scoreTracker;
+			bool gameOver;
 		};
 
 	}

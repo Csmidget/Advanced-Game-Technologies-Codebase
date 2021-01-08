@@ -18,6 +18,7 @@ Game::Game() {
 	renderer	= new GameTechRenderer(*world);
 	physics		= new PhysicsSystem(*world);
 	prefabGenerator = new PrefabGenerator();
+	goal = nullptr;
 
 	useGravity		= true;
 	physics->UseGravity(true);
@@ -43,7 +44,7 @@ Game::~Game()	{
 void Game::UpdateGame(float dt) {
 
 	UpdateKeys();
-
+	//Sleep(16)
 	if (!pause) {
 		physics->Update(dt);
 		world->UpdateWorld(dt);
@@ -174,44 +175,62 @@ void Game::InitBaseGeometry() {
 
 void Game::InitGauntlet1() {
 
-	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, -30.0f), Vector3(0, 1, 0), -100.0f);
-	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 0.0f), Vector3(0, 1, 0), 100.0f);
-	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 30.0f), Vector3(0, 1, 0), -100.0f);
-	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 50.0f));
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, -30.0f), Vector3(0, 1, 0), -10000.0f);
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 0.0f), Vector3(0, 1, 0), 10000.0f);
+	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 30.0f), Vector3(0, 1, 0), -10000.0f);
+
+	//Coins
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 60.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 45.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-105, 1.0f, 30.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 15.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3( -95, 1.0f, 0.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, -15.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-105, 1.0f, -30.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, -45.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, -60.0f));
 }
 
 void Game::InitSlope() {
 
+	//Falling objects
 	for (int i = 1; i <= 4; ++i) { 
 		float height = i * 150;
 
-//		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -110.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -105.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, -100.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 		world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, - 95.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
-	//	world->AddGameObject(prefabGenerator->CreateCapsule(Vector3( 70.0f, height, - 90.0f), Quaternion(), 1.0f, 0.5f, 0.3f, true));
 
-//		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -110.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -105.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, -100.0f), 1.0f, 0.2f, true));
 		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, - 95.0f), 1.0f, 0.2f, true));
-//		world->AddGameObject(prefabGenerator->CreateSphere(Vector3(70.0f, height + 50, - 90.0f), 1.0f, 0.2f, true));
 
 		world->AddGameObject(prefabGenerator->CreateOBBCube(Vector3(70.0f, height + 100, -107.0f), Quaternion(), Vector3(1, 1, 1), 0.1f, true));
 		world->AddGameObject(prefabGenerator->CreateOBBCube(Vector3(70.0f, height + 100, -100.0f), Quaternion(), Vector3(1, 1, 1), 0.1f, true));
 		world->AddGameObject(prefabGenerator->CreateOBBCube(Vector3(70.0f, height + 100, - 93.0f), Quaternion(), Vector3(1, 1, 1), 0.1f, true));
 	}
+
+	//Coins
+	prefabGenerator->AddScoreBonus(world, Vector3(-75.0f, 4.5f, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-50.0f, 20.5f, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(-25.0f, 36.25f, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(0.0f, 52.0f, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(25.0f, 67.75, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(50.0f, 83.5f, -100.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(75.0f, 99.5f, -100.0f));
+
+
 }
 
 void Game::InitGauntlet2() {
 	float y = 101.5f;
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.0f, y, -60.0f), Quaternion(), Vector2(5.0f, 20.0f)));
-	prefabGenerator->AddBouncePad(world, Vector3(115.0f, y, -38.0f), Quaternion(), 400.0f, Vector2(5.0f, 2.0f));
+	prefabGenerator->AddBouncePad(world, Vector3(115.0f, y - 1.1f, -38.25f), Matrix4::Rotation(30,Vector3(1,0,0)), 5.2f, Vector2(4.95f, 2.25f));
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, y, -45.0f), Quaternion(), Vector2(10.0f, 1.5f)));
 
-	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, -25.0f), Quaternion(), 20.0f, Vector2(5.0f, 25.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, -25.0f), Quaternion(), 0.1f, Vector2(5.0f, 25.0f));
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(103.0f, y, -5.0f), Quaternion(), Vector2(13.0f, 1.0f)));
 
@@ -219,20 +238,43 @@ void Game::InitGauntlet2() {
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.5f, y, 3.0f), Quaternion(), Vector2(0.5f,7.0f)));
 
-	prefabGenerator->AddTreadmill(world, Vector3(105.0f, y, 15.0f), Matrix4::Rotation(90,Vector3(0,1,0)), 30.0f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, 25.0f), Matrix4::Rotation(180, Vector3(0, 1, 0)), 30.0f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(95.0f, y, 45.0f), Matrix4::Rotation(-90, Vector3(0, 1, 0)), 30.0f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(115.0f, y, 35.0f), Quaternion(), 30.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(105.0f, y, 15.0f), Matrix4::Rotation(90,Vector3(0,1,0)), 0.25f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, 25.0f), Matrix4::Rotation(180, Vector3(0, 1, 0)), 0.25f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(95.0f, y, 45.0f), Matrix4::Rotation(-90, Vector3(0, 1, 0)), 0.25f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(115.0f, y, 35.0f), Quaternion(), 0.25f, Vector2(5.0f, 15.0f));
+
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(115, y + 2, 35.0f), 1.0f, 0.6f, true));
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, y, 65.0f), Quaternion(), Vector2(2.0f, 15.0f)));
+	
+	float coinY = y + 1.5f;
+	//Coins
+	prefabGenerator->AddScoreBonus(world, Vector3(87.5f, coinY, -49.5f));
+	prefabGenerator->AddScoreBonus(world, Vector3(82.5f, coinY, -49.5f));
+
+	prefabGenerator->AddScoreBonus(world, Vector3(85.0f, coinY, -35.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(85.0f, coinY, -25.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(85.0f, coinY, -15.0f));
+
+	prefabGenerator->AddScoreBonus(world, Vector3(115.5f, y + 7.0f, -25.0f));
+
+	prefabGenerator->AddScoreBonus(world, Vector3(105.0f, coinY, 15.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(85.0f , coinY, 25.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(95.0f , coinY, 45.0f));
+	prefabGenerator->AddScoreBonus(world, Vector3(115.0f, coinY, 35.0f));
+
+
 
 }
 
 void Game::InitPlayers() {
 	player = prefabGenerator->AddPlayer(world, Vector3(-100, 5, 100));
+	player->AddScore(1000.0f);
 }
 
 void Game::InitCheckpoints() {
 	checkpoints.push_back(new Checkpoint(Vector3(-100, 10, -100), Vector3(20, 10, 20), 1));
-	checkpoints.push_back(new Checkpoint(Vector3( 100, 111, -100), Vector3(20, 10, 20), 2));
+	checkpoints.push_back(new Checkpoint(Vector3(100, 111, -100), Vector3(20, 10, 20), 2));
+
+	goal = new Checkpoint(Vector3( 100, 111, 100), Vector3(20, 10, 20), 2);
 }

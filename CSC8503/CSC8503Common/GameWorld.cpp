@@ -115,10 +115,6 @@ void GameWorld::UpdateWorld(float dt) {
 			objectTree->Insert(g, pos, halfSizes);
 		}	
 	}
-#ifdef _DEBUG
-	objectTree->DebugDraw();
-#endif
-
 
 	if (shuffleObjects) {
 		std::random_shuffle(gameObjects.begin(), gameObjects.end());
