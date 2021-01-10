@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "ForceObject.h"
 #include "PlayerObject.h"
+#include "AIObject.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
@@ -34,6 +35,8 @@ Game::Game() {
 }
 
 Game::~Game()	{
+	Clear();
+
 	delete physics;
 	delete renderer;
 	delete world;
@@ -78,7 +81,7 @@ void Game::SetUseGravity(bool val) {
 
 void Game::UpdateKeys() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1)) {
-		InitWorld(); //We can reset the simulation at any time with F1
+		InitPracticeWorld(); //We can reset the simulation at any time with F1
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2)) {
@@ -125,30 +128,29 @@ void Game::Clear() {
 	}
 	checkpoints.clear();
 
+	//Opponent objects will be deleted by the world clearanderase.
+	opponents.clear();
+
 }
 
-void Game::ResetWorld() {
-	InitWorld();
-}
-
-void Game::InitWorld() {
+void Game::InitPracticeWorld() {
 	Clear();
 
-	InitKillPlanes();
-	InitBaseGeometry();
-	InitGauntlet1();
-	InitSlope();
-	InitGauntlet2();
-	InitPlayers();
-	InitCheckpoints();
+	InitPracticeKillPlanes();
+	InitPracticeBaseGeometry();
+	InitPracticeGauntlet1();
+	InitPracticeSlope();
+	InitPracticeGauntlet2();
+	InitPracticePlayers();
+	InitPracticeCheckpoints();
 }
 
-void Game::InitKillPlanes() {
+void Game::InitPracticeKillPlanes() {
 	//Kill plane below the floor
 	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0, -5, 0)));
 }
 
-void Game::InitBaseGeometry() {
+void Game::InitPracticeBaseGeometry() {
 
 	//Starting zone
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 100), Vector2(20, 20)));
@@ -173,7 +175,7 @@ void Game::InitBaseGeometry() {
 
 }
 
-void Game::InitGauntlet1() {
+void Game::InitPracticeGauntlet1() {
 
 	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, -30.0f), Vector3(0, 1, 0), -10000.0f);
 	prefabGenerator->AddSpinningBlock(world, Vector3(-100, 3.0f, 0.0f), Vector3(0, 1, 0), 10000.0f);
@@ -191,7 +193,7 @@ void Game::InitGauntlet1() {
 	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, -60.0f));
 }
 
-void Game::InitSlope() {
+void Game::InitPracticeSlope() {
 
 	//Falling objects
 	for (int i = 1; i <= 4; ++i) { 
@@ -222,7 +224,7 @@ void Game::InitSlope() {
 
 }
 
-void Game::InitGauntlet2() {
+void Game::InitPracticeGauntlet2() {
 	float y = 101.5f;
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.0f, y, -60.0f), Quaternion(), Vector2(5.0f, 20.0f)));
@@ -267,14 +269,54 @@ void Game::InitGauntlet2() {
 
 }
 
-void Game::InitPlayers() {
-	player = prefabGenerator->AddPlayer(world, Vector3(-100, 5, 100));
+void Game::InitPracticePlayers() {
+	player = prefabGenerator->AddPlayer(this, Vector3(-100, 5, 100));
 	player->AddScore(1000.0f);
 }
 
-void Game::InitCheckpoints() {
+void Game::InitPracticeCheckpoints() {
 	checkpoints.push_back(new Checkpoint(Vector3(-100, 10, -100), Vector3(20, 10, 20), 1));
 	checkpoints.push_back(new Checkpoint(Vector3(100, 111, -100), Vector3(20, 10, 20), 2));
 
 	goal = new Checkpoint(Vector3( 100, 111, 100), Vector3(20, 10, 20), 2);
+}
+
+void Game::InitRaceWorld(int players) {
+	InitRaceBaseGeometry();
+	InitRaceKillPlanes();
+	InitRaceCheckpoints();
+	InitRacePlayers(players);
+}
+
+void Game::InitRaceBaseGeometry() {
+	Clear();
+
+	//Starting zone
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 100), Vector2(20, 20)));
+
+	//First Gauntlet
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(10, 80)));
+
+	//Checkpoint1
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(20, 20)));
+}
+
+void Game::InitRaceKillPlanes() {
+	//Kill plane below the floor
+	world->AddKillPlane(new Plane(Vector3(0, 1, 0), Vector3(0, -5, 0)));
+}
+
+
+void Game::InitRaceCheckpoints() {
+	goal = new Checkpoint(Vector3(-100, 10, -100), Vector3(20, 10, 20), 1);
+
+}
+
+void Game::InitRacePlayers(int opponentCount) {
+	player = prefabGenerator->AddPlayer(this, Vector3(-95, 5, 100));
+	player->AddScore(1000.0f);
+
+	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-105, 5, 100)));
+
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 100));
 }

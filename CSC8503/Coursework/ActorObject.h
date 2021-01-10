@@ -9,13 +9,14 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class Constraint;
-		class GameWorld;
+		class Game;
 		class Checkpoint;
 
 		class ActorObject : public RespawningObject {
 
 		public:
-			ActorObject(GameWorld* world, Vector3 respawnPosition, string objectName) :RespawningObject(respawnPosition, objectName,false) {
+			ActorObject(Game* game, Vector3 respawnPosition, string objectName) :RespawningObject(respawnPosition, objectName,false) {
+				this->game = game;
 				tags.push_back("actor");
 			}
 
@@ -33,11 +34,13 @@ namespace NCL {
 
 		protected:
 			int score;
-			GameWorld* world;
+			Game* game;
 			std::map<Constraint*, float> timedConstraints;
 
 		private:
 			Checkpoint* currentCheckpoint;
+			float lastCollisionTimer;
+
 		};
 	}
 }

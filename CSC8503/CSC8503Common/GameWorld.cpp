@@ -95,7 +95,6 @@ void GameWorld::UpdateWorld(float dt) {
 	objectTree->Clear();
 	
 	for (auto g : gameObjects) {
-		g->Update(dt);
 		if (!g->IsStatic() && g->IsActive()) {
 			g->UpdateBroadphaseAABB();
 
@@ -114,6 +113,11 @@ void GameWorld::UpdateWorld(float dt) {
 			Vector3 pos = g->GetTransform().GetPosition();
 			objectTree->Insert(g, pos, halfSizes);
 		}	
+	}
+
+	//This must be done after generating object tree as some updates may want to test collisions
+	for (auto g : gameObjects) {
+		g->Update(dt);
 	}
 
 	if (shuffleObjects) {
@@ -179,4 +183,27 @@ void GameWorld::GetConstraintIterators(
 	std::vector<Constraint*>::const_iterator& last) const {
 	first	= constraints.begin();
 	last	= constraints.end();
+}
+
+GameObject* GameWorld::ClosestObjectWithinRadius(Vector3 position, float radius, std::string tag) {
+
+	auto possibleObjects = objectTree->GetPossibleCollisions(position, Vector3(radius, radius, radius));
+	
+	float closestDist = radius;
+	GameObject* closestObject = nullptr;
+
+	for (auto object : possibleObjects) {
+
+		//If a tag is defined. Only test objects with the tag.
+		if (tag == "" || !object->HasTag(tag))
+			continue;
+
+		float dist = (object->GetTransform().GetPosition() - position).Length();
+		if (dist < closestDist) {
+			closestDist = dist;
+			closestObject = object;
+		}
+	}
+
+	return closestObject;
 }

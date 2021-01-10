@@ -1,4 +1,4 @@
-#include "PracticeState.h"
+#include "RaceState.h"
 #include "PlayerObject.h"
 #include "PauseState.h"
 #include "EndState.h"
@@ -9,16 +9,16 @@
 
 using namespace NCL::CSC8503;
 
-PracticeState::PracticeState(Game* game) : GameState(game) {
+RaceState::RaceState(Game* game) : GameState(game) {
 	camera = game->GetWorld()->GetMainCamera();
 	pitch = 20.0f;
 	yaw = 0.0f;
 	cameraDistance = 10.0f;
-	game->InitPracticeWorld();
+	game->InitRaceWorld(1);
 	scoreTracker = 0.0f;
 }
 
-PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** newState) {
+PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newState) {
 
 	if (gameOver)
 		return PushdownResult::Pop;
@@ -43,7 +43,7 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 	else if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM3)) {
 		player->GetTransform().SetPosition(Vector3(100, 110.0f, -100));
 	}
-	
+
 	scoreTracker += dt;
 
 	if (scoreTracker > 1) {
@@ -99,10 +99,10 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 	return PushdownResult::NoChange;
 }
 
-void PracticeState::OnAwake() {
+void RaceState::OnAwake() {
 
 }
 
-void PracticeState::OnSleep() {
+void RaceState::OnSleep() {
 
 }

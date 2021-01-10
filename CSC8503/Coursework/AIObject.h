@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ActorObject.h"
 #include "../../Common/Vector2.h"
 
@@ -6,18 +7,21 @@ namespace NCL {
 
 	namespace CSC8503 {
 
-		class PlayerObject : public ActorObject {
+		class BehaviourNode;
+
+		class AIObject : public ActorObject {
 
 		public:
-			PlayerObject(Game* game, Vector3 respawnPosition);
-			~PlayerObject();
+			AIObject(Game* game, Vector3 respawnPosition);
+			~AIObject();
 
 			void OnUpdate(float dt) override;
-			void UpdateControls();
 			void OnCollisionBegin(GameObject* otherObject) override;
 
 		protected:
 			float lastCollisionTimer;
+			BehaviourNode* behaviourTree;
+			Quaternion orientation;
 		};
 	}
 }

@@ -2,7 +2,11 @@
 #include "ForceObject.h"
 #include "RespawningObject.h"
 #include "PlayerObject.h"
+#include "AIObject.h"
 #include "ScoreBonusObject.h"
+#include "PendulumObject.h"
+#include "Game.h"
+
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
@@ -12,7 +16,6 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Common/TextureLoader.h"
-#include "PendulumObject.h"
 
 
 using namespace NCL;
@@ -242,11 +245,11 @@ GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& p
 	return spinningBlock;
 }
 
-PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& position) {
+PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	float meshSize = 1.0f;
 	float inverseMass = 5.0f;
 
-	PlayerObject* player = new PlayerObject(world, position);
+	PlayerObject* player = new PlayerObject(game, position);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize,0.3f);
 	
@@ -266,12 +269,44 @@ PlayerObject* PrefabGenerator::AddPlayer(GameWorld* world, const Vector3& positi
 	
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
 	player->GetPhysicsObject()->InitCubeInertia();
-	player->GetPhysicsObject()->SetElasticity(1.0f);
-	player->GetPhysicsObject()->SetFriction(0.5f);
+	player->GetPhysicsObject()->SetElasticity(0.8f);
+	player->GetPhysicsObject()->SetFriction(0.8f);
 	
-	world->AddGameObject(player);
+	game->GetWorld()->AddGameObject(player);
 		
 	return player;
+}
+
+AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position) {
+	float meshSize = 1.0f;
+	float inverseMass = 5.0f;
+
+	AIObject* aiPlayer = new AIObject(game, position);
+
+	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
+
+	aiPlayer->SetBoundingVolume((CollisionVolume*)volume);
+
+	aiPlayer->GetTransform()
+		.SetScale(Vector3(meshSize, meshSize, meshSize))
+		.SetPosition(position);
+
+	if (rand() % 2) {
+		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));
+	}
+	else {
+		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshB, nullptr, basicShader));
+	}
+	aiPlayer->SetPhysicsObject(new PhysicsObject(&aiPlayer->GetTransform(), aiPlayer->GetBoundingVolume()));
+
+	aiPlayer->GetPhysicsObject()->SetInverseMass(inverseMass);
+	aiPlayer->GetPhysicsObject()->InitCubeInertia();
+	aiPlayer->GetPhysicsObject()->SetElasticity(0.8f);
+	aiPlayer->GetPhysicsObject()->SetFriction(0.8f);
+
+	game->GetWorld()->AddGameObject(aiPlayer);
+
+	return aiPlayer;
 }
 
 void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) {

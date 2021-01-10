@@ -9,7 +9,9 @@ namespace NCL {
 	namespace CSC8503 {
 
 		enum class CameraState { PlayerMode = 0, FreeMode = 1, SelectionMode = 2 };
+		
 		class PlayerObject;
+		class AIObject;
 
 		class Game {
 		public:
@@ -18,7 +20,7 @@ namespace NCL {
 
 			virtual void UpdateGame(float dt);
 			bool ShouldQuit() { return quit; }
-			const GameWorld* GetWorld() { return world;	}
+			GameWorld* GetWorld() { return world;	}
 			PlayerObject* GetPlayerObject() { return player; }
 
 			bool GetUseGravity() const { return useGravity; }
@@ -26,7 +28,8 @@ namespace NCL {
 
 			const Checkpoint* GetGoal() const { return goal; }
 
-			void ResetWorld();
+			void InitPracticeWorld();
+			void InitRaceWorld(int opponents);
 
 			void SetPause(bool val) { pause = val; }
 
@@ -36,14 +39,18 @@ namespace NCL {
 			void InitCamera();
 			void UpdateKeys();
 
-			void InitWorld();
-			void InitKillPlanes();
-			void InitBaseGeometry();
-			void InitGauntlet1();
-			void InitSlope();
-			void InitGauntlet2();
-			void InitPlayers();
-			void InitCheckpoints();
+			void InitPracticeKillPlanes();
+			void InitPracticeBaseGeometry();
+			void InitPracticeGauntlet1();
+			void InitPracticeSlope();
+			void InitPracticeGauntlet2();
+			void InitPracticePlayers();
+			void InitPracticeCheckpoints();
+
+			void InitRaceKillPlanes();
+			void InitRaceBaseGeometry();
+			void InitRacePlayers(int opponentCount);
+			void InitRaceCheckpoints();
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;
@@ -56,6 +63,7 @@ namespace NCL {
 			bool quit;
 
 			PlayerObject* player;
+			std::vector<AIObject*> opponents;
 			std::vector<Checkpoint*> checkpoints;
 			Checkpoint* goal;
 		};

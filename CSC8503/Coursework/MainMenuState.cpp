@@ -1,5 +1,6 @@
 #include "MainMenuState.h"
 #include "PracticeState.h"
+#include "RaceState.h"
 #include "Game.h"
 #include "../CSC8503Common/GameWorld.h"
 
@@ -31,6 +32,10 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 		case 0:
 			*newState = new PracticeState(game);
 			return PushdownResult::Push;
+		case 1:
+			*newState = new RaceState(game);
+			return PushdownResult::Push;
+
 		case 2:
 			return PushdownResult::Pop;
 		}
@@ -46,5 +51,5 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 
 void MainMenuState::OnAwake() {
 	cameraYaw = 0;
-	game->ResetWorld();
+	game->InitPracticeWorld();
 }

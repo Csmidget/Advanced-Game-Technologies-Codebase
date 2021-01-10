@@ -24,8 +24,8 @@ void TestPathfinding() {
 	NavigationGrid grid("TestGrid1.txt");
 	NavigationPath outPath;
 	
-	Vector3 startPos(80, 0, 10);
-	Vector3 endPos(80, 0, 80);
+	Vector3 startPos(160, 0, 20);
+	Vector3 endPos(160, 0, 160);
 
 	bool found = grid.FindPath(startPos, endPos, outPath);
 
@@ -297,7 +297,7 @@ int main() {
 	Window*w = Window::CreateGameWindow("CSC8503 Game technology!", 1280, 720);
 
     TestPathfinding();
-	TestBehaviourTree();
+//	TestBehaviourTree();
 	//TestStateMachine();
 	//TestPushdownAutomata(w);
 	if (!w->HasInitialised()) {

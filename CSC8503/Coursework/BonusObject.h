@@ -15,11 +15,14 @@ namespace NCL {
 				popped = false;
 				respawnTimer = respawnDelay;
 				this->respawnDelay = respawnDelay;
+				tags.push_back("bonus");
 			}
 
 			void Update(float dt) override;
 
 			void OnCollisionBegin(GameObject* otherObject);
+
+			bool IsPopped() const { return popped; }
 
 		protected:
 			virtual void ApplyBonus(ActorObject* target) = 0;

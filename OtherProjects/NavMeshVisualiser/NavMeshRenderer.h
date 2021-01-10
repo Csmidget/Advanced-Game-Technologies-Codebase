@@ -15,20 +15,11 @@ namespace NCL {
 		virtual ~NavMeshRenderer();
 		void Update(float dt) override;
 
-		void DebugDrawSkeleton(const OGLMesh* mesh, const Matrix4* matrices);
-
 	protected:
 		void RenderFrame()	override;
-		MeshAnimation* testAnim;
 		OGLMesh*	navMesh;
 		OGLShader*	navShader;
-		OGLTexture* testTex;
 		Camera*		camera;
-		OGLShader* debugShader;
-		int frame;
-
-		float frameTime;
-		float allTime;
 	};
 }
 

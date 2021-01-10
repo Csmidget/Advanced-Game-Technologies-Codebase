@@ -1,6 +1,6 @@
 #include "ActorObject.h" 
 #include "Checkpoint.h"
-#include "../CSC8503Common/GameWorld.h"
+#include "Game.h"
 
 using namespace NCL::CSC8503;
 
@@ -11,7 +11,7 @@ void ActorObject::Update(float dt) {
 
 		if (timedConstraint.second <= 0.0f) {
 			timedConstraints.erase(timedConstraint.first);
-			world->RemoveConstraint(timedConstraint.first, true);
+			game->GetWorld()->RemoveConstraint(timedConstraint.first, true);
 		}
 	}
 

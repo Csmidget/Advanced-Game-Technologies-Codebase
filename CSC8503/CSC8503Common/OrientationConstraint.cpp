@@ -14,7 +14,7 @@ void OrientationConstraint::UpdateConstraint(float dt) {
 
 	Vector3 rotationAxis = Vector3::Cross(targetOrientation, currentOrientation);
 
-	//Length of axis indicated how far out of alignment the target orientation and current orientation are
+	//Length of axis indicates how far out of alignment the target orientation and current orientation are
 	if (rotationAxis.Length() > 0.0f) {
 
 		PhysicsObject* physObject = object->GetPhysicsObject();

@@ -6,6 +6,8 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class PlayerObject;
+		class AIObject;
+		class Game;
 
 		class PrefabGenerator {
 
@@ -29,7 +31,8 @@ namespace NCL {
 			GameObject*		AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 0.1f, const Vector2& dimensions = { 1,2 });
 			GameObject*		AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
 			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position);
-			PlayerObject*	AddPlayer(GameWorld* world, const Vector3& position);
+			PlayerObject*	AddPlayer(Game* game, const Vector3& position);
+			AIObject*		AddAI(Game* game, const Vector3& position);
 			void			AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force);
 
 		protected:
