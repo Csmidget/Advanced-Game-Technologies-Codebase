@@ -2,14 +2,14 @@
 #include "ForceObject.h"
 #include "PlayerObject.h"
 #include "AIObject.h"
+#include "MainMenuState.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
 #include "../CSC8503Common/LinearImpulseConstraint.h"
 #include "../CSC8503Common/CollisionDetection.h"
-#include "MainMenuState.h"
-
+#include "../CSC8503Common/NavigationGrid.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -44,9 +44,20 @@ Game::~Game()	{
 	delete gameStateMachine;
 }
 
+void Game::DisplayPath() {
+
+	for (int i = 1; i < path.size(); ++i) {
+		Vector3 a = path[i - 1] + Vector3(0, 1, 0);
+		Vector3 b = path[i] + Vector3(0, 1, 0);
+
+		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+	}
+}
+
 void Game::UpdateGame(float dt) {
 
 	UpdateKeys();
+	DisplayPath();
 
 	if (!pause) {
 		physics->Update(dt);
@@ -119,9 +130,13 @@ void Game::InitCamera() {
 void Game::Clear() {
 	world->ClearAndErase();
 	physics->Clear();
+	path.clear();
 
 	//As this is a game object it will be deleted by  world ClearAndErase()
 	player = nullptr;
+
+	delete navGrid;
+	navGrid = nullptr;
 	
 	for (auto cp : checkpoints) {
 		delete cp;
@@ -220,8 +235,6 @@ void Game::InitPracticeSlope() {
 	prefabGenerator->AddScoreBonus(world, Vector3(25.0f, 67.75, -100.0f));
 	prefabGenerator->AddScoreBonus(world, Vector3(50.0f, 83.5f, -100.0f));
 	prefabGenerator->AddScoreBonus(world, Vector3(75.0f, 99.5f, -100.0f));
-
-
 }
 
 void Game::InitPracticeGauntlet2() {
@@ -282,6 +295,17 @@ void Game::InitPracticeCheckpoints() {
 }
 
 void Game::InitRaceWorld(int players) {
+	Clear();
+
+	navGrid = new NavigationGrid("RaceGrid.txt", Vector3(125, 0, 125));
+	NavigationPath outPath;
+	navGrid->FindPath(Vector3(-100, 0, 100), Vector3(-100, 0, -100), outPath);
+
+	Vector3 pos;
+	while (outPath.PopWaypoint(pos)) {
+		path.push_back(pos);
+	};
+
 	InitRaceBaseGeometry();
 	InitRaceKillPlanes();
 	InitRaceCheckpoints();
@@ -289,13 +313,12 @@ void Game::InitRaceWorld(int players) {
 }
 
 void Game::InitRaceBaseGeometry() {
-	Clear();
 
 	//Starting zone
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 100), Vector2(20, 20)));
 
 	//First Gauntlet
-	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(10, 80)));
+	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(15, 80)));
 
 	//Checkpoint1
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(20, 20)));

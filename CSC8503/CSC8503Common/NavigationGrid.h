@@ -2,14 +2,15 @@
 #include "NavigationMap.h"
 #include <string>
 #include <set>
+
 namespace NCL {
 	namespace CSC8503 {
 
 		struct GridNode {
 			GridNode* parent;
 
-			GridNode* connected[4];
-			int		  costs[4];
+			GridNode* connected[8];
+			int		  costs[8];
 
 			Vector3		position;
 
@@ -19,7 +20,7 @@ namespace NCL {
 			int type;
 
 			GridNode() {
-				for (int i = 0; i < 4; ++i) {
+				for (int i = 0; i < 8; ++i) {
 					connected[i] = nullptr;
 					costs[i] = 0;
 				}
@@ -34,23 +35,41 @@ namespace NCL {
 		inline bool operator< (const GridNode& lhs, const GridNode& rhs) {
 			return lhs.f < rhs.f;
 		}
+		struct GridPtrComparison {
+			//Return true if a's total cost is less that b's total cost.
+			bool operator()(const GridNode* a, const GridNode* b) const {
+
+				//This distinction is important as sets believe objects equal if comparator
+				//returns false no matter the order in which the elements are passed in as arguments.
+				if (a->f == b->f)
+					return a < b;
+				else
+					return a->f < b->f;
+			}
+		};
+
+		typedef std::set<GridNode*, GridPtrComparison> NodeSet;
 
 		class NavigationGrid : public NavigationMap	{
+
 		public:
 			NavigationGrid();
-			NavigationGrid(const std::string&filename);
+			NavigationGrid(const std::string&filename, Vector3 offSet = Vector3(0,0,0));
 			~NavigationGrid();
 
 			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
 				
 		protected:
-			bool		NodeInSet(GridNode* n, std::set<GridNode*>& set) const;
+			bool		NodeInSet(GridNode* n, NodeSet& set) const;
 			float		Heuristic(GridNode* hNode, GridNode* endNode) const;
 			int nodeSize;
 			int gridWidth;
 			int gridHeight;
 
 			GridNode* allNodes;
+			
+			//This vector represents where the top left corner of the grid is in the game world.
+			Vector3 offset;
 		};
 	}
 }

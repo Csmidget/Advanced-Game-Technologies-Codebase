@@ -22,9 +22,9 @@ NavigationGrid::NavigationGrid()	{
 	allNodes	= nullptr;
 }
 
-NavigationGrid::NavigationGrid(const std::string&filename) : NavigationGrid() {
+NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : NavigationGrid() {
 	std::ifstream infile(Assets::DATADIR + filename);
-
+	this->offset = offset;
 	infile >> nodeSize;
 	infile >> gridWidth;
 	infile >> gridHeight;
@@ -47,21 +47,53 @@ NavigationGrid::NavigationGrid(const std::string&filename) : NavigationGrid() {
 			GridNode&n = allNodes[(gridWidth * y) + x];		
 
 			if (y > 0) { //get the above node
+
 				n.connected[0] = &allNodes[(gridWidth * (y - 1)) + x];
+
+				if (x > 0) {
+					n.connected[4] = &allNodes[(gridWidth * (y - 1)) + x - 1];
+				}
+
+				if (x < gridWidth - 1) {
+					n.connected[5] = &allNodes[(gridWidth * (y - 1)) + x + 1];
+				}
+
 			}
 			if (y < gridHeight - 1) { //get the below node
+
 				n.connected[1] = &allNodes[(gridWidth * (y + 1)) + x];
+
+				if (x > 0) {
+					n.connected[6] = &allNodes[(gridWidth * (y + 1)) + x - 1];
+				}
+
+				if (x < gridWidth - 1) {
+					n.connected[7] = &allNodes[(gridWidth * (y + 1)) + x + 1];
+				}
 			}
+
 			if (x > 0) { //get left node
 				n.connected[2] = &allNodes[(gridWidth * (y)) + (x - 1)];
 			}
 			if (x < gridWidth - 1) { //get right node
 				n.connected[3] = &allNodes[(gridWidth * (y)) + (x + 1)];
 			}
+
 			for (int i = 0; i < 4; ++i) {
 				if (n.connected[i]) {
 					if (n.connected[i]->type == '.') {
 						n.costs[i]		= 1;
+					}
+					if (n.connected[i]->type == 'x') {
+						n.connected[i] = nullptr; //actually a wall, disconnect!
+					}
+				}
+			}
+
+			for (int i = 4; i < 8; ++i) {
+				if (n.connected[i]) {
+					if (n.connected[i]->type == '.') {
+						n.costs[i] = 1.414214f;
 					}
 					if (n.connected[i]->type == 'x') {
 						n.connected[i] = nullptr; //actually a wall, disconnect!
@@ -76,7 +108,11 @@ NavigationGrid::~NavigationGrid()	{
 	delete[] allNodes;
 }
 
-bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
+bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, NavigationPath& outPath) {
+
+	Vector3 from = rawFrom + offset;
+	Vector3 to   = rawTo + offset;
+
 	//need to work out which node 'from' sits in, and 'to' sits in
 	int fromX = ((int)from.x / nodeSize);
 	int fromZ = ((int)from.z / nodeSize);
@@ -96,9 +132,9 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 	GridNode* startNode = &allNodes[(fromZ * gridWidth) + fromX];
 	GridNode* endNode	= &allNodes[(toZ * gridWidth) + toX];
-
-	std::set<GridNode*>  openSet;
-	std::set<GridNode*>  closedSet;
+	
+	NodeSet openSet;
+	NodeSet closedSet;
 
 	openSet.emplace(startNode);
 
@@ -115,13 +151,13 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 		if (currentBestNode == endNode) {			//we've found the path!
 			GridNode* node = endNode;
 			while (node != nullptr) {
-				outPath.PushWaypoint(node->position);
+				outPath.PushWaypoint(node->position - offset);
 				node = node->parent;
 			}
 			return true;
 		}
 		else {
-			for (int i = 0; i < 4; ++i) {
+			for (int i = 0; i < 8; ++i) {
 				GridNode* neighbour = currentBestNode->connected[i];
 				if (!neighbour) { //might not be connected...
 					continue;
@@ -137,14 +173,19 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 				bool inOpen = NodeInSet(neighbour, openSet);
 
-				if (!inOpen) {
-					openSet.emplace(neighbour);
+				if (inOpen && f < neighbour->f) {
+					openSet.erase(neighbour);
+					inOpen = false;
 				}
 
-				if (!inOpen || f < neighbour->f) {//might be a better route to this neighbour
+				if (!inOpen) {//might be a better route to this neighbour
 					neighbour->parent = currentBestNode;
 					neighbour->f = f;
 					neighbour->g = g;
+				}
+
+				if (!inOpen) {
+					openSet.emplace(neighbour);
 				}
 			}
 			closedSet.emplace(currentBestNode);
@@ -153,8 +194,8 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 	return false; //open list emptied out with no path!
 }
 
-bool NavigationGrid::NodeInSet(GridNode* n, std::set<GridNode*>& set) const {
-	std::set<GridNode*>::iterator i = set.find(n);
+bool NavigationGrid::NodeInSet(GridNode* n, NodeSet& set) const {
+	NodeSet::iterator i = set.find(n);
 	return i == set.end() ? false : true;
 }
 

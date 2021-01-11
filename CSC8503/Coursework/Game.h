@@ -12,6 +12,7 @@ namespace NCL {
 		
 		class PlayerObject;
 		class AIObject;
+		class NavigationGrid;
 
 		class Game {
 		public:
@@ -51,6 +52,7 @@ namespace NCL {
 			void InitRaceBaseGeometry();
 			void InitRacePlayers(int opponentCount);
 			void InitRaceCheckpoints();
+			void DisplayPath();
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;
@@ -65,6 +67,8 @@ namespace NCL {
 			PlayerObject* player;
 			std::vector<AIObject*> opponents;
 			std::vector<Checkpoint*> checkpoints;
+			std::vector<Vector3> path;
+			NavigationGrid* navGrid;
 			Checkpoint* goal;
 		};
 	}
