@@ -5,17 +5,17 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class Game;
-		class GameObject;
+		class AIObject;
 		class BonusObject;
 
 		class RaceBehaviourGetBonus : public BehaviourSequence {
 
 		public:
-			RaceBehaviourGetBonus(Game* game, GameObject* actor);
+			RaceBehaviourGetBonus(Game* game, AIObject* actor);
 
 		protected:
 			Game* game;
-			GameObject* actor;
+			AIObject* actor;
 			BonusObject* bonusTarget;
 		};
 	}

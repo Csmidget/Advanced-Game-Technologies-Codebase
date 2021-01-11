@@ -11,7 +11,6 @@ using namespace CSC8503;
 
 AIObject::AIObject(Game* game, Vector3 respawnPosition) : ActorObject(game, respawnPosition, "player") {
 	behaviourTree = new RaceAIBehaviourTree(game, this);
-	SetGoal(Vector3(-101, 0, 80.0f));
 }
 
 AIObject::~AIObject() {
@@ -41,14 +40,14 @@ bool AIObject::SetGoal(Vector3 newGoal) {
 		return false;
 	}
 
-	currentPath = game->GetPath(transform.GetPosition(), newGoal);
+	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal);
 
 	setGoalCooldown = 1.0f;
 
-	if (currentPath.IsEmpty()) {
+	if (newPath.IsEmpty()) {
 		return false;
 	}
-
+	currentPath = newPath;
 	currentPath.PopWaypoint(nextNode);
 	currentGoal = newGoal;
 

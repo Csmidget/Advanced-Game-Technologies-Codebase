@@ -3,7 +3,7 @@
 
 using namespace NCL::CSC8503;
 
-ScoreBonusObject::ScoreBonusObject(Vector3 respawnPosition, int score) : BonusObject(respawnPosition) {	
+ScoreBonusObject::ScoreBonusObject(Vector3 respawnPosition, int score, float respawnDelay) : BonusObject(respawnPosition, respawnDelay) {	
 	this->score = score;
 }
 

@@ -6,12 +6,16 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class Game;
-		class GameObject;
+		class AIObject;
 
 		class RaceAIBehaviourTree : public BehaviourParallel {
 
 		public:
-			RaceAIBehaviourTree(Game* game, GameObject* actor);
+			RaceAIBehaviourTree(Game* game, AIObject* actor);
+
+		protected:
+			Game* game;
+			AIObject* actor;
 
 		};
 	}

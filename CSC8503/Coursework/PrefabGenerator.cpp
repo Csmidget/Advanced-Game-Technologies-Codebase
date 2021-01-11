@@ -339,9 +339,9 @@ void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float dist
 	world->AddConstraint(new OrientationConstraint(pendulum, anchor, Vector3(0, 1, 0)));
 }
 
-GameObject* PrefabGenerator::AddScoreBonus(GameWorld* world, Vector3 position) {
+GameObject* PrefabGenerator::AddScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) {
 
-	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,25);
+	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,25, respawnDelay);
 
 	SphereVolume* volume = new SphereVolume(1.0f);
 	scoreObject->SetBoundingVolume((CollisionVolume*)volume);

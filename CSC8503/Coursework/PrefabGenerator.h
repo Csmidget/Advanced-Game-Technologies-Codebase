@@ -30,7 +30,7 @@ namespace NCL {
 			GameObject*		AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 10.0f, const Vector2& dimensions = { 1,1 });
 			GameObject*		AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 0.1f, const Vector2& dimensions = { 1,2 });
 			GameObject*		AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
-			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position);
+			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position, float respawnDelay = 5.0f);
 			PlayerObject*	AddPlayer(Game* game, const Vector3& position);
 			AIObject*		AddAI(Game* game, const Vector3& position);
 			void			AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force);

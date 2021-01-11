@@ -1,10 +1,11 @@
 #include "RaceBehaviourGetBonus.h"
 #include "BonusObject.h"
+#include "AIObject.h"
 #include "Game.h"
 #include "../CSC8503Common/BehaviourAction.h"
 using namespace NCL::CSC8503;
 
-RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, GameObject* a) :BehaviourSequence("Get Bonus") {
+RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, AIObject* a) :BehaviourSequence("Get Bonus") {
 	game = g;
 	actor = a;
 	this->bonusTarget = nullptr;
@@ -33,11 +34,13 @@ RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, GameObject* a) :BehaviourS
 	BehaviourAction* moveToBonus = new BehaviourAction("Move To Bonus", [&](float dt, BehaviourState state)->BehaviourState {
 
 		Vector3 targetPosition = bonusTarget->GetTransform().GetPosition();
+		targetPosition.y = 0.0f;
+		actor->SetGoal(targetPosition);
 
 		if ((targetPosition - actor->GetTransform().GetPosition()).Length() < 1.0f)
 			return BehaviourState::Success;
 		else
-			return BehaviourState::Failure;
+			return BehaviourState::Ongoing;
 	});
 	AddChild(moveToBonus);
 }

@@ -327,7 +327,10 @@ void Game::InitRacePlayers(int opponentCount) {
 
 	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-105, 5, 100)));
 
-	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 100));
+	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 100), 10.0f);
+	prefabGenerator->AddScoreBonus(world, Vector3(-110, 1.0f, 45.0f), 10.0f);
+	prefabGenerator->AddScoreBonus(world, Vector3(-90, 1.0f, 0.0f), 10.0f);
+	prefabGenerator->AddScoreBonus(world, Vector3(-100.0, 1.0f, -60.0f),10.0f);
 }
 
 NavigationPath Game::GetPath(Vector3 start, Vector3 end) {

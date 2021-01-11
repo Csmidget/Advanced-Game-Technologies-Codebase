@@ -7,7 +7,7 @@ namespace NCL {
 
 		class ScoreBonusObject : public BonusObject {
 		public:
-			ScoreBonusObject(Vector3 respawnPosition, int score);
+			ScoreBonusObject(Vector3 respawnPosition, int score,float respawnDelay = 5.0f);
 			~ScoreBonusObject() {};
 
 		protected:
