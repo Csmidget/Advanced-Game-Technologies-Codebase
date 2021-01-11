@@ -14,7 +14,6 @@ PlayerObject::~PlayerObject() {
 }
 
 void PlayerObject::OnUpdate(float dt) {
-	lastCollisionTimer += dt;
 }
 
 void PlayerObject::UpdateControls() {
@@ -34,11 +33,4 @@ void PlayerObject::UpdateControls() {
 			physicsObject->AddForce(orientation * Vector3(3, 0, 0));
 		}
 	}
-}
-
-void PlayerObject::OnCollisionBegin(GameObject* otherObject) {
-
-	//When we collide with collectables we don't want to reset the collision timer...
-	if (otherObject->GetPhysicsObject())
-		lastCollisionTimer = 0.0f;
 }

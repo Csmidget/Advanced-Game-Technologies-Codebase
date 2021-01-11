@@ -14,7 +14,6 @@ namespace NCL {
 
 			void OnUpdate(float dt) override;
 			void UpdateControls();
-			void OnCollisionBegin(GameObject* otherObject) override;
 
 		protected:
 			float lastCollisionTimer;

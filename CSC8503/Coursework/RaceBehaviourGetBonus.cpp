@@ -31,12 +31,10 @@ RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, GameObject* a) :BehaviourS
 	AddChild(locateBonus);
 
 	BehaviourAction* moveToBonus = new BehaviourAction("Move To Bonus", [&](float dt, BehaviourState state)->BehaviourState {
-		Vector3 direction = bonusTarget->GetTransform().GetPosition() - actor->GetTransform().GetPosition();
-		direction.Normalise();
 
-		actor->GetPhysicsObject()->AddForce(direction * 1.0f);
+		Vector3 targetPosition = bonusTarget->GetTransform().GetPosition();
 
-		if ((bonusTarget->GetTransform().GetPosition() - actor->GetTransform().GetPosition()).Length() < 1.0f)
+		if ((targetPosition - actor->GetTransform().GetPosition()).Length() < 1.0f)
 			return BehaviourState::Success;
 		else
 			return BehaviourState::Failure;

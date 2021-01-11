@@ -3,6 +3,7 @@
 #include "PrefabGenerator.h"
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "../CSC8503Common/PushdownMachine.h"
+#include "../CSC8503Common/NavigationPath.h"
 #include "Checkpoint.h"
 
 namespace NCL {
@@ -32,6 +33,8 @@ namespace NCL {
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
 
+			NavigationPath GetPath(Vector3 start, Vector3 end);
+
 			void SetPause(bool val) { pause = val; }
 
 		protected:
@@ -52,7 +55,6 @@ namespace NCL {
 			void InitRaceBaseGeometry();
 			void InitRacePlayers(int opponentCount);
 			void InitRaceCheckpoints();
-			void DisplayPath();
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;

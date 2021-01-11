@@ -79,6 +79,9 @@ NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : Nav
 				n.connected[3] = &allNodes[(gridWidth * (y)) + (x + 1)];
 			}
 
+			//diagonals connected to each of the cardinal directions. e.g. left is connected to up-left and down-left.
+			std::pair<int, int> diagonalNeighbours[4]{ {4,5},{6,7},{4,6},{5,7} };
+
 			for (int i = 0; i < 4; ++i) {
 				if (n.connected[i]) {
 					if (n.connected[i]->type == '.') {
@@ -86,6 +89,10 @@ NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : Nav
 					}
 					if (n.connected[i]->type == 'x') {
 						n.connected[i] = nullptr; //actually a wall, disconnect!
+
+						//Also disconnect diagonals connected to this neighbour, to avoid ai ramming themselves into walls
+						n.connected[diagonalNeighbours[i].first] = nullptr;
+						n.connected[diagonalNeighbours[i].second] = nullptr;
 					}
 				}
 			}
@@ -114,11 +121,12 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 	Vector3 to   = rawTo + offset;
 
 	//need to work out which node 'from' sits in, and 'to' sits in
-	int fromX = ((int)from.x / nodeSize);
-	int fromZ = ((int)from.z / nodeSize);
+	int fromX = (round(from.x / nodeSize));
+	int fromZ = (round(from.z / nodeSize));
 
-	int toX = ((int)to.x / nodeSize);
-	int toZ = ((int)to.z / nodeSize);
+	//Round before casting to ensure closest node (cast to int will floor the value)
+	int toX = (round(to.x / nodeSize));
+	int toZ = (round(to.z / nodeSize));
 
 	if (fromX < 0 || fromX > gridWidth - 1 ||
 		fromZ < 0 || fromZ > gridHeight - 1) {
@@ -150,6 +158,7 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 
 		if (currentBestNode == endNode) {			//we've found the path!
 			GridNode* node = endNode;
+			outPath.PushWaypoint(rawTo);
 			while (node != nullptr) {
 				outPath.PushWaypoint(node->position - offset);
 				node = node->parent;

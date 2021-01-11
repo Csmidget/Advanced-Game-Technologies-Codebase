@@ -3,21 +3,62 @@
 #include "../../Common/Window.h"
 #include "RaceAIBehaviourTree.h";
 #include "../../Common/Maths.h"
+#include "../CSC8503Common/Debug.cpp"
+#include "Game.h"
 
 using namespace NCL;
 using namespace CSC8503;
 
 AIObject::AIObject(Game* game, Vector3 respawnPosition) : ActorObject(game, respawnPosition, "player") {
-	lastCollisionTimer = 0.0f;
 	behaviourTree = new RaceAIBehaviourTree(game, this);
+	SetGoal(Vector3(-101, 0, 80.0f));
 }
 
 AIObject::~AIObject() {
 
 }
 
+void AIObject::DisplayPath() {
+	auto path = currentPath.GetWaypoints();
+	Debug::DrawLine(transform.GetPosition(), nextNode + Vector3(0, 1, 0), Vector4(0, 1, 1, 1));
+
+	if (path.empty())
+		return;
+
+	Debug::DrawLine(nextNode + Vector3(0,1,0), path.back() + Vector3(0,1,0), Vector4(0, 1, 0, 1));
+
+	for (int i = 1; i < path.size(); ++i) {
+		Vector3 a = path[i - 1] + Vector3(0, 1, 0);
+		Vector3 b = path[i] + Vector3(0, 1, 0);
+
+		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+	}
+}
+
+bool AIObject::SetGoal(Vector3 newGoal) {
+	//It is too soon to be changing goal again.
+	if (setGoalCooldown > 0.0f || newGoal == currentGoal) {
+		return false;
+	}
+
+	currentPath = game->GetPath(transform.GetPosition(), newGoal);
+
+	setGoalCooldown = 1.0f;
+
+	if (currentPath.IsEmpty()) {
+		return false;
+	}
+
+	currentPath.PopWaypoint(nextNode);
+	currentGoal = newGoal;
+
+	return true;
+}
+
 void AIObject::OnUpdate(float dt) {
-	lastCollisionTimer += dt;
+
+	setGoalCooldown -= dt;
+	setGoalCooldown = max(0.0f, setGoalCooldown);
 	
 	behaviourTree->Execute(dt);
 
@@ -42,13 +83,18 @@ void AIObject::OnUpdate(float dt) {
 
 		orientation = Matrix4::Rotation(angle, Vector3(0, 1, 0));
 	}
-
 	transform.SetOrientation(orientation);
-}
 
-void AIObject::OnCollisionBegin(GameObject* otherObject) {
+	Vector3 xzPos = transform.GetPosition();
+	xzPos.y = 0.0f;
 
-	//When we collide with collectables we don't want to reset the collision timer...
-	if (otherObject->GetPhysicsObject())
-		lastCollisionTimer = 0.0f;
+	Vector3 direction = nextNode - xzPos;
+	if (direction.Length() < 2.5f) {
+		currentPath.PopWaypoint(nextNode);
+	}
+
+	direction.Normalise();
+	physicsObject->AddForce(direction * 0.5f);
+
+	DisplayPath();
 }

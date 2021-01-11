@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ActorObject.h"
-#include "../../Common/Vector2.h"
+#include "../../Common/Vector3.h"
+#include "../CSC8503Common/NavigationPath.h"
 
 namespace NCL {
 
@@ -16,12 +17,22 @@ namespace NCL {
 			~AIObject();
 
 			void OnUpdate(float dt) override;
-			void OnCollisionBegin(GameObject* otherObject) override;
+			bool SetGoal(Vector3 newGoal); 
+
 
 		protected:
-			float lastCollisionTimer;
+			void DisplayPath();
+
+			float setGoalCooldown;
+
 			BehaviourNode* behaviourTree;
 			Quaternion orientation;
+
+			bool pathInvalid;
+
+			Vector3 nextNode;
+			Vector3 currentGoal;
+			NavigationPath currentPath;
 		};
 	}
 }

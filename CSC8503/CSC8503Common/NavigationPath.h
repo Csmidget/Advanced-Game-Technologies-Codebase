@@ -25,8 +25,13 @@ namespace NCL {
 				return true;
 			}
 
-		protected:
+			std::vector<Vector3> GetWaypoints() {
+				return waypoints;
+			}
 
+			bool IsEmpty() { return waypoints.empty(); }
+
+		protected:
 			std::vector <Vector3> waypoints;
 		};
 	}

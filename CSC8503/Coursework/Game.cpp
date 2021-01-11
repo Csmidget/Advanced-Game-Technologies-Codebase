@@ -44,20 +44,9 @@ Game::~Game()	{
 	delete gameStateMachine;
 }
 
-void Game::DisplayPath() {
-
-	for (int i = 1; i < path.size(); ++i) {
-		Vector3 a = path[i - 1] + Vector3(0, 1, 0);
-		Vector3 b = path[i] + Vector3(0, 1, 0);
-
-		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
-	}
-}
-
 void Game::UpdateGame(float dt) {
 
 	UpdateKeys();
-	DisplayPath();
 
 	if (!pause) {
 		physics->Update(dt);
@@ -277,9 +266,6 @@ void Game::InitPracticeGauntlet2() {
 	prefabGenerator->AddScoreBonus(world, Vector3(85.0f , coinY, 25.0f));
 	prefabGenerator->AddScoreBonus(world, Vector3(95.0f , coinY, 45.0f));
 	prefabGenerator->AddScoreBonus(world, Vector3(115.0f, coinY, 35.0f));
-
-
-
 }
 
 void Game::InitPracticePlayers() {
@@ -337,9 +323,15 @@ void Game::InitRaceCheckpoints() {
 
 void Game::InitRacePlayers(int opponentCount) {
 	player = prefabGenerator->AddPlayer(this, Vector3(-95, 5, 100));
-	player->AddScore(1000.0f);
+	player->AddScore(100000.0f);
 
 	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-105, 5, 100)));
 
 	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 100));
+}
+
+NavigationPath Game::GetPath(Vector3 start, Vector3 end) {
+	NavigationPath generatedPath;
+	navGrid->FindPath(start, end, generatedPath);
+	return generatedPath;
 }

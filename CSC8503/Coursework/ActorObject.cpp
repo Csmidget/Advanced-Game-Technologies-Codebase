@@ -15,6 +15,8 @@ void ActorObject::Update(float dt) {
 		}
 	}
 
+	lastCollisionTimer += dt;
+
 	OnUpdate(dt);
 }
 
@@ -35,4 +37,11 @@ void ActorObject::Respawn() {
 
 	//Now respawn at that point.
 	RespawningObject::Respawn();
+}
+
+void ActorObject::OnCollisionBegin(GameObject* otherObject) {
+
+	//When we collide with collectables we don't want to reset the collision timer...
+	if (otherObject->GetPhysicsObject())
+		lastCollisionTimer = 0.0f;
 }
