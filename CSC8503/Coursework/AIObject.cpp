@@ -11,6 +11,9 @@ using namespace CSC8503;
 
 AIObject::AIObject(Game* game, Vector3 respawnPosition) : ActorObject(game, respawnPosition, "player") {
 	behaviourTree = new RaceAIBehaviourTree(game, this);
+	setGoalCooldown = 0.0f;
+	currentGoal = respawnPosition;
+	nextNode = respawnPosition;
 }
 
 AIObject::~AIObject() {

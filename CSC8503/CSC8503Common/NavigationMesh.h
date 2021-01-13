@@ -10,7 +10,7 @@ namespace NCL {
 			NavigationMesh(const std::string&filename);
 			~NavigationMesh();
 
-			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
+			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath, float maximumCost = 0.0f) override;
 		
 		protected:
 

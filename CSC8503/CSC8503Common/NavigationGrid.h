@@ -1,5 +1,9 @@
 #pragma once
 #include "NavigationMap.h"
+#include "QuadTree.h"
+
+#include "../../Common/Vector2.h"
+
 #include <string>
 #include <set>
 
@@ -55,14 +59,16 @@ namespace NCL {
 		public:
 			NavigationGrid();
 			NavigationGrid(const std::string&filename, Vector3 offSet = Vector3(0,0,0));
+			NavigationGrid(QuadTree<GameObject*>* objectTree, Vector3 offset, float maxHeight, Vector2 gridDims, float nodeSize);
 			~NavigationGrid();
 
-			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
+			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath, float maximumCost = 0.0f) override;
 				
 		protected:
+			void		BuildConnections();
 			bool		NodeInSet(GridNode* n, NodeSet& set) const;
 			float		Heuristic(GridNode* hNode, GridNode* endNode) const;
-			int nodeSize;
+			float nodeSize;
 			int gridWidth;
 			int gridHeight;
 

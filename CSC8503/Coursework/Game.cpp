@@ -283,7 +283,14 @@ void Game::InitPracticeCheckpoints() {
 void Game::InitRaceWorld(int players) {
 	Clear();
 
-	navGrid = new NavigationGrid("RaceGrid.txt", Vector3(125, 0, 125));
+	InitRaceBaseGeometry();
+	InitRaceKillPlanes();
+	InitRaceCheckpoints();
+	InitRacePlayers(players);
+
+	//navGrid = new NavigationGrid("RaceGrid.txt", Vector3(125, 0, 125));
+	navGrid = new NavigationGrid(world->GetStaticObjectTree(), Vector3(0, 0, 0), 1000, Vector2(200, 200), 2.5f);
+
 	NavigationPath outPath;
 	navGrid->FindPath(Vector3(-100, 0, 100), Vector3(-100, 0, -100), outPath);
 
@@ -291,11 +298,6 @@ void Game::InitRaceWorld(int players) {
 	while (outPath.PopWaypoint(pos)) {
 		path.push_back(pos);
 	};
-
-	InitRaceBaseGeometry();
-	InitRaceKillPlanes();
-	InitRaceCheckpoints();
-	InitRacePlayers(players);
 }
 
 void Game::InitRaceBaseGeometry() {
@@ -305,6 +307,12 @@ void Game::InitRaceBaseGeometry() {
 
 	//First Gauntlet
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, 0.0f), Vector2(15, 80)));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-100, 2, 0), Vector3(5, 2, 2), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-107.5, 2, 50), Vector3(5, 2, 2), 0.0f, true));
+
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-100  , 2, -58), Vector3(5, 2, 1), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-104, 2, -64), Vector3(1, 2, 5), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(- 96  , 2, -64), Vector3(1, 2, 5), 0.0f, true));
 
 	//Checkpoint1
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(20, 20)));

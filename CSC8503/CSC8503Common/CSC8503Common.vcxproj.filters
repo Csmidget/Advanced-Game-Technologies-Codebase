@@ -135,6 +135,9 @@
     <ClInclude Include="BehaviourDecorator.h">
       <Filter>AI</Filter>
     </ClInclude>
+    <ClInclude Include="TraversableObject.h">
+      <Filter>Pathfinding</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWorld.cpp">

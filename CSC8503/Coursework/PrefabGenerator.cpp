@@ -7,6 +7,7 @@
 #include "PendulumObject.h"
 #include "Game.h"
 
+#include "../CSC8503Common/TraversableObject.h"
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
@@ -102,7 +103,7 @@ GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientat
 	return cube;
 }
 GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
-	GameObject* floor = new GameObject("floor");
+	GameObject* floor = new TraversableObject("floor");
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5, dimensions.y);
 	AABBVolume* volume = new AABBVolume(floorSize);
@@ -123,7 +124,7 @@ GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
 	return floor;
 }
 GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions) {
-	GameObject* floor = new GameObject("orientedFloor");
+	GameObject* floor = new TraversableObject("orientedFloor");
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5f, dimensions.y);
 	OBBVolume* volume = new OBBVolume(Vector3(floorSize));

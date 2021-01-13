@@ -1,4 +1,5 @@
 #include "NavigationGrid.h"
+
 #include "../../Common/Assets.h"
 
 #include <fstream>
@@ -22,6 +23,52 @@ NavigationGrid::NavigationGrid()	{
 	allNodes	= nullptr;
 }
 
+//Builds a grid based on provided quadtree of objects. (In use, this will be the static quadtree of the game world)
+NavigationGrid::NavigationGrid(QuadTree<GameObject*>* objectTree, Vector3 offset, float maxHeight, Vector2 gridHalfDims, float nodeSize) {
+	gridWidth = gridHalfDims.x * 2;
+	gridHeight = gridHalfDims.y * 2;
+	this->nodeSize = nodeSize;
+
+	this->offset = offset;
+
+	//add grid dims to centre the grid on offset point.
+	this->offset.x += gridHalfDims.x;
+	this->offset.z += gridHalfDims.y;
+
+	allNodes = new GridNode[gridWidth * gridHeight];
+
+	for (int x = 0; x < gridWidth; x++) {
+		for (int y = 0; y < gridHeight; y++) {
+			Ray r = Ray(Vector3(x * nodeSize - this->offset.x, maxHeight, y * nodeSize - this->offset.z), Vector3(0, -1, 0));
+
+			RayCollision closestCollision;
+			auto objects = objectTree->GetPossibleRayCollisions(r);
+
+			for (auto o : objects) {
+				RayCollision col;
+				if (CollisionDetection::RayIntersection(r, *o, col)) {
+					if (col.rayDistance < closestCollision.rayDistance) {
+						closestCollision = col;
+						closestCollision.node = o;
+					}
+				}
+			}
+
+			GridNode& n = allNodes[(gridWidth * y) + x];
+			n.position = Vector3((float)(x * nodeSize), closestCollision.collidedAt.y, (float)(y * nodeSize));
+
+			if (closestCollision.node) {
+				((GameObject*)closestCollision.node)->HasTag("traversable") ? n.type = '.' : n.type = 'x';
+			} 
+			else {
+				n.type = 'x';
+			}
+		}
+	}
+
+	BuildConnections();
+}
+
 NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : NavigationGrid() {
 	std::ifstream infile(Assets::DATADIR + filename);
 	this->offset = offset;
@@ -41,10 +88,18 @@ NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : Nav
 		}
 	}
 	
-	//now to build the connectivity between the nodes
+	BuildConnections();
+}
+
+NavigationGrid::~NavigationGrid()	{
+	delete[] allNodes;
+}
+
+void NavigationGrid::BuildConnections() {
+	//Build the connectivity between the nodes
 	for (int y = 0; y < gridHeight; ++y) {
 		for (int x = 0; x < gridWidth; ++x) {
-			GridNode&n = allNodes[(gridWidth * y) + x];		
+			GridNode& n = allNodes[(gridWidth * y) + x];
 
 			if (y > 0) { //get the above node
 
@@ -85,7 +140,7 @@ NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : Nav
 			for (int i = 0; i < 4; ++i) {
 				if (n.connected[i]) {
 					if (n.connected[i]->type == '.') {
-						n.costs[i]		= 1;
+						n.costs[i] = 1;
 					}
 					if (n.connected[i]->type == 'x') {
 						n.connected[i] = nullptr; //actually a wall, disconnect!
@@ -107,15 +162,11 @@ NavigationGrid::NavigationGrid(const std::string&filename, Vector3 offset) : Nav
 					}
 				}
 			}
-		}	
+		}
 	}
 }
 
-NavigationGrid::~NavigationGrid()	{
-	delete[] allNodes;
-}
-
-bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, NavigationPath& outPath) {
+bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, NavigationPath& outPath, float maximumCost) {
 
 	Vector3 from = rawFrom + offset;
 	Vector3 to   = rawTo + offset;
@@ -164,6 +215,9 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 				node = node->parent;
 			}
 			return true;
+		}
+		else if (maximumCost != 0.0f && currentBestNode->f > maximumCost) {
+			break;
 		}
 		else {
 			for (int i = 0; i < 8; ++i) {

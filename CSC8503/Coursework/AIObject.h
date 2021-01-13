@@ -28,8 +28,6 @@ namespace NCL {
 			BehaviourNode* behaviourTree;
 			Quaternion orientation;
 
-			bool pathInvalid;
-
 			Vector3 nextNode;
 			Vector3 currentGoal;
 			NavigationPath currentPath;
