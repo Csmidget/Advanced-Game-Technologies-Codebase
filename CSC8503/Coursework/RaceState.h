@@ -17,10 +17,6 @@ namespace NCL {
 			void OnSleep() override;
 
 			Camera* camera;
-
-			float yaw;
-			float pitch;
-			float cameraDistance;
 			float scoreTracker;
 			bool gameOver;
 		};

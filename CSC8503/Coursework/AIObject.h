@@ -13,17 +13,19 @@ namespace NCL {
 		class AIObject : public ActorObject {
 
 		public:
-			AIObject(Game* game, Vector3 respawnPosition);
+			AIObject(Game* game, Vector3 respawnPosition,float coinHuntRange = 30.0f);
 			~AIObject();
 
 			void OnUpdate(float dt) override;
 			bool SetGoal(Vector3 newGoal, float maxCost = INFINITY);
 
+			float GetCoinHuntRange() const { return coinHuntRange; }
 
 		protected:
 			void DisplayPath();
 
-			float setGoalCooldown;
+			float behaviourUpdateCooldown;
+			float coinHuntRange;
 
 			BehaviourNode* behaviourTree;
 			Quaternion orientation;

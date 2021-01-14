@@ -5,17 +5,14 @@
 #include "Game.h"
 #include "../CSC8503Common/CollisionDetection.h"
 
-#include <algorithm>
-
 using namespace NCL::CSC8503;
 
 PracticeState::PracticeState(Game* game) : GameState(game) {
 	camera = game->GetWorld()->GetMainCamera();
-	pitch = 20.0f;
-	yaw = 0.0f;
-	cameraDistance = 10.0f;
 	game->InitPracticeWorld();
 	scoreTracker = 0.0f;
+	game->GetPlayerObject()->AddScore(1000.0f);
+
 }
 
 PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** newState) {
@@ -54,34 +51,9 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 
 	Debug::Print("Score: " + std::to_string(player->GetScore()), Vector2(5, 5));
 
-	pitch += (Window::GetMouse()->GetRelativePosition().y);
-	pitch = max(-15.0f, min(90.0f, pitch));
-	yaw -= Window::GetMouse()->GetRelativePosition().x;
-
-	if (Window::GetMouse()->WheelMoved()) {
-		cameraDistance -= Window::GetMouse()->GetWheelMovement();
-		cameraDistance = max(5.0f, cameraDistance);
-	}
-
-
-	//Update player object
-	Quaternion orientation = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
-	player->GetTransform().SetOrientation(orientation);
-	player->UpdateControls();
-
-	//Update camera
-	Vector3 angles = orientation.ToEuler();
-
-	camera->SetPitch(-pitch);
-	camera->SetYaw(angles.y);
-
-	Quaternion cameraAngle = Quaternion::EulerAnglesToQuaternion(-pitch, angles.y, 0.0f);
-	Vector3 cameraOffset = cameraAngle * (Vector3(0, 0, 1) * cameraDistance);
-	Vector3 cameraFocusPoint = player->GetTransform().GetPosition() + Vector3(0, 2, 0);
-	camera->SetPosition(cameraFocusPoint + cameraOffset);
+	player->UpdateControls(camera);
 
 	Vector3 playerAABB;
-
 	//Reached goal
 	if (player->GetBroadphaseAABB(playerAABB) && CollisionDetection::AABBTest(player->GetTransform().GetPosition(), game->GetGoal()->GetPosition(), playerAABB, game->GetGoal()->GetHalfDims())) {
 		gameOver = true;

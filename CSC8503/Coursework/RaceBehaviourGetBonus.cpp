@@ -17,8 +17,17 @@ RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, AIObject* a) :BehaviourSeq
 			return BehaviourState::Success;
 		}
 
-		//Find a target within range
-		bonusTarget = (BonusObject*)game->GetWorld()->ClosestObjectWithinRadius(actor->GetTransform().GetPosition(), 10.0f, "bonus");
+		auto bonusesInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 10.0f, "bonus");
+
+		if (bonusesInRange.size() == 0)
+			return BehaviourState::Failure;
+
+		for (GameObject* o : bonusesInRange)
+		{
+			if (!((BonusObject*)o)->IsPopped()) {
+				bonusTarget = (BonusObject*)o;
+			}
+		}
 
 		//If the target is available, go for it.
 		if (bonusTarget && !bonusTarget->IsPopped()) {
@@ -36,7 +45,8 @@ RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, AIObject* a) :BehaviourSeq
 		Vector3 targetPosition = bonusTarget->GetTransform().GetPosition();
 		targetPosition.y = 0.0f;
 
-		if (!actor->SetGoal(targetPosition,20.0f)) {
+		if (!actor->SetGoal(targetPosition,actor->GetCoinHuntRange())) {
+			bonusTarget = nullptr;
 			return BehaviourState::Failure;
 		}
 

@@ -123,8 +123,8 @@ GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
 
 	return floor;
 }
-GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions) {
-	GameObject* floor = new TraversableObject("orientedFloor");
+GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions, std::string name) {
+	GameObject* floor = new TraversableObject(name);
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5f, dimensions.y);
 	OBBVolume* volume = new OBBVolume(Vector3(floorSize));
@@ -149,12 +149,41 @@ GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion or
 }
 
 GameObject* PrefabGenerator::CreateSlipperyFloor(const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) {
-	GameObject* floor = CreateOrientedFloor(position, orientation, dimensions);
+	GameObject* floor = CreateOrientedFloor(position, orientation, dimensions,"slipperyFloor");
 	PhysicsObject* phys = floor->GetPhysicsObject();
 
 	phys->SetFriction(0.0f);
 	
 	floor->GetRenderObject()->SetColour(Vector4(5, 5, 5, 1));
+
+	return floor;
+}
+
+GameObject* PrefabGenerator::CreateSwampFloor(const Vector3& position, const Quaternion& orientation, const Vector2& dimensions) {
+	GameObject* floor = new TraversableObject("swampFloor",'o');
+
+	Vector3 floorSize = Vector3(dimensions.x, 0.7f, dimensions.y);
+
+	//Swamps collider is slightly thinner than its rendered size, to give the appearance of sinking in mud.
+	OBBVolume* volume = new OBBVolume(Vector3(dimensions.x, 0.5f, dimensions.y));
+
+	floor->SetBoundingVolume((CollisionVolume*)volume);
+
+	floor->GetTransform()
+		.SetPosition(position)
+		.SetScale(floorSize * 2)
+		.SetOrientation(orientation);
+
+	floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, basicTex, basicShader));
+	floor->GetRenderObject()->SetColour(Vector4(0.545, 0.27, 0.075, 1));
+
+	floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
+
+	floor->GetPhysicsObject()->SetInverseMass(0);
+	floor->GetPhysicsObject()->InitCubeInertia();
+	floor->GetPhysicsObject()->SetFriction(0.8f);
+
+	floor->SetIsStatic(true);
 
 	return floor;
 }
@@ -255,7 +284,7 @@ GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& p
 }
 
 PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
-	float meshSize = 1.0f;
+	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
 	PlayerObject* player = new PlayerObject(game, position);
@@ -264,8 +293,9 @@ PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	
 	player->SetBoundingVolume((CollisionVolume*)volume);
 	
+	float modelScale = 1.15f;
 	player->GetTransform()
-		.SetScale(Vector3(meshSize, meshSize, meshSize))
+		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
 		.SetPosition(position);
 	
 	if (rand() % 2) {
@@ -286,19 +316,21 @@ PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	return player;
 }
 
-AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position) {
-	float meshSize = 1.0f;
+AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position, float coinHuntRange) {
+	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position);
+	AIObject* aiPlayer = new AIObject(game, position, coinHuntRange);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
 
 	aiPlayer->SetBoundingVolume((CollisionVolume*)volume);
 
+	float modelScale = 1.15f;
 	aiPlayer->GetTransform()
-		.SetScale(Vector3(meshSize, meshSize, meshSize))
+		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
 		.SetPosition(position);
+
 
 	if (rand() % 2) {
 		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));

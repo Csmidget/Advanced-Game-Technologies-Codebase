@@ -9,11 +9,12 @@
 using namespace NCL;
 using namespace CSC8503;
 
-AIObject::AIObject(Game* game, Vector3 respawnPosition) : ActorObject(game, respawnPosition, "player") {
+AIObject::AIObject(Game* game, Vector3 respawnPosition, float coinHuntRange) : ActorObject(game, respawnPosition, "ai") {
 	behaviourTree = new RaceAIBehaviourTree(game, this);
-	setGoalCooldown = 0.0f;
+	behaviourUpdateCooldown = 0.0f;
 	currentGoal = respawnPosition;
 	nextNode = respawnPosition;
+	this->coinHuntRange = coinHuntRange;
 }
 
 AIObject::~AIObject() {
@@ -43,18 +44,11 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost) {
 		return true;
 	}
 
-	//It is too soon to be changing goal again.
-	if (setGoalCooldown > 0.0f) {
-		return false;
-	}
-
 	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal,maxCost);
 
 	if (newPath.IsEmpty()) {
 		return false;
 	}
-
-	setGoalCooldown = 1.0f;
 	currentPath = newPath;
 	currentPath.PopWaypoint(nextNode);
 	currentGoal = newGoal;
@@ -64,10 +58,13 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost) {
 
 void AIObject::OnUpdate(float dt) {
 
-	setGoalCooldown -= dt;
-	setGoalCooldown = max(0.0f, setGoalCooldown);
+	behaviourUpdateCooldown -= dt;
+	behaviourUpdateCooldown = max(0.0f, behaviourUpdateCooldown);
 	
-	behaviourTree->Execute(dt);
+	if (behaviourUpdateCooldown < 0.0001f) {
+		behaviourTree->Execute(dt);
+		behaviourUpdateCooldown = 0.1f;
+	}
 
 	Vector3 vel = physicsObject->GetLinearVelocity();
 	vel.y = 0.0f;
@@ -92,16 +89,20 @@ void AIObject::OnUpdate(float dt) {
 	}
 	transform.SetOrientation(orientation);
 
-	Vector3 xzPos = transform.GetPosition();
-	xzPos.y = 0.0f;
+	if (lastCollisionTimer < 0.1f) {
+		Vector3 xzPos = transform.GetPosition();
+		xzPos.y = 0.0f;
 
-	Vector3 direction = nextNode - xzPos;
-	if (direction.Length() < 2.5f) {
-		currentPath.PopWaypoint(nextNode);
+		Vector3 direction = nextNode - xzPos;
+		if (direction.Length() < 2.5f) {
+			currentPath.PopWaypoint(nextNode);
+		}
+
+		direction.Normalise();
+		physicsObject->AddForce(direction * 4.0f);
 	}
 
-	direction.Normalise();
-	physicsObject->AddForce(direction * 0.5f);
+	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
 
 	DisplayPath();
 }

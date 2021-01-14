@@ -18,9 +18,6 @@ namespace NCL {
 
 			Camera* camera;
 
-			float yaw;
-			float pitch;
-			float cameraDistance;
 			float scoreTracker;
 			bool gameOver;
 		};

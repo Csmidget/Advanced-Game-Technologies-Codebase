@@ -4,7 +4,10 @@
 
 namespace NCL {
 
+	class Camera; 
+
 	namespace CSC8503 {
+
 
 		class PlayerObject : public ActorObject {
 
@@ -13,7 +16,13 @@ namespace NCL {
 			~PlayerObject();
 
 			void OnUpdate(float dt) override;
-			void UpdateControls();
+			void UpdateControls(Camera* camera);
+
+		protected:
+			float speed;
+			float yaw;
+			float pitch;
+			float cameraDistance;
 		};
 	}
 }

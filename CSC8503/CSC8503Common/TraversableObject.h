@@ -7,15 +7,15 @@ namespace NCL {
 		class TraversableObject : public GameObject {
 
 		public:
-			TraversableObject(std::string name = "", int cost = 1) :GameObject(name) {
-				traversalCost = cost;
+			TraversableObject(std::string name = "", char type = '.') :GameObject(name) {
+				traversalType = type;
 				tags.push_back("traversable");
 			}
 
-			int TraversalCost() const { return traversalCost; }
+			char TraversalType() const { return traversalType; }
 
 		private:
-			int traversalCost;
+			char traversalType;
 		};
 	}
 }

@@ -1,4 +1,5 @@
 #include "NavigationGrid.h"
+#include "TraversableObject.h"
 
 #include "../../Common/Assets.h"
 
@@ -15,6 +16,7 @@ const int BOTTOM_NODE	= 3;
 
 const char WALL_NODE	= 'x';
 const char FLOOR_NODE	= '.';
+const char SWAMP_NODE	= 'o';
 
 NavigationGrid::NavigationGrid()	{
 	nodeSize	= 0;
@@ -57,8 +59,10 @@ NavigationGrid::NavigationGrid(QuadTree<GameObject*>* objectTree, Vector3 offset
 			GridNode& n = allNodes[(gridWidth * y) + x];
 			n.position = Vector3((float)(x * nodeSize), closestCollision.collidedAt.y, (float)(y * nodeSize));
 
+
 			if (closestCollision.node) {
-				((GameObject*)closestCollision.node)->HasTag("traversable") ? n.type = '.' : n.type = 'x';
+				GameObject* go = (GameObject*)closestCollision.node;
+				go->HasTag("traversable") ? n.type = ((TraversableObject*)go)->TraversalType() : n.type = 'x';
 			} 
 			else {
 				n.type = 'x';
@@ -139,26 +143,37 @@ void NavigationGrid::BuildConnections() {
 
 			for (int i = 0; i < 4; ++i) {
 				if (n.connected[i]) {
-					if (n.connected[i]->type == '.') {
+
+					switch (n.connected[i]->type) {
+					case '.':
 						n.costs[i] = (n.position - n.connected[i]->position).Length();
-					}
-					if (n.connected[i]->type == 'x') {
-						n.connected[i] = nullptr; //actually a wall, disconnect!
+						break;
+					case 'o':
+						n.costs[i] = (n.position - n.connected[i]->position).Length() * 10.0f;
+						break;
+					case 'x':
+						n.connected[i] = nullptr;
 
 						//Also disconnect diagonals connected to this neighbour, to avoid ai ramming themselves into walls
 						n.connected[diagonalNeighbours[i].first] = nullptr;
 						n.connected[diagonalNeighbours[i].second] = nullptr;
-					}
+						break;
+					}					
 				}
 			}
 
 			for (int i = 4; i < 8; ++i) {
 				if (n.connected[i]) {
-					if (n.connected[i]->type == '.') {
-						n.costs[i] = (n.position - n.connected[i]->position).Length();
-					}
-					if (n.connected[i]->type == 'x') {
-						n.connected[i] = nullptr; //actually a wall, disconnect!
+					switch (n.connected[i]->type) {
+						case '.':
+							n.costs[i] = (n.position - n.connected[i]->position).Length();
+							break;
+						case 'o':
+							n.costs[i] = (n.position - n.connected[i]->position).Length() * 10.0f;
+							break;
+						case 'x':
+							n.connected[i] = nullptr;
+							break;
 					}
 				}
 			}

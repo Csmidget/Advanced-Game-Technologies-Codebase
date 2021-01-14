@@ -185,12 +185,11 @@ void GameWorld::GetConstraintIterators(
 	last	= constraints.end();
 }
 
-GameObject* GameWorld::ClosestObjectWithinRadius(Vector3 position, float radius, std::string tag) {
+std::vector<GameObject*> GameWorld::ObjectsWithinRadius(Vector3 position, float radius, std::string tag) {
 
 	auto possibleObjects = objectTree->GetPossibleCollisions(position, Vector3(radius, radius, radius));
 	
-	float closestDist = radius;
-	GameObject* closestObject = nullptr;
+	std::vector<GameObject*> foundObjects;
 
 	for (auto object : possibleObjects) {
 
@@ -198,12 +197,15 @@ GameObject* GameWorld::ClosestObjectWithinRadius(Vector3 position, float radius,
 		if (tag == "" || !object->HasTag(tag))
 			continue;
 
-		float dist = (object->GetTransform().GetPosition() - position).Length();
-		if (dist < closestDist) {
-			closestDist = dist;
-			closestObject = object;
-		}
+		if ((object->GetTransform().GetPosition() - position).Length() <= radius)
+			foundObjects.push_back(object);
 	}
 
-	return closestObject;
+	std::sort(foundObjects.begin(), foundObjects.end(), [&](GameObject* a, GameObject* b)->bool {
+		float aDist = (a->GetTransform().GetPosition() - position).LengthSquared();
+		float bDist = (b->GetTransform().GetPosition() - position).LengthSquared();
+		return aDist > bDist;
+	});
+
+	return foundObjects;
 }

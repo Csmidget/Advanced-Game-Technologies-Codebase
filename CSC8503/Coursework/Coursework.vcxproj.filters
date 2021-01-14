@@ -52,6 +52,12 @@
     <ClCompile Include="AIObject.cpp">
       <Filter>GameObjects\Actor Objects</Filter>
     </ClCompile>
+    <ClCompile Include="KatamariState.cpp">
+      <Filter>Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="KatamariBallObject.cpp">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -109,6 +115,12 @@
       <Filter>AIBehaviours</Filter>
     </ClInclude>
     <ClInclude Include="AIObject.h">
+      <Filter>GameObjects\Actor Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="KatamariState.h">
+      <Filter>Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="KatamariBallObject.h">
       <Filter>GameObjects\Actor Objects</Filter>
     </ClInclude>
   </ItemGroup>

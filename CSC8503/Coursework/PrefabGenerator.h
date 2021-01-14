@@ -20,11 +20,12 @@ namespace NCL {
 			GameObject* CreateAABBCube(Vector3 position, Vector3 dimensions, float inverseMass = 10.0f, bool isStatic = false);
 			GameObject* CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass = 10.0f, bool respawning = false, bool isStatic = false);
 			GameObject* CreateFloor(Vector3 position, Vector2 dimensions);
-			GameObject* CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions);
+			GameObject* CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions,std::string name = "orientedFloor");
 			GameObject* CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass = 10.0f, bool respawning = false, bool isStatic = false);
 			GameObject* CreateSphere(Vector3 position, float radius, float inverseMass = 10.0f, bool respawning = false, bool isStatic = false);
 			GameObject* CreateAnchor(const Vector3& position);
-			GameObject* CreateSlipperyFloor(const Vector3& position,const Quaternion& orientation,const Vector2& dimensions);
+			GameObject* CreateSlipperyFloor(const Vector3& position, const Quaternion& orientation, const Vector2& dimensions);
+			GameObject* CreateSwampFloor(const Vector3& position,const Quaternion& orientation,const Vector2& dimensions);
 
 			//These functions add objects directly to a world (multiple component objects, or objects including constraints).
 			GameObject*		AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 10.0f, const Vector2& dimensions = { 1,1 });
@@ -32,7 +33,7 @@ namespace NCL {
 			GameObject*		AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
 			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position, float respawnDelay = 5.0f);
 			PlayerObject*	AddPlayer(Game* game, const Vector3& position);
-			AIObject*		AddAI(Game* game, const Vector3& position);
+			AIObject*		AddAI(Game* game, const Vector3& position,float coinHuntRange = 30.0f);
 			void			AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force);
 
 		protected:
