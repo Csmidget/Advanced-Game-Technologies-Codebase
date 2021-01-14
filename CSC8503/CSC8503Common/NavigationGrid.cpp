@@ -140,7 +140,7 @@ void NavigationGrid::BuildConnections() {
 			for (int i = 0; i < 4; ++i) {
 				if (n.connected[i]) {
 					if (n.connected[i]->type == '.') {
-						n.costs[i] = 1;
+						n.costs[i] = (n.position - n.connected[i]->position).Length();
 					}
 					if (n.connected[i]->type == 'x') {
 						n.connected[i] = nullptr; //actually a wall, disconnect!
@@ -155,7 +155,7 @@ void NavigationGrid::BuildConnections() {
 			for (int i = 4; i < 8; ++i) {
 				if (n.connected[i]) {
 					if (n.connected[i]->type == '.') {
-						n.costs[i] = 1.414214f;
+						n.costs[i] = (n.position - n.connected[i]->position).Length();
 					}
 					if (n.connected[i]->type == 'x') {
 						n.connected[i] = nullptr; //actually a wall, disconnect!
@@ -207,7 +207,7 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 		currentBestNode = *openSet.begin();
 		openSet.erase(openSet.begin());
 
-		if (currentBestNode == endNode) {			//we've found the path!
+		if (currentBestNode == endNode) { //we've found the path!
 			GridNode* node = endNode;
 			outPath.PushWaypoint(rawTo);
 			while (node != nullptr) {
@@ -215,9 +215,6 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 				node = node->parent;
 			}
 			return true;
-		}
-		else if (maximumCost != 0.0f && currentBestNode->f > maximumCost) {
-			break;
 		}
 		else {
 			for (int i = 0; i < 8; ++i) {
@@ -247,7 +244,7 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 					neighbour->g = g;
 				}
 
-				if (!inOpen) {
+				if (!inOpen && neighbour->g < maximumCost) {
 					openSet.emplace(neighbour);
 				}
 			}

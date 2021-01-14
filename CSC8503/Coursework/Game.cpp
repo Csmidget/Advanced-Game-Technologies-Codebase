@@ -310,9 +310,9 @@ void Game::InitRaceBaseGeometry() {
 	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-100, 2, 0), Vector3(5, 2, 2), 0.0f, true));
 	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-107.5, 2, 50), Vector3(5, 2, 2), 0.0f, true));
 
-	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-100  , 2, -58), Vector3(5, 2, 1), 0.0f, true));
-	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-104, 2, -64), Vector3(1, 2, 5), 0.0f, true));
-	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(- 96  , 2, -64), Vector3(1, 2, 5), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-100  , 2, -57.5), Vector3(6.25, 2, 1.25), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(-105, 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true));
+	world->AddGameObject(prefabGenerator->CreateAABBCube(Vector3(- 95  , 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true));
 
 	//Checkpoint1
 	world->AddGameObject(prefabGenerator->CreateFloor(Vector3(-100, -0.5f, -100.0f), Vector2(20, 20)));
@@ -341,8 +341,8 @@ void Game::InitRacePlayers(int opponentCount) {
 	prefabGenerator->AddScoreBonus(world, Vector3(-100.0, 1.0f, -60.0f),10.0f);
 }
 
-NavigationPath Game::GetPath(Vector3 start, Vector3 end) {
+NavigationPath Game::GetPath(Vector3 start, Vector3 end, float maxCost) {
 	NavigationPath generatedPath;
-	navGrid->FindPath(start, end, generatedPath);
+	navGrid->FindPath(start, end, generatedPath,maxCost);
 	return generatedPath;
 }

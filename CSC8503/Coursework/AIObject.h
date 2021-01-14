@@ -17,7 +17,7 @@ namespace NCL {
 			~AIObject();
 
 			void OnUpdate(float dt) override;
-			bool SetGoal(Vector3 newGoal); 
+			bool SetGoal(Vector3 newGoal, float maxCost = INFINITY);
 
 
 		protected:

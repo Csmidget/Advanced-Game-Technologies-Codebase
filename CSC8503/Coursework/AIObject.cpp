@@ -37,19 +37,24 @@ void AIObject::DisplayPath() {
 	}
 }
 
-bool AIObject::SetGoal(Vector3 newGoal) {
+bool AIObject::SetGoal(Vector3 newGoal, float maxCost) {
+
+	if (newGoal == currentGoal) {
+		return true;
+	}
+
 	//It is too soon to be changing goal again.
-	if (setGoalCooldown > 0.0f || newGoal == currentGoal) {
+	if (setGoalCooldown > 0.0f) {
 		return false;
 	}
 
-	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal);
-
-	setGoalCooldown = 1.0f;
+	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal,maxCost);
 
 	if (newPath.IsEmpty()) {
 		return false;
 	}
+
+	setGoalCooldown = 1.0f;
 	currentPath = newPath;
 	currentPath.PopWaypoint(nextNode);
 	currentGoal = newGoal;

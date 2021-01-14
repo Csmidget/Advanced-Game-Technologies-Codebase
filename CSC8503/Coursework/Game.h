@@ -33,7 +33,7 @@ namespace NCL {
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
 
-			NavigationPath GetPath(Vector3 start, Vector3 end);
+			NavigationPath GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY);
 
 			void SetPause(bool val) { pause = val; }
 

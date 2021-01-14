@@ -14,7 +14,7 @@ namespace NCL {
 			GridNode* parent;
 
 			GridNode* connected[8];
-			int		  costs[8];
+			float		  costs[8];
 
 			Vector3		position;
 
@@ -62,7 +62,7 @@ namespace NCL {
 			NavigationGrid(QuadTree<GameObject*>* objectTree, Vector3 offset, float maxHeight, Vector2 gridDims, float nodeSize);
 			~NavigationGrid();
 
-			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath, float maximumCost = 0.0f) override;
+			bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath, float maximumCost = INFINITY) override;
 				
 		protected:
 			void		BuildConnections();

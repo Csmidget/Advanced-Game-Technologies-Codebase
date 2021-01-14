@@ -35,12 +35,18 @@ RaceBehaviourGetBonus::RaceBehaviourGetBonus(Game* g, AIObject* a) :BehaviourSeq
 
 		Vector3 targetPosition = bonusTarget->GetTransform().GetPosition();
 		targetPosition.y = 0.0f;
-		actor->SetGoal(targetPosition);
 
-		if ((targetPosition - actor->GetTransform().GetPosition()).Length() < 1.0f)
+		if (!actor->SetGoal(targetPosition,20.0f)) {
+			return BehaviourState::Failure;
+		}
+
+		if ((targetPosition - actor->GetTransform().GetPosition()).Length() < 1.0f) {
 			return BehaviourState::Success;
-		else
+		}
+		else {
 			return BehaviourState::Ongoing;
+		}
+
 	});
 	AddChild(moveToBonus);
 }
