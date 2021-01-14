@@ -41,10 +41,10 @@ namespace NCL {
 			int score;
 			Game* game;
 			std::map<Constraint*, float> timedConstraints;
+			float lastCollisionTimer;
 
 		private:
 			Checkpoint* currentCheckpoint;
-			float lastCollisionTimer;
 
 		};
 	}

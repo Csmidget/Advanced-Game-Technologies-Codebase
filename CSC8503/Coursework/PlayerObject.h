@@ -14,9 +14,6 @@ namespace NCL {
 
 			void OnUpdate(float dt) override;
 			void UpdateControls();
-
-		protected:
-			float lastCollisionTimer;
 		};
 	}
 }

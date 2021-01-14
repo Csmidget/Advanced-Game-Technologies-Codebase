@@ -37,14 +37,14 @@ void RespawningObject::Update(float dt) {
 
 	float posOffset = (prevPos - transform.GetPosition()).Length();
 
-	if (posOffset > 0.4f) {
+	if (posOffset > 0.3f) {
 		respawnTimer = 0.0f;
 		prevPos = transform.GetPosition();
 	}
 	else {
 		respawnTimer += dt;
 
-		if (respawnTimer > 1.0f) {
+		if (respawnTimer > 2.0f) {
 			Respawn();
 		}
 	}

@@ -141,7 +141,7 @@ GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion or
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
 	floor->GetPhysicsObject()->InitCubeInertia();
-	floor->GetPhysicsObject()->SetFriction(0.1f);
+	floor->GetPhysicsObject()->SetFriction(0.2f);
 
 	floor->SetIsStatic(true);
 
@@ -221,14 +221,22 @@ GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
 
 
 GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	GameObject* treadmill = new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
-	treadmill->GetPhysicsObject()->SetFriction(1.0f);
+	GameObject* treadmill = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
+
+	treadmill->SetRenderObject( new RenderObject(&treadmill->GetTransform(), cubeMesh, basicTex, basicShader));
+	treadmill->GetRenderObject()->SetColour(Vector4(0.2f, 0.2f, 0.2f, 1.0f));
 
 	return world->AddGameObject(treadmill);
 }
 
 GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
-	return world->AddGameObject(new ForceObject(world, cubeMesh, basicTex, basicShader, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 1, 0), strength));
+
+	GameObject* bouncePad = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 1, 0), strength,false);
+
+	bouncePad->SetRenderObject(new RenderObject(&bouncePad->GetTransform(), cubeMesh, basicTex, basicShader));
+	bouncePad->GetRenderObject()->SetColour(Vector4(0.2f, 0.2f, 0.2f, 1.0f));
+
+	return world->AddGameObject(bouncePad);
 }
 
 GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force) {
@@ -271,7 +279,7 @@ PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	player->GetPhysicsObject()->SetInverseMass(inverseMass);
 	player->GetPhysicsObject()->InitCubeInertia();
 	player->GetPhysicsObject()->SetElasticity(0.8f);
-	player->GetPhysicsObject()->SetFriction(0.8f);
+	player->GetPhysicsObject()->SetFriction(0.1f);
 	
 	game->GetWorld()->AddGameObject(player);
 		
@@ -303,7 +311,7 @@ AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position) {
 	aiPlayer->GetPhysicsObject()->SetInverseMass(inverseMass);
 	aiPlayer->GetPhysicsObject()->InitCubeInertia();
 	aiPlayer->GetPhysicsObject()->SetElasticity(0.8f);
-	aiPlayer->GetPhysicsObject()->SetFriction(0.8f);
+	aiPlayer->GetPhysicsObject()->SetFriction(0.1f);
 
 	game->GetWorld()->AddGameObject(aiPlayer);
 

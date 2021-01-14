@@ -242,12 +242,12 @@ void Game::InitPracticeGauntlet2() {
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(115.5f, y, 3.0f), Quaternion(), Vector2(0.5f,7.0f)));
 
-	prefabGenerator->AddTreadmill(world, Vector3(105.0f, y, 15.0f), Matrix4::Rotation(90,Vector3(0,1,0)), 0.25f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, 25.0f), Matrix4::Rotation(180, Vector3(0, 1, 0)), 0.25f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(95.0f, y, 45.0f), Matrix4::Rotation(-90, Vector3(0, 1, 0)), 0.25f, Vector2(5.0f, 15.0f));
-	prefabGenerator->AddTreadmill(world, Vector3(115.0f, y, 35.0f), Quaternion(), 0.25f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(105.0f, y, 15.0f)	, Matrix4::Rotation(90,Vector3(0,1,0))		, 4.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(85.0f, y, 25.0f)	, Matrix4::Rotation(180, Vector3(0, 1, 0))	, 4.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(95.0f, y, 45.0f)	, Matrix4::Rotation(-90, Vector3(0, 1, 0))	, 4.0f, Vector2(5.0f, 15.0f));
+	prefabGenerator->AddTreadmill(world, Vector3(115.0f, y, 35.0f)	, Quaternion()								, 4.0f, Vector2(5.0f, 15.0f));
 
-	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(115, y + 2, 35.0f), 1.0f, 0.6f, true));
+	world->AddGameObject(prefabGenerator->CreateSphere(Vector3(115, y + 2, 35.0f), 1.0f,0.6f, true));
 
 	world->AddGameObject(prefabGenerator->CreateSlipperyFloor(Vector3(100.0f, y, 65.0f), Quaternion(), Vector2(2.0f, 15.0f)));
 	
