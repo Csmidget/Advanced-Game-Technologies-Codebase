@@ -21,6 +21,9 @@ namespace NCL {
             return halfHeight;
         }
 
+        void PrintDebugInfo(int& currLine, float lineSpacing) override;
+
+
     protected:
         float radius;
         float halfHeight;

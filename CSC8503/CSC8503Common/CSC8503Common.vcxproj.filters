@@ -194,5 +194,8 @@
     <ClCompile Include="PushdownMachine.cpp">
       <Filter>AI</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionVolumeDebug.cpp">
+      <Filter>CollisionDetection</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

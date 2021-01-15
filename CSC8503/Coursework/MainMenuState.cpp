@@ -13,10 +13,10 @@ MainMenuState::MainMenuState(Game* game) : GameState(game) {
 
 PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** newState) {
 	Camera* cam = world->GetMainCamera();
-	Debug::Print("Main Menu", Vector2(5, 20), Debug::YELLOW);
-	Debug::Print("Practice", Vector2(5, 30), selection == 0 ? Debug::GREEN : Debug::WHITE);
-	Debug::Print("Versus", Vector2(5, 40), selection == 1 ? Debug::GREEN : Debug::WHITE);
-	Debug::Print("Quit", Vector2(5, 50), selection == 2 ? Debug::GREEN : Debug::WHITE);
+	Debug::Print("Main Menu", Vector2(5, 20), Debug::YELLOW,1.5f);
+	Debug::Print("Practice", Vector2(5, 30), selection == 0 ? Debug::GREEN : Debug::WHITE,1.5f);
+	Debug::Print("Versus", Vector2(5, 40), selection == 1 ? Debug::GREEN : Debug::WHITE,1.5f);
+	Debug::Print("Quit", Vector2(5, 50), selection == 2 ? Debug::GREEN : Debug::WHITE,1.5f);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::UP)) {
 		--selection;

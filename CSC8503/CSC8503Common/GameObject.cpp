@@ -58,17 +58,23 @@ void GameObject::UpdateBroadphaseAABB() {
 
 void GameObject::PrintDebugInfo() {
 	int currLine = 0;
+	float lineSpacing = 3;
 
 	std::stringstream stream;
 
 	stream << "Name: " << name;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
-		
-	transform.PrintDebugInfo(currLine);
-	
-	if(physicsObject)
-		physicsObject->PrintDebugInfo(currLine);
 
-	ObjectSpecificDebugInfo(currLine);
+	transform.PrintDebugInfo(++currLine, lineSpacing);
+
+	if (physicsObject) {
+		physicsObject->PrintDebugInfo(++currLine, lineSpacing);
+	}
+
+	if (boundingVolume) {
+		boundingVolume->PrintDebugInfo(++currLine, lineSpacing);
+	}
+
+	ObjectSpecificDebugInfo(++currLine,lineSpacing);
 }

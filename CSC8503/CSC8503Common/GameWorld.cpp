@@ -129,10 +129,18 @@ void GameWorld::UpdateWorld(float dt) {
 	}
 }
 
-bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject) const {
+bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject, bool includeStatic) const {
 	RayCollision collision;
 
 	std::set<GameObject*> possibleCollisions = objectTree->GetPossibleRayCollisions(r);
+
+
+	if (includeStatic) {
+		auto staticCollisions = staticObjectTree->GetPossibleRayCollisions(r);
+		for (auto col : staticCollisions) {
+			possibleCollisions.insert(col);
+		}
+	}
 
 	for (auto& i : possibleCollisions) {
 		if (!i->GetBoundingVolume() || i->GetCollisionLayer() & 1) { //objects might not be collideable etc...

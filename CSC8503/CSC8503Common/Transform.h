@@ -39,7 +39,7 @@ namespace NCL {
 			}
 			void UpdateMatrix();
 
-			void PrintDebugInfo(int& currLine);
+			void PrintDebugInfo(int& currLine, float lineSpacing);
 
 		protected:
 			Matrix4		matrix;

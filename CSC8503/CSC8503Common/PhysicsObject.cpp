@@ -109,17 +109,27 @@ void PhysicsObject::UpdateInertiaTensor() {
 	inverseInteriaTensor = orientation * Matrix3::Scale(inverseInertia) *invOrientation;
 }
 
-void PhysicsObject::PrintDebugInfo(int& currLine) {
+void PhysicsObject::PrintDebugInfo(int& currLine, float lineSpacing) {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);
 
 	stream << "LinVel: " << linearVelocity;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
+	Debug::DrawLine(transform->GetPosition(), transform->GetPosition() + linearVelocity,Vector4(0,0,1,1));
+
 	stream << "AngVel: " << angularVelocity;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Friction: " << friction;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Elasticity: " << elasticity;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
 }

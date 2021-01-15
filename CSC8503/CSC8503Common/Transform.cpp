@@ -40,20 +40,20 @@ Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	return *this;
 }
 
-void Transform::PrintDebugInfo(int& currLine) {
+void Transform::PrintDebugInfo(int& currLine, float lineSpacing) {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);
 
 	stream << "Position: "  << position;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
 	stream << "Orientation: " << orientation;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
 	stream << "Scale: " << scale;
-	Debug::Print(stream.str(), Vector2(1, ++currLine * 5));
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 }

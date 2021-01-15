@@ -29,7 +29,7 @@ namespace NCL {
 			void PrintDebugInfo();
 			
 			//Override to add debug info
-			virtual void ObjectSpecificDebugInfo(int& currLine) {};
+			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {};
 
 			virtual void OnKill() { isActive = false; }
 

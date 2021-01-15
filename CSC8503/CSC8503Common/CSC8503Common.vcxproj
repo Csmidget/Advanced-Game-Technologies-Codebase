@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="AngularImpulseConstraint.cpp" />
     <ClCompile Include="CollisionDetection.cpp" />
+    <ClCompile Include="CollisionVolumeDebug.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="LinearImpulseConstraint.cpp" />
     <ClCompile Include="GameObject.cpp" />

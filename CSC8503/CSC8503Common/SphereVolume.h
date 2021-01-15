@@ -14,6 +14,9 @@ namespace NCL {
 		float GetRadius() const {
 			return radius;
 		}
+
+		void PrintDebugInfo(int& currLine, float lineSpacing) override;
+
 	protected:
 		float	radius;
 	};

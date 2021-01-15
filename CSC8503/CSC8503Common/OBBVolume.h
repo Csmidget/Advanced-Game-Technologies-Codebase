@@ -14,6 +14,9 @@ namespace NCL {
 		Maths::Vector3 GetHalfDimensions() const {
 			return halfSizes;
 		}
+
+		void PrintDebugInfo(int& currLine, float lineSpacing) override;
+
 	protected:
 		Maths::Vector3 halfSizes;
 	};

@@ -70,7 +70,7 @@ PushdownState::PushdownResult PauseState::OnUpdate(float dt, PushdownState** new
 
 			Ray ray = CollisionDetection::BuildRayFromMouse(*camera);
 			RayCollision closestCollision;
-			if (world->Raycast(ray, closestCollision, true)) {
+			if (world->Raycast(ray, closestCollision, true,true)) {
 				Debug::DrawLine(ray.GetPosition(), closestCollision.collidedAt, Vector4(0, 1, 0, 1), 10.0f);
 				selectionObject = (GameObject*)closestCollision.node;
 				selectionObjectColour = selectionObject->GetRenderObject()->GetColour();
