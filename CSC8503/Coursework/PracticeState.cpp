@@ -1,6 +1,6 @@
 #include "PracticeState.h"
 #include "PlayerObject.h"
-#include "PauseState.h"
+#include "DebugState.h"
 #include "EndState.h"
 #include "Game.h"
 #include "../CSC8503Common/CollisionDetection.h"
@@ -8,6 +8,7 @@
 using namespace NCL::CSC8503;
 
 PracticeState::PracticeState(Game* game) : GameState(game) {
+	gameOver = false;
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitPracticeWorld();
 	scoreTracker = 0.0f;
@@ -24,10 +25,14 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 		return PushdownResult::Pop;
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
-		*newState = new PauseState(game);
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
+		*newState = new DebugState(game);
 		return PushdownResult::Push;
 	}
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		game->SetPause(!game->IsPaused());
+	}
+
 
 	PlayerObject* player = game->GetPlayerObject();
 

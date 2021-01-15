@@ -73,9 +73,6 @@ void PhysicsObject::InitCubeInertia() {
 void PhysicsObject::InitCapsuleInertia(float height, float radius) {
 	Vector3 dimensions = Vector3(radius, height, radius);
 
-//	dimensions.x = dimensions.x /= 2;
-//	dimensions.z = dimensions.z /= 2;
-
 	Vector3 fullWidth = dimensions * 2;
 	Vector3 dimsSqr = fullWidth * fullWidth;
 

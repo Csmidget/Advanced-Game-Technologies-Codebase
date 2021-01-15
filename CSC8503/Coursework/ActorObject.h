@@ -26,7 +26,7 @@ namespace NCL {
 		    void Update(float dt) override;
 			virtual void OnUpdate(float dt) = 0;
 			virtual void Respawn();
-			void OnCollisionBegin(GameObject* otherObject) override;
+			virtual void OnCollisionBegin(GameObject* otherObject) override;
 
 
 			void AddScore(int scoreToAdd) { score += scoreToAdd; }

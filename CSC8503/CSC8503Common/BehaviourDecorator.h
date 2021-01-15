@@ -14,6 +14,10 @@ namespace NCL {
 				childNode = nullptr;
 			}
 
+			~BehaviourDecorator() {
+				delete childNode;
+			}
+
 			BehaviourState Execute(float dt) override {
 				if (childNode) {
 					currentState = childNode->Execute(dt);

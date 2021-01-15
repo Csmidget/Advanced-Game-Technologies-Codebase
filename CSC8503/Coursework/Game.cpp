@@ -391,12 +391,41 @@ void Game::InitRaceCheckpoints() {
 }
 
 void Game::InitRacePlayers(int opponentCount) {
-	player = prefabGenerator->AddPlayer(this, Vector3(-95, 5, 100));
+	player = prefabGenerator->AddPlayer(this, Vector3(-100, 5, 95));
 
-	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-105, 5, 100)));
-	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-90, 5, 100), 50.0f));
-	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-82, 5, 100), 70.0f));
-	opponents.push_back(prefabGenerator->AddAI(this, Vector3(-90, 5, 110),100.0f));
+	Vector3 firstSpawn(-110, 5, 100);
+
+	//The first few opponents are predetermined.
+	if (opponentCount >= 1)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-110, 5, 100)));
+	if (opponentCount >= 2)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-105, 5, 100), 50.0f));
+	if (opponentCount >= 3)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-100, 5, 100), 70.0f));
+	if (opponentCount >= 4)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-95, 5, 100), 100.0f));
+	if (opponentCount >= 5)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-90, 5, 100), 100.0f, 0.0f, 3.0f));
+	if (opponentCount >= 6)
+		opponents.push_back(prefabGenerator->AddAI(this, Vector3(-110, 5, 103), 100.0f, 0.0f, 3.0f));
+
+	for (int i = 7; i < opponentCount; ++i) {
+
+		int x = (i - 1) % 5;
+		int y = (i - 1) / 5;
+		Vector3 spawnPos = firstSpawn + Vector3(x * 5.0f, 0, y * 5.0f);
+
+		//1-100
+		float cointHuntRange = rand() % 100;
+
+		//0-10
+		float angerThreshold = (rand() % 11) - 1;
+
+		//1-3
+		float strength = 1 + (rand() % 20) / 10;
+
+		opponents.push_back(prefabGenerator->AddAI(this, spawnPos, cointHuntRange, angerThreshold, strength));
+	}
 
 	prefabGenerator->AddScoreBonus(world, Vector3(-100, 1.0f, 100), 15.0f);
 	//prefabGenerator->AddScoreBonus(world, Vector3(-110, 1.0f, 45.0f), 15.0f);

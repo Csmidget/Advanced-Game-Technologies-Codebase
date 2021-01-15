@@ -316,11 +316,11 @@ PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	return player;
 }
 
-AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position, float coinHuntRange) {
+AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position, float coinHuntRange,float angerThreshold, float strength) {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position, coinHuntRange);
+	AIObject* aiPlayer = new AIObject(game, position, coinHuntRange, angerThreshold, strength);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
 

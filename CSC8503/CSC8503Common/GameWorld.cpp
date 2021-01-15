@@ -26,6 +26,7 @@ void GameWorld::Clear() {
 	gameObjects.clear();
 	constraints.clear();
 	killPlanes.clear();
+
 	staticObjectTree->Clear();
 	objectTree->Clear();
 }
@@ -195,25 +196,35 @@ void GameWorld::GetConstraintIterators(
 
 std::vector<GameObject*> GameWorld::ObjectsWithinRadius(Vector3 position, float radius, std::string tag) {
 
+	typedef std::pair<float, GameObject*> DistObjectPair;
+
 	auto possibleObjects = objectTree->GetPossibleCollisions(position, Vector3(radius, radius, radius));
 	
-	std::vector<GameObject*> foundObjects;
+	//We do this to make the comparison operator cheaper (Otherwise it would have to find sqr distance for both
+	//objects in every comparison.
+	std::vector<DistObjectPair> foundObjects;
 
+	float sqrRadius = radius * radius;
 	for (auto object : possibleObjects) {
 
 		//If a tag is defined. Only test objects with the tag.
 		if (tag == "" || !object->HasTag(tag))
 			continue;
 
-		if ((object->GetTransform().GetPosition() - position).Length() <= radius)
-			foundObjects.push_back(object);
+		float sqrDist = (object->GetTransform().GetPosition() - position).LengthSquared();
+		if (sqrDist <= sqrRadius)
+			foundObjects.push_back({ sqrDist, object });
 	}
 
-	std::sort(foundObjects.begin(), foundObjects.end(), [&](GameObject* a, GameObject* b)->bool {
-		float aDist = (a->GetTransform().GetPosition() - position).LengthSquared();
-		float bDist = (b->GetTransform().GetPosition() - position).LengthSquared();
-		return aDist > bDist;
+	std::sort(foundObjects.begin(), foundObjects.end(), [&](DistObjectPair a, DistObjectPair b)->bool {
+		return a.first < b.first;
 	});
 
-	return foundObjects;
+	std::vector<GameObject*> sortedObjects;
+
+	for (auto o : foundObjects){
+		sortedObjects.push_back(o.second);
+	}
+
+	return sortedObjects;
 }

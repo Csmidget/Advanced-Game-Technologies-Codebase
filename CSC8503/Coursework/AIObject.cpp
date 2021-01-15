@@ -6,20 +6,56 @@
 #include "../CSC8503Common/Debug.cpp"
 #include "Game.h"
 
+#include <iomanip>
+#include <sstream>
+
 using namespace NCL;
 using namespace CSC8503;
 
-AIObject::AIObject(Game* game, Vector3 respawnPosition, float coinHuntRange) : ActorObject(game, respawnPosition, "ai") {
+AIObject::AIObject(Game* game, Vector3 respawnPosition, float coinHuntRange, float angerThreshold, float strength) : ActorObject(game, respawnPosition, "ai") {
 	behaviourTree = new RaceAIBehaviourTree(game, this);
 	behaviourUpdateCooldown = 0.0f;
 	currentGoal = respawnPosition;
 	nextNode = respawnPosition;
 	this->coinHuntRange = coinHuntRange;
+	this->angerThreshold = angerThreshold;
+	this->strength = strength;
+	currentAnger = 0.0f;
 }
 
 AIObject::~AIObject() {
 
 }
+
+void AIObject::OnCollisionBegin(GameObject* otherObject) {
+
+	if (otherObject->HasTag("actor")) {
+
+		//If we're not angry yet, get angrier >:(
+		if (currentAnger < angerThreshold) {
+			++currentAnger;
+		}
+		//If we're angry, take it out on the other object.
+		else {
+			
+			Vector3 direction = (otherObject->GetTransform().GetPosition() - transform.GetPosition() + Vector3(0, 1, 0)).Normalised();
+
+			//FALCON PUNCH
+			otherObject->GetPhysicsObject()->ApplyLinearImpulse(direction * strength);
+
+			//That's better :)
+			currentAnger = 0.0f;
+		}
+
+	}
+
+	//When we collide with collectables we don't want to reset the collision timer...
+	if (otherObject->GetPhysicsObject())
+		lastCollisionTimer = 0.0f;
+
+	ActorObject::OnCollisionBegin(otherObject);
+}
+
 
 void AIObject::DisplayPath() {
 	auto path = currentPath.GetWaypoints();
@@ -60,6 +96,10 @@ void AIObject::OnUpdate(float dt) {
 
 	behaviourUpdateCooldown -= dt;
 	behaviourUpdateCooldown = max(0.0f, behaviourUpdateCooldown);
+
+	float angerColIntensity = currentAnger / angerThreshold;
+	angerColIntensity = max(0.0f, angerColIntensity);
+	renderObject->SetColour(Vector4(1, 1-angerColIntensity, 1-angerColIntensity, 1));
 	
 	if (behaviourUpdateCooldown < 0.0001f) {
 		behaviourTree->Execute(dt);
@@ -93,7 +133,10 @@ void AIObject::OnUpdate(float dt) {
 		Vector3 xzPos = transform.GetPosition();
 		xzPos.y = 0.0f;
 
-		Vector3 direction = nextNode - xzPos;
+		Vector3 xzNextNode = nextNode;
+		xzNextNode.y = 0.0f;
+
+		Vector3 direction = xzNextNode - xzPos;
 		if (direction.Length() < 2.5f) {
 			currentPath.PopWaypoint(nextNode);
 		}
@@ -104,5 +147,35 @@ void AIObject::OnUpdate(float dt) {
 
 	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
 
+#ifdef _DEBUG
 	DisplayPath();
+#endif
+}
+
+void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+	std::stringstream stream;
+
+	DisplayPath();
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "State: " << currentState;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Current Target: " << currentGoal;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Max Coin Distance: " << coinHuntRange;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+}
+
+void AIObject::OnRespawn() {
+	if (!SetGoal(currentGoal)) {
+		currentGoal = transform.GetPosition();
+		nextNode = currentGoal;
+		currentPath.Clear();
+	}
 }

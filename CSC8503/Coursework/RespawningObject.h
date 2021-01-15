@@ -11,6 +11,7 @@ namespace NCL {
 			RespawningObject(Vector3 spawnPosition, string name, bool randomizeOrientation = false);
 
 			virtual void Respawn();
+			virtual void OnRespawn() {};
 			virtual void Update(float dt) override;
 
 			void SetRespawnPosition(Vector3 val) { spawnPosition = val; }

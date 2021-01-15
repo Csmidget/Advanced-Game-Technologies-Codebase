@@ -9,6 +9,7 @@ using namespace NCL::CSC8503;
 MainMenuState::MainMenuState(Game* game) : GameState(game) {
 	selection = 0;
 	world = game->GetWorld();
+	raceOpponents = 1;
 };
 
 PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** newState) {
@@ -27,13 +28,26 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 		selection = (selection + 1) % 3;
 	}
 
+	if (selection == 1) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
+			++raceOpponents;
+		}
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::LEFT)) {
+			--raceOpponents;
+		}
+
+		raceOpponents = max(1, min(14, raceOpponents));
+		std::string opponentsText = "Opponents:  < " + std::to_string(raceOpponents) + " >";
+		Debug::Print(opponentsText, Vector2(15, 40), Debug::WHITE, 1.5f);
+	}
+
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RETURN)) {
 		switch (selection) {
 		case 0:
 			*newState = new PracticeState(game);
 			return PushdownResult::Push;
 		case 1:
-			*newState = new RaceState(game);
+			*newState = new RaceState(game,raceOpponents);
 			return PushdownResult::Push;
 
 		case 2:

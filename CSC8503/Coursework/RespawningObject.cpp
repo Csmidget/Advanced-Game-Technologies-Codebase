@@ -31,6 +31,8 @@ void RespawningObject::Respawn() {
 
 		transform.SetOrientation(newRot);
 	}
+
+	OnRespawn();
 }
 
 void RespawningObject::Update(float dt) {

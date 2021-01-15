@@ -13,7 +13,7 @@ namespace NCL {
 		class AIObject : public ActorObject {
 
 		public:
-			AIObject(Game* game, Vector3 respawnPosition,float coinHuntRange = 30.0f);
+			AIObject(Game* game, Vector3 respawnPosition,float coinHuntRange = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 			~AIObject();
 
 			void OnUpdate(float dt) override;
@@ -21,11 +21,27 @@ namespace NCL {
 
 			float GetCoinHuntRange() const { return coinHuntRange; }
 
+			void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) override;
+
+			void SetCurrentState(std::string str) { currentState = str; }
+
+			void OnCollisionBegin(GameObject* otherObject) override;
+			 
+			bool IsAngry() { return currentAnger >= angerThreshold; }
+
+			void OnRespawn() override;
+
+
 		protected:
 			void DisplayPath();
 
+			float angerThreshold;
+			float currentAnger;
+			float strength;
+
 			float behaviourUpdateCooldown;
 			float coinHuntRange;
+			std::string currentState;
 
 			BehaviourNode* behaviourTree;
 			Quaternion orientation;

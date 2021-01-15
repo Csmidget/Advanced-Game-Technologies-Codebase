@@ -15,6 +15,7 @@ namespace NCL {
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;
 			void OnAwake() override;
 			int selection;
+			int raceOpponents;
 			float cameraYaw;
 			const GameWorld* world;
 		};

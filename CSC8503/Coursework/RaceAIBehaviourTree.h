@@ -7,6 +7,9 @@ namespace NCL {
 
 		class Game;
 		class AIObject;
+		class GameObject;
+		class BehaviourSequence;
+		class BonusObject;
 
 		class RaceAIBehaviourTree : public BehaviourParallel {
 
@@ -14,9 +17,14 @@ namespace NCL {
 			RaceAIBehaviourTree(Game* game, AIObject* actor);
 
 		protected:
+
+			BehaviourSequence* CreateBonusSequence();
+			BehaviourSequence* CreateAngerSequence();
+
 			Game* game;
 			AIObject* actor;
-
+			BonusObject* bonusTarget;
+			GameObject*  angerTarget;
 		};
 	}
 }

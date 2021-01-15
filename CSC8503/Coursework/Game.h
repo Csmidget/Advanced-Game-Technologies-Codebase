@@ -36,6 +36,7 @@ namespace NCL {
 			NavigationPath GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY);
 
 			void SetPause(bool val) { pause = val; }
+			bool IsPaused() const { return pause; }
 
 		protected:
 			void Clear();

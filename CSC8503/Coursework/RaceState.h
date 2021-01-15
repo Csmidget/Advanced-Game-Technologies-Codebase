@@ -9,7 +9,7 @@ namespace NCL {
 		class RaceState : public GameState {
 
 		public:
-			RaceState(Game* game);
+			RaceState(Game* game, int opponents);
 
 		protected:
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;

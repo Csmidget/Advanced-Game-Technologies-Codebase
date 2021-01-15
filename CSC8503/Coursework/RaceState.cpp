@@ -1,6 +1,6 @@
 #include "RaceState.h"
 #include "PlayerObject.h"
-#include "PauseState.h"
+#include "DebugState.h"
 #include "EndState.h"
 #include "Game.h"
 #include "../CSC8503Common/CollisionDetection.h"
@@ -9,9 +9,10 @@
 
 using namespace NCL::CSC8503;
 
-RaceState::RaceState(Game* game) : GameState(game) {
+RaceState::RaceState(Game* game, int opponents) : GameState(game) {
+	gameOver = false;
 	camera = game->GetWorld()->GetMainCamera();
-	game->InitRaceWorld(1);
+	game->InitRaceWorld(opponents);
 	scoreTracker = 0.0f;
 	game->GetPlayerObject()->AddScore(100000.0f);
 
@@ -26,10 +27,14 @@ PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newS
 		return PushdownResult::Pop;
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
-		*newState = new PauseState(game);
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
+		*newState = new DebugState(game);
 		return PushdownResult::Push;
 	}
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		game->SetPause(!game->IsPaused());
+	}
+
 
 	PlayerObject* player = game->GetPlayerObject();
 

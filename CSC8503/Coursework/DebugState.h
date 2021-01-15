@@ -11,11 +11,11 @@ namespace NCL {
 		class GameWorld;
 		class GameObject;
 
-		class PauseState : public GameState {
+		class DebugState : public GameState {
 
 		public:
-			PauseState(Game* game);
-			~PauseState();
+			DebugState(Game* game);
+			~DebugState();
 
 		protected:
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;

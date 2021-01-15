@@ -33,7 +33,7 @@ namespace NCL {
 			GameObject*		AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force);
 			GameObject*		AddScoreBonus(GameWorld* world, Vector3 position, float respawnDelay = 5.0f);
 			PlayerObject*	AddPlayer(Game* game, const Vector3& position);
-			AIObject*		AddAI(Game* game, const Vector3& position,float coinHuntRange = 30.0f);
+			AIObject*		AddAI(Game* game, const Vector3& position,float coinHuntRange = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 			void			AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force);
 
 		protected:

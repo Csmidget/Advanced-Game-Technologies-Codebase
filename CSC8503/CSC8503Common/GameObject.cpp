@@ -65,6 +65,9 @@ void GameObject::PrintDebugInfo() {
 	stream << "Name: " << name;
 	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
+	stream << "Static: " << (isStatic ? "True":"False");
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
 
 	transform.PrintDebugInfo(++currLine, lineSpacing);
 
