@@ -13,11 +13,11 @@ namespace NCL {
 		class AIObject : public ActorObject {
 
 		public:
-			AIObject(Game* game, Vector3 respawnPosition,float coinHuntRange = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
+			AIObject(Game* game, Vector3 respawnPosition, std::string name = "enemy",float coinHuntRange = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 			~AIObject();
 
 			void OnUpdate(float dt) override;
-			bool SetGoal(Vector3 newGoal, float maxCost = INFINITY);
+			bool SetGoal(Vector3 newGoal, float maxCost = INFINITY, bool force = false);
 
 			float GetCoinHuntRange() const { return coinHuntRange; }
 
@@ -31,9 +31,14 @@ namespace NCL {
 
 			void OnRespawn() override;
 
+			bool IsAsleep() const { return asleep; }
+			void SetAsleep(bool val) { asleep = val; }
+
 
 		protected:
 			void DisplayPath();
+
+			bool asleep;
 
 			float angerThreshold;
 			float currentAnger;

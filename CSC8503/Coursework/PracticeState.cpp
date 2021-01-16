@@ -4,6 +4,7 @@
 #include "EndState.h"
 #include "Game.h"
 #include "../CSC8503Common/CollisionDetection.h"
+#include "Checkpoint.h"
 
 using namespace NCL::CSC8503;
 
@@ -58,9 +59,8 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 
 	player->UpdateControls(camera);
 
-	Vector3 playerAABB;
-	//Reached goal
-	if (player->GetBroadphaseAABB(playerAABB) && CollisionDetection::AABBTest(player->GetTransform().GetPosition(), game->GetGoal()->GetPosition(), playerAABB, game->GetGoal()->GetHalfDims())) {
+	//Check if player is colliding with the goal bounds
+	if (game->GetGoal()->ReachedCheckpoint(player)) {
 		gameOver = true;
 		*newState = new EndState(game, "You Win!", "Score: " + std::to_string(player->GetScore()));
 		return PushdownResult::Push;

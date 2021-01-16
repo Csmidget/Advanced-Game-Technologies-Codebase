@@ -46,6 +46,10 @@ void GameWorld::ClearAndErase() {
 }
 
 GameObject* GameWorld::AddGameObject(GameObject* o) {
+
+	//For debugging, we should not be adding duplicate objects to the world.
+	assert(std::find(gameObjects.begin(), gameObjects.end(), o) == gameObjects.end());
+
 	gameObjects.emplace_back(o);
 	o->SetWorldID(worldIDCounter++);
 	

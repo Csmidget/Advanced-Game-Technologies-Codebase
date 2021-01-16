@@ -12,7 +12,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
-AIObject::AIObject(Game* game, Vector3 respawnPosition, float coinHuntRange, float angerThreshold, float strength) : ActorObject(game, respawnPosition, "ai") {
+AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float coinHuntRange, float angerThreshold, float strength) : ActorObject(game, respawnPosition, name) {
 	behaviourTree = new RaceAIBehaviourTree(game, this);
 	behaviourUpdateCooldown = 0.0f;
 	currentGoal = respawnPosition;
@@ -21,6 +21,7 @@ AIObject::AIObject(Game* game, Vector3 respawnPosition, float coinHuntRange, flo
 	this->angerThreshold = angerThreshold;
 	this->strength = strength;
 	currentAnger = 0.0f;
+	asleep = false;
 }
 
 AIObject::~AIObject() {
@@ -29,7 +30,7 @@ AIObject::~AIObject() {
 
 void AIObject::OnCollisionBegin(GameObject* otherObject) {
 
-	if (otherObject->HasTag("actor")) {
+	if (!asleep && otherObject->HasTag("actor")) {
 
 		//If we're not angry yet, get angrier >:(
 		if (currentAnger < angerThreshold) {
@@ -74,9 +75,9 @@ void AIObject::DisplayPath() {
 	}
 }
 
-bool AIObject::SetGoal(Vector3 newGoal, float maxCost) {
+bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 
-	if (newGoal == currentGoal) {
+	if (newGoal == currentGoal && !force) {
 		return true;
 	}
 
@@ -101,7 +102,7 @@ void AIObject::OnUpdate(float dt) {
 	angerColIntensity = max(0.0f, angerColIntensity);
 	renderObject->SetColour(Vector4(1, 1-angerColIntensity, 1-angerColIntensity, 1));
 	
-	if (behaviourUpdateCooldown < 0.0001f) {
+	if (!asleep && behaviourUpdateCooldown < 0.0001f) {
 		behaviourTree->Execute(dt);
 		behaviourUpdateCooldown = 0.1f;
 	}
@@ -129,7 +130,7 @@ void AIObject::OnUpdate(float dt) {
 	}
 	transform.SetOrientation(orientation);
 
-	if (lastCollisionTimer < 0.1f) {
+	if (!asleep && lastCollisionTimer < 0.1f) {
 		Vector3 xzPos = transform.GetPosition();
 		xzPos.y = 0.0f;
 
@@ -139,6 +140,12 @@ void AIObject::OnUpdate(float dt) {
 		Vector3 direction = xzNextNode - xzPos;
 		if (direction.Length() < 2.5f) {
 			currentPath.PopWaypoint(nextNode);
+		}
+
+		//We're a long distance from this node, we should regenerate the path
+		//in case we've been knocked too far off course.
+		if (direction.Length() > 7.5f) {
+			SetGoal(currentGoal, INFINITY, true);
 		}
 
 		direction.Normalise();
@@ -168,6 +175,14 @@ void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
 	stream.str("");
 
 	stream << "Max Coin Distance: " << coinHuntRange;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Anger Threshold " << angerThreshold;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Current Anger: " << currentAnger;
 	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 }

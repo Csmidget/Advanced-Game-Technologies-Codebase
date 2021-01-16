@@ -109,7 +109,8 @@ BehaviourSequence* RaceAIBehaviourTree::CreateAngerSequence() {
 
 			//Only go for a target it the path to them isn't too long.
 			if (actor->SetGoal(o->GetTransform().GetPosition(),17.5f)) {
-				return BehaviourState::Success;
+				actor->SetCurrentState("Fighting");
+				return BehaviourState::Ongoing;
 			}
 		}
 

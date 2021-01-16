@@ -144,6 +144,7 @@
     <ClCompile Include="ActorObject.cpp" />
     <ClCompile Include="AIObject.cpp" />
     <ClCompile Include="BonusObject.cpp" />
+    <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="KatamariBallObject.cpp" />
     <ClCompile Include="KatamariState.cpp" />

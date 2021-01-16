@@ -4,7 +4,6 @@
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "../CSC8503Common/PushdownMachine.h"
 #include "../CSC8503Common/NavigationPath.h"
-#include "Checkpoint.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -14,6 +13,7 @@ namespace NCL {
 		class PlayerObject;
 		class AIObject;
 		class NavigationGrid;
+		class Checkpoint;
 
 		class Game {
 		public:
@@ -23,7 +23,9 @@ namespace NCL {
 			virtual void UpdateGame(float dt);
 			bool ShouldQuit() { return quit; }
 			GameWorld* GetWorld() { return world;	}
+
 			PlayerObject* GetPlayerObject() { return player; }
+			std::vector<AIObject*> GetOpponents() { return opponents; }
 
 			bool GetUseGravity() const { return useGravity; }
 			void SetUseGravity(bool val);

@@ -55,7 +55,7 @@ PrefabGenerator::~PrefabGenerator() {
 }
 
 
-GameObject* PrefabGenerator::CreateAABBCube(Vector3 position, Vector3 dimensions, float inverseMass, bool isStatic) {
+GameObject* PrefabGenerator::CreateAABBCube(GameWorld* world, Vector3 position, Vector3 dimensions, float inverseMass, bool isStatic) {
 	GameObject* cube = new GameObject("cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
@@ -74,10 +74,10 @@ GameObject* PrefabGenerator::CreateAABBCube(Vector3 position, Vector3 dimensions
 
 	cube->SetIsStatic(isStatic);
 
-	return cube;
+	return world->AddGameObject(cube);
 }
 
-GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) {
+GameObject* PrefabGenerator::CreateOBBCube(GameWorld* world, Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) {
 	GameObject* cube = respawning ? new RespawningObject(position,"respawningOrientedCube",true) : new GameObject("orientedCube");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
@@ -100,9 +100,9 @@ GameObject* PrefabGenerator::CreateOBBCube(Vector3 position, Quaternion orientat
 
 	cube->SetIsStatic(isStatic);
 
-	return cube;
+	return world->AddGameObject(cube);
 }
-GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
+GameObject* PrefabGenerator::CreateFloor(GameWorld* world, Vector3 position, Vector2 dimensions) {
 	GameObject* floor = new TraversableObject("floor");
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5, dimensions.y);
@@ -121,9 +121,9 @@ GameObject* PrefabGenerator::CreateFloor(Vector3 position, Vector2 dimensions) {
 	floor->SetIsStatic(true);
 
 
-	return floor;
+	return world->AddGameObject(floor);
 }
-GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion orientation, Vector2 dimensions, std::string name) {
+GameObject* PrefabGenerator::CreateOrientedFloor(GameWorld* world, Vector3 position, Quaternion orientation, Vector2 dimensions, std::string name) {
 	GameObject* floor = new TraversableObject(name);
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5f, dimensions.y);
@@ -145,11 +145,11 @@ GameObject* PrefabGenerator::CreateOrientedFloor(Vector3 position, Quaternion or
 
 	floor->SetIsStatic(true);
 
-	return floor;
+	return world->AddGameObject(floor);
 }
 
-GameObject* PrefabGenerator::CreateSlipperyFloor(const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) {
-	GameObject* floor = CreateOrientedFloor(position, orientation, dimensions,"slipperyFloor");
+GameObject* PrefabGenerator::CreateSlipperyFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) {
+	GameObject* floor = CreateOrientedFloor(world, position, orientation, dimensions,"slipperyFloor");
 	PhysicsObject* phys = floor->GetPhysicsObject();
 
 	phys->SetFriction(0.0f);
@@ -159,7 +159,7 @@ GameObject* PrefabGenerator::CreateSlipperyFloor(const Vector3& position, const 
 	return floor;
 }
 
-GameObject* PrefabGenerator::CreateSwampFloor(const Vector3& position, const Quaternion& orientation, const Vector2& dimensions) {
+GameObject* PrefabGenerator::CreateSwampFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation, const Vector2& dimensions) {
 	GameObject* floor = new TraversableObject("swampFloor",'o');
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.7f, dimensions.y);
@@ -185,10 +185,10 @@ GameObject* PrefabGenerator::CreateSwampFloor(const Vector3& position, const Qua
 
 	floor->SetIsStatic(true);
 
-	return floor;
+	return world->AddGameObject(floor);
 }
 
-GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) {
+GameObject* PrefabGenerator::CreateCapsule(GameWorld* world, Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) {
 	GameObject* capsule = respawning ? new RespawningObject(position,"respawningCapsule",true) : new GameObject("capsule");
 
 	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
@@ -208,10 +208,10 @@ GameObject* PrefabGenerator::CreateCapsule(Vector3 position, Quaternion orientat
 
 	capsule->SetIsStatic(isStatic);
 
-	return capsule;
+	return world->AddGameObject(capsule);
 }
 
-GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) {
+GameObject* PrefabGenerator::CreateSphere(GameWorld* world, Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) {
 	GameObject* sphere = respawning ? new RespawningObject(position,"respawningSphere",true) : new GameObject("sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
@@ -233,10 +233,10 @@ GameObject* PrefabGenerator::CreateSphere(Vector3 position, float radius, float 
 
 	sphere->SetIsStatic(isStatic);
 
-	return sphere;
+	return world->AddGameObject(sphere);
 }
 
-GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
+GameObject* PrefabGenerator::CreateAnchor(GameWorld* world, const Vector3& position) {
 	GameObject* anchor = new GameObject("anchor");
 
 	anchor->GetTransform().SetPosition(position);
@@ -245,11 +245,28 @@ GameObject* PrefabGenerator::CreateAnchor(const Vector3& position) {
 	anchor->GetPhysicsObject()->SetInverseMass(0.0f);
 	anchor->SetIsStatic(true);
 
-	return anchor;
+	return world->AddGameObject(anchor);
+}
+
+//This creates an invisible and non physical square that blocks path generation rays, essentially blocking AI from entering certain areas.
+GameObject* PrefabGenerator::CreatePathBlocker(GameWorld* world, const Vector2& position, const Vector2& halfDimensions) {
+	GameObject* pathBlocker = new GameObject("pathBlocker");
+
+	Vector3 halfDims = Vector3(halfDimensions.x, 0.01f, halfDimensions.y);
+	pathBlocker->SetBoundingVolume(new AABBVolume(halfDims));
+
+	Vector3 pos(position.x, 900, position.y);
+	pathBlocker->GetTransform()
+		.SetPosition(pos)
+		.SetScale(halfDims * 2);
+
+	pathBlocker->SetIsStatic(true);
+
+	return world->AddGameObject(pathBlocker);
 }
 
 
-GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
+GameObject* PrefabGenerator::CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
 	GameObject* treadmill = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
 
 	treadmill->SetRenderObject( new RenderObject(&treadmill->GetTransform(), cubeMesh, basicTex, basicShader));
@@ -258,7 +275,7 @@ GameObject* PrefabGenerator::AddTreadmill(GameWorld* world, const Vector3& posit
 	return world->AddGameObject(treadmill);
 }
 
-GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
+GameObject* PrefabGenerator::CreateBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) {
 
 	GameObject* bouncePad = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 1, 0), strength,false);
 
@@ -268,14 +285,14 @@ GameObject* PrefabGenerator::AddBouncePad(GameWorld* world, const Vector3& posit
 	return world->AddGameObject(bouncePad);
 }
 
-GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force) {
+GameObject* PrefabGenerator::CreateSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force, float length) {
 
-	GameObject* spinningBlock = world->AddGameObject(CreateOBBCube(position, Quaternion(), Vector3(10.0f, 2, 2), 0.01f));
+	GameObject* spinningBlock = CreateOBBCube(world, position, Quaternion(), Vector3(length, 2, 2), 0.01f);
 
-	GameObject* positionAnchor = world->AddGameObject(CreateAnchor(position));
+	GameObject* positionAnchor = CreateAnchor(world, position);
 	world->AddConstraint(new PositionConstraint(positionAnchor, spinningBlock, 0.0f));
 
-	GameObject* orientationAnchor = world->AddGameObject(CreateAnchor(position + upVector));
+	GameObject* orientationAnchor = CreateAnchor(world, position + upVector);
 	world->AddConstraint(new OrientationConstraint(spinningBlock, orientationAnchor, Vector3(0, 1, 0)));
 
 	world->AddConstraint(new AngularImpulseConstraint(spinningBlock, Vector3(0,force,0)));
@@ -283,7 +300,7 @@ GameObject* PrefabGenerator::AddSpinningBlock(GameWorld* world, const Vector3& p
 	return spinningBlock;
 }
 
-PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
+PlayerObject* PrefabGenerator::CreatePlayer(Game* game, const Vector3& position) {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
@@ -316,11 +333,11 @@ PlayerObject* PrefabGenerator::AddPlayer(Game* game, const Vector3& position) {
 	return player;
 }
 
-AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position, float coinHuntRange,float angerThreshold, float strength) {
+AIObject* PrefabGenerator::CreateAI(Game* game, const Vector3& position, std::string name, float coinHuntRange,float angerThreshold, float strength) {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position, coinHuntRange, angerThreshold, strength);
+	AIObject* aiPlayer = new AIObject(game, position, name, coinHuntRange, angerThreshold, strength);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
 
@@ -350,12 +367,12 @@ AIObject* PrefabGenerator::AddAI(Game* game, const Vector3& position, float coin
 	return aiPlayer;
 }
 
-void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) {
+void PrefabGenerator::CreatePendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) {
 
 	Vector3 dimensions = Vector3(1, 1, 1);
 	float inverseMass = 0.5f;
 
-	GameObject* anchor = world->AddGameObject(CreateAnchor(position));
+	GameObject* anchor = CreateAnchor(world, position);
 
 	PendulumObject* pendulum = new PendulumObject(world, anchor, distance, force);
 
@@ -380,7 +397,7 @@ void PrefabGenerator::AddPendulum(GameWorld* world, Vector3 position, float dist
 	world->AddConstraint(new OrientationConstraint(pendulum, anchor, Vector3(0, 1, 0)));
 }
 
-GameObject* PrefabGenerator::AddScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) {
+GameObject* PrefabGenerator::CreateScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) {
 
 	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,25, respawnDelay);
 

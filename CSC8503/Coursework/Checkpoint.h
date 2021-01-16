@@ -6,6 +6,8 @@
 namespace NCL {
 	namespace CSC8503 {
 
+		class GameObject;
+
 		using namespace Maths;
 
 		class Checkpoint {
@@ -32,6 +34,8 @@ namespace NCL {
 
 				return spawnPoints[rand() % spawnPoints.size()]; 
 			}
+
+			bool ReachedCheckpoint(const GameObject* otherObject) const;
 
 			Vector3 GetHalfDims() const {
 				return halfDims;

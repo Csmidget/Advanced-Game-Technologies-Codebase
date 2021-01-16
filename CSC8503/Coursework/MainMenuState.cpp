@@ -38,7 +38,7 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 
 		raceOpponents = max(1, min(14, raceOpponents));
 		std::string opponentsText = "Opponents:  < " + std::to_string(raceOpponents) + " >";
-		Debug::Print(opponentsText, Vector2(15, 40), Debug::WHITE, 1.5f);
+		Debug::Print(opponentsText, Vector2(15, 40), Debug::YELLOW, 1.5f);
 	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RETURN)) {

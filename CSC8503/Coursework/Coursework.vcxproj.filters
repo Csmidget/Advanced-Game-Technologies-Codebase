@@ -55,6 +55,7 @@
     <ClCompile Include="DebugState.cpp">
       <Filter>Game States</Filter>
     </ClCompile>
+    <ClCompile Include="Checkpoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
