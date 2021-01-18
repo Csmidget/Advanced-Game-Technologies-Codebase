@@ -15,9 +15,8 @@ using namespace CSC8503;
 AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float coinHuntRange, float coinMaxDistance, float angerThreshold, float strength) : ActorObject(game, respawnPosition, name) {
 	asleep = false;
 
+	speed = 4.0f;
 	currentAnger = 0.0f;
-
-
 	behaviourUpdateCooldown = (float)(rand() % 1000) / 10000.0f;
 
 	currentGoal = respawnPosition;
@@ -173,7 +172,7 @@ void AIObject::OnUpdate(float dt) {
 		}
 
 		direction.Normalise();
-		physicsObject->AddForce(direction * 4.0f);
+		physicsObject->AddForce(direction * speed);
 	}
 	//////////////
 

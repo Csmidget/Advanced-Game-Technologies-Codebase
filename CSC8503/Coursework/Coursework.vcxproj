@@ -143,10 +143,14 @@
   <ItemGroup>
     <ClCompile Include="ActorObject.cpp" />
     <ClCompile Include="AIObject.cpp" />
+    <ClCompile Include="BoidSwarm.cpp" />
     <ClCompile Include="BonusObject.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
+    <ClCompile Include="GameKatamariFunctions.cpp" />
+    <ClCompile Include="GamePracticeFunctions.cpp" />
+    <ClCompile Include="GameRaceFunctions.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
-    <ClCompile Include="KatamariBallObject.cpp" />
+    <ClCompile Include="BoidObject.cpp" />
     <ClCompile Include="KatamariState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ForceObject.cpp" />
@@ -166,13 +170,14 @@
   <ItemGroup>
     <ClInclude Include="ActorObject.h" />
     <ClInclude Include="AIObject.h" />
+    <ClInclude Include="BoidSwarm.h" />
     <ClInclude Include="BonusObject.h" />
     <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="ForceObject.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="KatamariBallObject.h" />
+    <ClInclude Include="BoidObject.h" />
     <ClInclude Include="KatamariState.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="DebugState.h" />

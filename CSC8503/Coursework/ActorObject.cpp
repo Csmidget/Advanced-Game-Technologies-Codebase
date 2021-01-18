@@ -42,6 +42,6 @@ void ActorObject::Respawn() {
 void ActorObject::OnCollisionBegin(GameObject* otherObject) {
 
 	//When we collide with collectables we don't want to reset the collision timer...
-	if (otherObject->GetPhysicsObject())
+	if (otherObject->GetPhysicsObject() && otherObject->IsStatic())
 		lastCollisionTimer = 0.0f;
 }

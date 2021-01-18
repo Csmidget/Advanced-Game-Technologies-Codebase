@@ -32,8 +32,11 @@ namespace NCL {
 
 			const Checkpoint* GetGoal() const { return goal; }
 
+			const PrefabGenerator* GetPrefabGenerator() const { return prefabGenerator; }
+
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
+			void InitKatamariWorld();
 
 			NavigationPath GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY);
 
@@ -54,10 +57,14 @@ namespace NCL {
 			void InitPracticePlayers();
 			void InitPracticeCheckpoints();
 
-			void InitRaceKillPlanes();
 			void InitRaceBaseGeometry();
+			void InitRaceKillPlanes();
 			void InitRacePlayers(int opponentCount);
 			void InitRaceCheckpoints();
+
+			void InitKatamariBaseGeometry();
+			void InitKatamariKillPlanes();
+			void InitKatamariPlayers(int opponentCount);
 
 			PrefabGenerator*	prefabGenerator;
 			GameTechRenderer*	renderer;

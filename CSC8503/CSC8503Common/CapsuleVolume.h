@@ -21,6 +21,14 @@ namespace NCL {
             return halfHeight;
         }
 
+        void SetHalfHeight(float newHeight) {
+            halfHeight = newHeight;
+        }
+
+        void SetRadius(float newRadius) {
+            radius = newRadius;
+        }
+
         void PrintDebugInfo(int& currLine, float lineSpacing) override;
 
 

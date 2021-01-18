@@ -19,7 +19,8 @@ namespace NCL {
 			void UpdateControls(Camera* camera);
 
 		protected:
-			float speed;
+			bool lockOrientation;
+
 			float yaw;
 			float pitch;
 			float cameraDistance;

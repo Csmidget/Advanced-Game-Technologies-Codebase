@@ -32,6 +32,10 @@ namespace NCL {
 			void AddScore(int scoreToAdd) { score += scoreToAdd; }
 			int GetScore() const { return score; }
 
+			void AddSpeed(float val) { speed += val; }
+			void SetSpeed(float val) { speed = val; }
+			float GetSpeed() const { return speed; }
+
 			void AddTimedConstraint(Constraint* constraint, float time);
 
 			void SetCheckpoint(Checkpoint* cp) { currentCheckpoint = cp; }
@@ -42,6 +46,7 @@ namespace NCL {
 			Game* game;
 			std::map<Constraint*, float> timedConstraints;
 			float lastCollisionTimer;
+			float speed;
 
 		private:
 			Checkpoint* currentCheckpoint;

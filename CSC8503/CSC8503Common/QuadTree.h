@@ -95,14 +95,17 @@ namespace NCL {
 
 			void DebugDraw() {
 				Vector3 pos3D = Vector3(position.x, 0, position.y);
-				Debug::DrawLine(pos3D + Vector3( size.x, 10, size.y), pos3D + Vector3( size.x, 10,-size.y),Vector4(1,1,1,1), 0.1f);
-				Debug::DrawLine(pos3D + Vector3( size.x, 10, size.y), pos3D + Vector3(-size.x, 10, size.y),Vector4(1,1,1,1), 0.1f);
-				Debug::DrawLine(pos3D + Vector3(-size.x, 10,-size.y), pos3D + Vector3( size.x, 10,-size.y),Vector4(1,1,1,1), 0.1f);
-				Debug::DrawLine(pos3D + Vector3(-size.x, 10,-size.y), pos3D + Vector3(-size.x, 10, size.y),Vector4(1,1,1,1), 0.1f);
+
 				if (children) {
 					for (int i = 0; i < 4; ++i) {
 						children[i].DebugDraw();
 					}
+				}
+				else {
+					Debug::DrawLine(pos3D + Vector3(size.x, 10, size.y), pos3D + Vector3(size.x, 10, -size.y), Vector4(1, 1, 1, 1));
+					Debug::DrawLine(pos3D + Vector3(size.x, 10, size.y), pos3D + Vector3(-size.x, 10, size.y), Vector4(1, 1, 1, 1));
+					Debug::DrawLine(pos3D + Vector3(-size.x, 10, -size.y), pos3D + Vector3(size.x, 10, -size.y), Vector4(1, 1, 1, 1));
+					Debug::DrawLine(pos3D + Vector3(-size.x, 10, -size.y), pos3D + Vector3(-size.x, 10, size.y), Vector4(1, 1, 1, 1));
 				}
 			}
 

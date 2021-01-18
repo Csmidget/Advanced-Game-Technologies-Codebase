@@ -10,7 +10,7 @@ using namespace NCL::CSC8503;
 
 GameWorld::GameWorld() {
 	mainCamera = new Camera();
-	objectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
+	objectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 12, 6);
 	staticObjectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
@@ -132,6 +132,8 @@ void GameWorld::UpdateWorld(float dt) {
 	if (shuffleConstraints) {
 		std::random_shuffle(constraints.begin(), constraints.end());
 	}
+
+	objectTree->DebugDraw();
 }
 
 bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject, bool includeStatic) const {
