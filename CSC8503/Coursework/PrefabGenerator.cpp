@@ -7,6 +7,8 @@
 #include "PendulumObject.h"
 #include "BoidObject.h"
 #include "Game.h"
+#include "RaceAIBehaviourTree.h"
+#include "KatamariAIBehaviourTree.h"
 
 #include "../CSC8503Common/TraversableObject.h"
 #include "../CSC8503Common/PositionConstraint.h"
@@ -334,11 +336,49 @@ PlayerObject* PrefabGenerator::CreatePlayer(Game* game, const Vector3& position)
 	return player;
 }
 
-AIObject* PrefabGenerator::CreateAI(Game* game, const Vector3& position, std::string name, float coinHuntRange, float maxCoinDistance, float angerThreshold, float strength) const {
+AIObject* PrefabGenerator::CreateRaceAI(Game* game, const Vector3& position, std::string name, float coinHuntRange, float maxCoinDistance, float angerThreshold, float strength) const {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
 	AIObject* aiPlayer = new AIObject(game, position, name, coinHuntRange, maxCoinDistance, angerThreshold, strength);
+
+	aiPlayer->SetBehaviourTree(new RaceAIBehaviourTree(game,aiPlayer));
+
+	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
+
+	aiPlayer->SetBoundingVolume((CollisionVolume*)volume);
+
+	float modelScale = 1.15f;
+	aiPlayer->GetTransform()
+		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
+		.SetPosition(position);
+
+
+	if (rand() % 2) {
+		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));
+	}
+	else {
+		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshB, nullptr, basicShader));
+	}
+	aiPlayer->SetPhysicsObject(new PhysicsObject(&aiPlayer->GetTransform(), aiPlayer->GetBoundingVolume()));
+
+	aiPlayer->GetPhysicsObject()->SetInverseMass(inverseMass);
+	aiPlayer->GetPhysicsObject()->InitCubeInertia();
+	aiPlayer->GetPhysicsObject()->SetElasticity(0.8f);
+	aiPlayer->GetPhysicsObject()->SetFriction(0.1f);
+
+	game->GetWorld()->AddGameObject(aiPlayer);
+
+	return aiPlayer;
+}
+
+AIObject* PrefabGenerator::CreateKatamariAI(Game* game, const Vector3& position, std::string name) const {
+	float meshSize = 0.8f;
+	float inverseMass = 5.0f;
+
+	AIObject* aiPlayer = new AIObject(game, position, name);
+
+	aiPlayer->SetBehaviourTree(new KatamariAIBehaviourTree(game, aiPlayer));
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
 

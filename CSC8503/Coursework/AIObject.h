@@ -36,6 +36,8 @@ namespace NCL {
 			bool IsAsleep() const { return asleep; }
 			void SetAsleep(bool val) { asleep = val; }
 
+			void SetBehaviourTree(BehaviourNode* tree) { behaviourTree = tree; }
+
 
 		protected:
 			void DisplayPath();

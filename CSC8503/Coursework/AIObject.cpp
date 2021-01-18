@@ -14,6 +14,7 @@ using namespace CSC8503;
 
 AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float coinHuntRange, float coinMaxDistance, float angerThreshold, float strength) : ActorObject(game, respawnPosition, name) {
 	asleep = false;
+	behaviourTree = nullptr;
 
 	speed = 4.0f;
 	currentAnger = 0.0f;
@@ -26,8 +27,6 @@ AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float 
 	this->coinMaxDistance = coinMaxDistance;
 	this->angerThreshold = angerThreshold;
 	this->strength = strength;
-
-	behaviourTree = new RaceAIBehaviourTree(game, this);
 }
 
 AIObject::~AIObject() {
@@ -91,6 +90,12 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 		return true;
 	}
 
+	if (!game->HasGrid()) {
+		nextNode = newGoal;
+		currentGoal = newGoal;
+		return true;
+	}
+
 	//Generate a path
 	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal,maxCost);
 
@@ -119,7 +124,7 @@ void AIObject::OnUpdate(float dt) {
 	renderObject->SetColour(Vector4(1, 1-angerColIntensity, 1-angerColIntensity, 1));
 	
 
-	if (!asleep && behaviourUpdateCooldown < 0.0001f) {
+	if (!asleep && behaviourUpdateCooldown < 0.0001f && behaviourTree) {
 		behaviourTree->Execute(dt);
 		behaviourUpdateCooldown = 0.1f;
 	}

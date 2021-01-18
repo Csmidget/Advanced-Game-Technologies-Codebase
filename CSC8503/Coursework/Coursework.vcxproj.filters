@@ -68,6 +68,9 @@
     <ClCompile Include="BoidSwarm.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="KatamariAIBehaviourTree.cpp">
+      <Filter>AIBehaviours</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -132,6 +135,9 @@
     </ClInclude>
     <ClInclude Include="BoidSwarm.h">
       <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="KatamariAIBehaviourTree.h">
+      <Filter>AIBehaviours</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

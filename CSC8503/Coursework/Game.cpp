@@ -142,6 +142,7 @@ void Game::Clear() {
 }
 
 NavigationPath Game::GetPath(Vector3 start, Vector3 end, float maxCost) {
+
 	NavigationPath generatedPath;
 	navGrid->FindPath(start, end, generatedPath,maxCost);
 	return generatedPath;

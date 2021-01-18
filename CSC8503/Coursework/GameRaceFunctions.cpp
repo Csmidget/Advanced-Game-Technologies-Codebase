@@ -124,17 +124,17 @@ void Game::InitRacePlayers(int opponentCount) {
 
 	//The first few opponents are predetermined.
 	if (opponentCount >= 1)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-110, 5, 100), "Enemy 1"));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-110, 5, 100), "Enemy 1"));
 	if (opponentCount >= 2)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-105, 5, 100), "Enemy 2", 50.0f));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-105, 5, 100), "Enemy 2", 50.0f));
 	if (opponentCount >= 3)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-100, 5, 100), "Enemy 3", 70.0f));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-100, 5, 100), "Enemy 3", 70.0f));
 	if (opponentCount >= 4)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-95, 5, 100), "Enemy 4", 100.0f));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-95, 5, 100), "Enemy 4", 100.0f));
 	if (opponentCount >= 5)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-90, 5, 100), "Enemy 5", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-90, 5, 100), "Enemy 5", 100.0f, 0.0f, 3.0f));
 	if (opponentCount >= 6)
-		opponents.push_back(prefabGenerator->CreateAI(this, Vector3(-110, 5, 103), "Enemy 6", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-110, 5, 103), "Enemy 6", 100.0f, 0.0f, 3.0f));
 
 	for (int i = 7; i <= opponentCount; ++i) {
 
@@ -151,7 +151,7 @@ void Game::InitRacePlayers(int opponentCount) {
 		//1-4
 		float strength = 1 + (float)(rand() % 30) / 10.0f;
 
-		opponents.push_back(prefabGenerator->CreateAI(this, spawnPos, "Enemy " + std::to_string(i), coinHuntRange, maxCoinDistance, angerThreshold, strength));
+		opponents.push_back(prefabGenerator->CreateRaceAI(this, spawnPos, "Enemy " + std::to_string(i), coinHuntRange, maxCoinDistance, angerThreshold, strength));
 	}
 
 	prefabGenerator->CreateScoreBonus(world, Vector3(-100, 1.0f, 100), 15.0f);

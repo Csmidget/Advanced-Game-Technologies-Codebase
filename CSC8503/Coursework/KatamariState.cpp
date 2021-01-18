@@ -22,6 +22,10 @@ KatamariState::KatamariState(Game* game) : GameState(game) {
 	}
 
 	boidSwarm->Avoid(game->GetPlayerObject());
+
+	for (auto opponent : game->GetOpponents()) {
+		boidSwarm->Avoid((GameObject*)opponent);
+	}
 }
 
 KatamariState::~KatamariState() {

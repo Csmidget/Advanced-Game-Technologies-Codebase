@@ -32,6 +32,8 @@ namespace NCL {
 
 			const Checkpoint* GetGoal() const { return goal; }
 
+			bool HasGrid() const { return navGrid != nullptr; }
+
 			const PrefabGenerator* GetPrefabGenerator() const { return prefabGenerator; }
 
 			void InitPracticeWorld();
