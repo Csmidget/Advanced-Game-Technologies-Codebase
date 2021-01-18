@@ -39,7 +39,7 @@ namespace NCL {
 			GameObject*		CreateScoreBonus(GameWorld* world, Vector3 position, float respawnDelay = 5.0f);
 
 			PlayerObject*	CreatePlayer(Game* game, const Vector3& position);
-			AIObject*		CreateAI(Game* game, const Vector3& position,std::string name,float coinHuntRange = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
+			AIObject*		CreateAI(Game* game, const Vector3& position,std::string name,float coinHuntRange = 10.0f,float maxCoinDistance = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 
 		protected:
 

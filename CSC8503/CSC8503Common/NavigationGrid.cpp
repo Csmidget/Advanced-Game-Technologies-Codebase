@@ -149,7 +149,7 @@ void NavigationGrid::BuildConnections() {
 						n.costs[i] = (n.position - n.connected[i]->position).Length();
 						break;
 					case 'o':
-						n.costs[i] = (n.position - n.connected[i]->position).Length() * 10.0f;
+						n.costs[i] = (n.position - n.connected[i]->position).Length() * 5.0f;
 						break;
 					case 'x':
 						n.connected[i] = nullptr;

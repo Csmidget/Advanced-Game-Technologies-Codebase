@@ -20,6 +20,7 @@ RaceAIBehaviourTree::RaceAIBehaviourTree(Game* g, AIObject* a) : BehaviourParall
 
 	root->AddChild(CreateBonusSequence());
 
+	//If both anger and bonus sequences fail, continue towards the goal.
 	root->AddChild(new BehaviourAction("Go to goal", [&](float dt, BehaviourState state)->BehaviourState {
 		actor->SetCurrentState("Seeking goal");
 		actor->SetGoal(Vector3(-101.0f, 0.0f, -101.0f));
@@ -31,6 +32,7 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 
 	BehaviourSequence* sequence = new BehaviourSequence("Bonus Sequence");
 
+	//First check if there is a bonus in range (Or if we already have a target)
 	BehaviourAction* locateBonus = new BehaviourAction("Locate Bonus", [&](float dt, BehaviourState state)->BehaviourState {
 
 		//If we already have a target, and they are still available, keep going
@@ -38,7 +40,7 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 			return BehaviourState::Success;
 		}
 
-		auto bonusesInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 10.0f, "bonus");
+		auto bonusesInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), actor->GetCoinHuntRange(), "bonus");
 
 		if (bonusesInRange.size() == 0)
 			return BehaviourState::Failure;
@@ -61,12 +63,13 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 		});
 	sequence->AddChild(locateBonus);
 
+	//If we have found a bonus to target, resolve moving towards the target.
 	BehaviourAction* moveToBonus = new BehaviourAction("Move To Bonus", [&](float dt, BehaviourState state)->BehaviourState {
 
 		Vector3 targetPosition = bonusTarget->GetTransform().GetPosition();
 		targetPosition.y = 0.0f;
 
-		if (!actor->SetGoal(targetPosition, actor->GetCoinHuntRange())) {
+		if (!actor->SetGoal(targetPosition, actor->GetCoinMaxDistance())) {
 			bonusTarget = nullptr;
 			return BehaviourState::Failure;
 		}
@@ -88,11 +91,13 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 BehaviourSequence* RaceAIBehaviourTree::CreateAngerSequence() {
 	BehaviourSequence* sequence = new BehaviourSequence("Anger Sequence");
 
+	//Only do the sequence if the actor is above their anger threshold
 	BehaviourAction* checkAnger = new BehaviourAction("Check Anger", [&](float dt, BehaviourState state)->BehaviourState {
 		return (actor->IsAngry() ? BehaviourState::Success : BehaviourState::Failure);
 	});
 	sequence->AddChild(checkAnger);
 
+	//If there is a target for their anger within range, path towards them.
 	BehaviourAction* findTargetForAnger = new BehaviourAction("Find Anger Target", [&](float dt, BehaviourState state)->BehaviourState {
 
 		auto actorsInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 15.0f, "actor");

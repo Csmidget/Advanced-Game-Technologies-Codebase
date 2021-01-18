@@ -181,7 +181,7 @@ GameObject* PrefabGenerator::CreateSwampFloor(GameWorld* world, const Vector3& p
 
 	floor->GetPhysicsObject()->SetInverseMass(0);
 	floor->GetPhysicsObject()->InitCubeInertia();
-	floor->GetPhysicsObject()->SetFriction(0.8f);
+	floor->GetPhysicsObject()->SetFriction(1.5f);
 
 	floor->SetIsStatic(true);
 
@@ -333,11 +333,11 @@ PlayerObject* PrefabGenerator::CreatePlayer(Game* game, const Vector3& position)
 	return player;
 }
 
-AIObject* PrefabGenerator::CreateAI(Game* game, const Vector3& position, std::string name, float coinHuntRange,float angerThreshold, float strength) {
+AIObject* PrefabGenerator::CreateAI(Game* game, const Vector3& position, std::string name, float coinHuntRange, float maxCoinDistance, float angerThreshold, float strength) {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position, name, coinHuntRange, angerThreshold, strength);
+	AIObject* aiPlayer = new AIObject(game, position, name, coinHuntRange, maxCoinDistance, angerThreshold, strength);
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);
 

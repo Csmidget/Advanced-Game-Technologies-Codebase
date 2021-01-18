@@ -19,7 +19,7 @@ namespace NCL {
 			Camera* camera;
 			float scoreTracker;
 			bool gameOver;
-			bool goalReached;
+			bool playerFinished;
 		};
 
 	}

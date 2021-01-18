@@ -343,9 +343,9 @@ void Game::InitRaceBaseGeometry() {
 		//Swamp Section
 		{
 			//Central swamp
-			prefabGenerator->CreateSwampFloor(world, Vector3(-100, -0.4999f, 20.0f), Quaternion(), Vector2(10, 10));
-			prefabGenerator->CreateSwampFloor(world, Vector3(-112.51, -0.4999f, 20.0f), Quaternion(), Vector2(2.51f, 2.5f));
-			prefabGenerator->CreateSwampFloor(world, Vector3(-87.49, -0.4999f, 20.0f), Quaternion(), Vector2(2.51f, 1.25f));
+			prefabGenerator->CreateSwampFloor(world, Vector3(-100, -0.499f, 20.0f), Quaternion(), Vector2(10, 10));
+			prefabGenerator->CreateSwampFloor(world, Vector3(-112.51, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 2.5f));
+			prefabGenerator->CreateSwampFloor(world, Vector3(-87.49, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 1.25f));
 
 			//Coins
 			prefabGenerator->CreateScoreBonus(world, Vector3(-105.0f, 1.0f, 15.0f), 30.0f);
@@ -419,16 +419,16 @@ void Game::InitRacePlayers(int opponentCount) {
 		int y = (i - 1) / 5;
 		Vector3 spawnPos = firstSpawn + Vector3(x * 5.0f, 0, y * 5.0f);
 
-		//1-100
-		float cointHuntRange = rand() % 100;
-
+		//1-30
+		float coinHuntRange = (rand() % 30) + 1;
+		//cointHuntRange-100
+		float maxCoinDistance = (rand() % 101 - coinHuntRange) + coinHuntRange;
 		//0-10
-		float angerThreshold = (rand() % 11) - 1;
+		float angerThreshold = (rand() % 11);
+		//1-4
+		float strength = 1 + (float)(rand() % 30) / 10.0f;
 
-		//1-3
-		float strength = 1 + (rand() % 20) / 10;
-
-		opponents.push_back(prefabGenerator->CreateAI(this, spawnPos, "Enemy " + std::to_string(i), cointHuntRange, angerThreshold, strength));
+		opponents.push_back(prefabGenerator->CreateAI(this, spawnPos, "Enemy " + std::to_string(i), coinHuntRange, maxCoinDistance, angerThreshold, strength));
 	}
 
 	prefabGenerator->CreateScoreBonus(world, Vector3(-100, 1.0f, 100), 15.0f);

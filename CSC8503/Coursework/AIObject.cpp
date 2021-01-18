@@ -12,16 +12,23 @@
 using namespace NCL;
 using namespace CSC8503;
 
-AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float coinHuntRange, float angerThreshold, float strength) : ActorObject(game, respawnPosition, name) {
-	behaviourTree = new RaceAIBehaviourTree(game, this);
-	behaviourUpdateCooldown = 0.0f;
+AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float coinHuntRange, float coinMaxDistance, float angerThreshold, float strength) : ActorObject(game, respawnPosition, name) {
+	asleep = false;
+
+	currentAnger = 0.0f;
+
+
+	behaviourUpdateCooldown = (float)(rand() % 1000) / 10000.0f;
+
 	currentGoal = respawnPosition;
 	nextNode = respawnPosition;
+
 	this->coinHuntRange = coinHuntRange;
+	this->coinMaxDistance = coinMaxDistance;
 	this->angerThreshold = angerThreshold;
 	this->strength = strength;
-	currentAnger = 0.0f;
-	asleep = false;
+
+	behaviourTree = new RaceAIBehaviourTree(game, this);
 }
 
 AIObject::~AIObject() {
@@ -47,7 +54,6 @@ void AIObject::OnCollisionBegin(GameObject* otherObject) {
 			//That's better :)
 			currentAnger = 0.0f;
 		}
-
 	}
 
 	//When we collide with collectables we don't want to reset the collision timer...
@@ -60,13 +66,17 @@ void AIObject::OnCollisionBegin(GameObject* otherObject) {
 
 void AIObject::DisplayPath() {
 	auto path = currentPath.GetWaypoints();
+	
+	//Position to next node
 	Debug::DrawLine(transform.GetPosition(), nextNode + Vector3(0, 1, 0), Vector4(0, 1, 1, 1));
 
 	if (path.empty())
 		return;
 
+	//Next node to first point in the path
 	Debug::DrawLine(nextNode + Vector3(0,1,0), path.back() + Vector3(0,1,0), Vector4(0, 1, 0, 1));
 
+	//Iterate through path
 	for (int i = 1; i < path.size(); ++i) {
 		Vector3 a = path[i - 1] + Vector3(0, 1, 0);
 		Vector3 b = path[i] + Vector3(0, 1, 0);
@@ -77,15 +87,20 @@ void AIObject::DisplayPath() {
 
 bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 
+	//If our goal is already set, we can ignore this request (Unless it is forced).
 	if (newGoal == currentGoal && !force) {
 		return true;
 	}
 
+	//Generate a path
 	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal,maxCost);
 
+	//No path found
 	if (newPath.IsEmpty()) {
 		return false;
 	}
+
+	//Setup the new path
 	currentPath = newPath;
 	currentPath.PopWaypoint(nextNode);
 	currentGoal = newGoal;
@@ -95,18 +110,23 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 
 void AIObject::OnUpdate(float dt) {
 
+	//Don't update behaviour every frame.
 	behaviourUpdateCooldown -= dt;
 	behaviourUpdateCooldown = max(0.0f, behaviourUpdateCooldown);
 
+	//Set the objects colour based on its current anger level.
 	float angerColIntensity = currentAnger / angerThreshold;
 	angerColIntensity = max(0.0f, angerColIntensity);
 	renderObject->SetColour(Vector4(1, 1-angerColIntensity, 1-angerColIntensity, 1));
 	
+
 	if (!asleep && behaviourUpdateCooldown < 0.0001f) {
 		behaviourTree->Execute(dt);
 		behaviourUpdateCooldown = 0.1f;
 	}
 
+	//Get velocity on the x/z plane, this will inform the orientation (We don't want it to be looking up or down,
+	//just straight forward.
 	Vector3 vel = physicsObject->GetLinearVelocity();
 	vel.y = 0.0f;
 	float epsilon = 0.1f;
@@ -126,10 +146,14 @@ void AIObject::OnUpdate(float dt) {
 		if (Vector3::Dot(Vector3(0, 1, 0), Vector3::Cross(forward, vel)) < 0)
 			angle = -angle;
 
+		//We store an orientation value on the aiObject that won't be affected by physics.
 		orientation = Matrix4::Rotation(angle, Vector3(0, 1, 0));
 	}
+	//Force the transform orientation to match the aiObject orientation
 	transform.SetOrientation(orientation);
+	//////////
 
+	//Movement//
 	if (!asleep && lastCollisionTimer < 0.1f) {
 		Vector3 xzPos = transform.GetPosition();
 		xzPos.y = 0.0f;
@@ -151,7 +175,9 @@ void AIObject::OnUpdate(float dt) {
 		direction.Normalise();
 		physicsObject->AddForce(direction * 4.0f);
 	}
+	//////////////
 
+	//Force angular velocity to 0. We don't want our character rolling around on the floor.
 	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
 
 #ifdef _DEBUG
@@ -174,7 +200,7 @@ void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
 	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
-	stream << "Max Coin Distance: " << coinHuntRange;
+	stream << "Max Coin Distance: " << coinMaxDistance;
 	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 
@@ -188,7 +214,8 @@ void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
 }
 
 void AIObject::OnRespawn() {
-	if (!SetGoal(currentGoal)) {
+	//On respawn we need to regenerate the ai's path.
+	if (!SetGoal(currentGoal,INFINITY,true)) {
 		currentGoal = transform.GetPosition();
 		nextNode = currentGoal;
 		currentPath.Clear();
