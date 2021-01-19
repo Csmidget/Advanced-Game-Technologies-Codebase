@@ -52,6 +52,11 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 		game->SetUseGravity(!game->GetUseGravity());//Toggle gravity!
 	}
 
+	Debug::Print("1: Show/Hide QuadTree", Vector2(5, 90));
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1)) {
+		game->GetWorld()->FlipDisplayQuadTree();
+	}
+
 	if (game->GetUseGravity()) {
 		Debug::Print("(G)ravity on", Vector2(5, 95));
 	}

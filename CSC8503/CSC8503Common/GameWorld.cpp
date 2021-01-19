@@ -15,6 +15,7 @@ GameWorld::GameWorld() {
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
 	worldIDCounter		= 0;
+	displayQuadtree = false;
 }
 
 GameWorld::~GameWorld()	{
@@ -133,7 +134,8 @@ void GameWorld::UpdateWorld(float dt) {
 		std::random_shuffle(constraints.begin(), constraints.end());
 	}
 
-	objectTree->DebugDraw();
+	if (displayQuadtree)
+		objectTree->DebugDraw();
 }
 
 bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObject, bool includeStatic) const {

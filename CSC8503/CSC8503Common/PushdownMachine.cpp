@@ -27,7 +27,15 @@ bool PushdownMachine::Update(float dt) {
 				stateStack.push(newState);
 				activeState = newState;
 				activeState->OnAwake();
-			}break;
+			} break;
+			case PushdownState::PushdownResult::Replace: {
+				activeState->OnSleep();
+				delete activeState;
+				stateStack.pop();
+				stateStack.push(newState);
+				activeState = newState;
+				activeState->OnAwake();
+			} break;
 		}
 
 	}

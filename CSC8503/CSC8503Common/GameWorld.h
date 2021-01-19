@@ -68,6 +68,8 @@ namespace NCL {
 				std::vector<Constraint*>::const_iterator& first,
 				std::vector<Constraint*>::const_iterator& last) const;
 
+			void FlipDisplayQuadTree() { displayQuadtree = !displayQuadtree; }
+
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
@@ -80,6 +82,7 @@ namespace NCL {
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
+			bool	displayQuadtree;
 			int		worldIDCounter;
 		};
 	}

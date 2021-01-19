@@ -11,7 +11,6 @@
 using namespace NCL::CSC8503;
 
 RaceState::RaceState(Game* game, int opponents) : GameState(game) {
-	gameOver = false;
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitRaceWorld(opponents);
 	scoreTracker = 0.0f;
@@ -23,10 +22,6 @@ RaceState::RaceState(Game* game, int opponents) : GameState(game) {
 }
 
 PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newState) {
-
-	//We hit this after returning from the End Screen
-	if (gameOver)
-		return PushdownResult::Pop;
 
 	//Resolve inputs
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
@@ -104,8 +99,6 @@ PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newS
 	}
 
 	if (playerFinished && opponentsFinished) {
-		gameOver = true;
-
 		int playerPlacing = 0;
 		for (auto opponent : opponents) {
 			if (opponent->GetScore() > player->GetScore()) {
@@ -120,7 +113,7 @@ PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newS
 		const std::string placings[15]{"first","second","third","fourth","fifth","sixth","seventh","eigth","ninth","tenth","eleventh","twelth","thirteenth","fourteenth","fifteenth" };
 
 		*newState = new EndState(game, winOrLose, "With a score of " + std::to_string(player->GetScore()) + " you came in " + placings[playerPlacing]);
-		return PushdownResult::Push;
+		return PushdownResult::Replace;
 
 	}
 

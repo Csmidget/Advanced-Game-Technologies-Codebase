@@ -146,9 +146,9 @@
     <ClCompile Include="BoidSwarm.cpp" />
     <ClCompile Include="BonusObject.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
-    <ClCompile Include="GameKatamariFunctions.cpp" />
-    <ClCompile Include="GamePracticeFunctions.cpp" />
-    <ClCompile Include="GameRaceFunctions.cpp" />
+    <ClCompile Include="GameKatamariInit.cpp" />
+    <ClCompile Include="GamePracticeInit.cpp" />
+    <ClCompile Include="GameRaceInit.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="BoidObject.cpp" />
     <ClCompile Include="KatamariAIBehaviourTree.cpp" />
@@ -158,7 +158,6 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="DebugState.cpp" />
-    <ClCompile Include="PendulumObject.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PracticeState.cpp" />
     <ClCompile Include="PrefabGenerator.cpp" />
@@ -183,7 +182,6 @@
     <ClInclude Include="KatamariState.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="DebugState.h" />
-    <ClInclude Include="PendulumObject.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="Powerup.h" />
     <ClInclude Include="PracticeState.h" />

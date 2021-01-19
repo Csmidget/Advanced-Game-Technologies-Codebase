@@ -1,6 +1,7 @@
 #include "MainMenuState.h"
 #include "PracticeState.h"
 #include "KatamariState.h"
+#include "DebugState.h"
 #include "RaceState.h"
 #include "Game.h"
 #include "../CSC8503Common/GameWorld.h"
@@ -20,6 +21,14 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 	Debug::Print("Versus", Vector2(5, 40), selection == 1 ? Debug::GREEN : Debug::WHITE, 1.5f);
 	Debug::Print("Katamari", Vector2(5, 50), selection == 2 ? Debug::GREEN : Debug::WHITE,1.5f);
 	Debug::Print("Quit", Vector2(5, 60), selection == 3 ? Debug::GREEN : Debug::WHITE,1.5f);
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
+		*newState = new DebugState(game);
+		return PushdownResult::Push;
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		game->SetPause(!game->IsPaused());
+	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::UP)) {
 		--selection;

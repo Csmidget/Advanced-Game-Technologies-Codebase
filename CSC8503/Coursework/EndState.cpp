@@ -1,4 +1,5 @@
 #include "EndState.h"
+#include "DebugState.h"
 #include "Game.h"
 #include "../CSC8503Common/Debug.h"
 
@@ -10,6 +11,14 @@ PushdownState::PushdownResult EndState::OnUpdate(float dt, PushdownState** newSt
 	Debug::Print(subText, Vector2(15, 40), Debug::YELLOW, 1.5f);
 
 	Debug::Print("Press space to return to the main menu.", Vector2(15, 60), Debug::YELLOW, 1.5f);
+
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
+		*newState = new DebugState(game);
+		return PushdownResult::Push;
+	}
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		game->SetPause(!game->IsPaused());
+	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 		return PushdownResult::Pop;

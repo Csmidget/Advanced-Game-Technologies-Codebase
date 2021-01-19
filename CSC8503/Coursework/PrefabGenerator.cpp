@@ -4,7 +4,6 @@
 #include "PlayerObject.h"
 #include "AIObject.h"
 #include "ScoreBonusObject.h"
-#include "PendulumObject.h"
 #include "BoidObject.h"
 #include "Game.h"
 #include "RaceAIBehaviourTree.h"
@@ -376,7 +375,7 @@ AIObject* PrefabGenerator::CreateKatamariAI(Game* game, const Vector3& position,
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position, name);
+	AIObject* aiPlayer = new AIObject(game, position, name,0.0f,0.0f,0.0f,3.0f);
 
 	aiPlayer->SetSpeed(5.0f);
 	aiPlayer->SetBehaviourTree(new KatamariAIBehaviourTree(game, aiPlayer));
@@ -407,36 +406,6 @@ AIObject* PrefabGenerator::CreateKatamariAI(Game* game, const Vector3& position,
 	game->GetWorld()->AddGameObject(aiPlayer);
 
 	return aiPlayer;
-}
-
-void PrefabGenerator::CreatePendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) const {
-
-	Vector3 dimensions = Vector3(1, 1, 1);
-	float inverseMass = 0.5f;
-
-	GameObject* anchor = CreateAnchor(world, position);
-
-	PendulumObject* pendulum = new PendulumObject(world, anchor, distance, force);
-
-	OBBVolume* volume = new OBBVolume(dimensions);
-	pendulum->SetBoundingVolume((CollisionVolume*)volume);
-
-	pendulum->GetTransform()
-		.SetPosition(position)
-		.SetScale(dimensions * 2);
-
-	pendulum->SetRenderObject(new RenderObject(&pendulum->GetTransform(), cubeMesh, basicTex, basicShader));
-	pendulum->SetPhysicsObject(new PhysicsObject(&pendulum->GetTransform(), pendulum->GetBoundingVolume()));
-
-	pendulum->GetPhysicsObject()->SetInverseMass(inverseMass);
-	pendulum->GetPhysicsObject()->InitCubeInertia();
-	pendulum->GetPhysicsObject()->SetElasticity(1.5f);
-	pendulum->GetPhysicsObject()->SetFriction(0.7f);
-
-	world->AddGameObject(pendulum);
-
-	world->AddConstraint(new PositionConstraint(anchor, pendulum, distance));
-	world->AddConstraint(new OrientationConstraint(pendulum, anchor, Vector3(0, 1, 0)));
 }
 
 GameObject* PrefabGenerator::CreateScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) const {

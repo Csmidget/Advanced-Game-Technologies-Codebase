@@ -11,7 +11,6 @@ using namespace NCL::CSC8503;
 
 KatamariState::KatamariState(Game* game) : GameState(game) {
 
-	gameOver = false;
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitKatamariWorld();
 
@@ -36,12 +35,10 @@ KatamariState::~KatamariState() {
 
 PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** newState) {
 
-	if (gameOver)
-		return PushdownResult::Pop;
-
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;
 	}
+
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
 		*newState = new DebugState(game);
 		return PushdownResult::Push;
@@ -55,9 +52,8 @@ PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** 
 	int playerScore = game->GetPlayerObject()->GetScore();
 
 	if (playerScore >= 50) {
-		gameOver = true;
 		*newState = new EndState(game, "You win!", "You were the first to reach 50 points!");
-		return PushdownResult::Push;
+		return PushdownResult::Replace;
 	}
 
 	Debug::Print("Player: " + std::to_string(playerScore), Vector2(2, 20), Debug::YELLOW, 1.1f);
@@ -66,9 +62,8 @@ PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** 
 		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()), Vector2(2, 23 + i * 3),Debug::YELLOW,1.1f);
 
 		if (opponents[i]->GetScore() >= 50) {
-			gameOver = true;
 			*newState = new EndState(game, "You lose!", "One of your opponents caught 50 first!");
-			return PushdownResult::Push;
+			return PushdownResult::Replace;
 		}
 	}
 

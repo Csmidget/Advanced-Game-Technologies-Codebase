@@ -33,7 +33,6 @@ namespace NCL {
 			GameObject*		CreatePathBlocker(GameWorld* world, const Vector2& position, const Vector2& halfDimensions) const;
 
 			GameObject*		CreateSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force, float length = 10.0f) const;
-			void			CreatePendulum(GameWorld* world, Vector3 position, float distance, Vector3 force) const;
 
 			GameObject*		CreateBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 10.0f, const Vector2& dimensions = { 1,1 }) const;
 			GameObject*		CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength = 0.1f, const Vector2& dimensions = { 1,2 }) const;

@@ -7,9 +7,6 @@
     <ClCompile Include="ForceObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="PrefabGenerator.cpp">
-      <Filter>Prefabs</Filter>
-    </ClCompile>
     <ClCompile Include="RespawningObject.cpp">
       <Filter>GameObjects</Filter>
     </ClCompile>
@@ -18,9 +15,6 @@
     </ClCompile>
     <ClCompile Include="PracticeState.cpp">
       <Filter>Game States</Filter>
-    </ClCompile>
-    <ClCompile Include="PendulumObject.cpp">
-      <Filter>GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="ActorObject.cpp">
       <Filter>GameObjects\Actor Objects</Filter>
@@ -52,15 +46,6 @@
     <ClCompile Include="DebugState.cpp">
       <Filter>Game States</Filter>
     </ClCompile>
-    <ClCompile Include="GameRaceFunctions.cpp">
-      <Filter>Game Level Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="GamePracticeFunctions.cpp">
-      <Filter>Game Level Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="GameKatamariFunctions.cpp">
-      <Filter>Game Level Functions</Filter>
-    </ClCompile>
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="BoidObject.cpp">
       <Filter>GameObjects</Filter>
@@ -71,15 +56,24 @@
     <ClCompile Include="KatamariAIBehaviourTree.cpp">
       <Filter>AIBehaviours</Filter>
     </ClCompile>
+    <ClCompile Include="PrefabGenerator.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="GameKatamariInit.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePracticeInit.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRaceInit.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ForceObject.h">
       <Filter>GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="PrefabGenerator.h">
-      <Filter>Prefabs</Filter>
     </ClInclude>
     <ClInclude Include="RespawningObject.h">
       <Filter>GameObjects</Filter>
@@ -92,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="PracticeState.h">
       <Filter>Game States</Filter>
-    </ClInclude>
-    <ClInclude Include="PendulumObject.h">
-      <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Powerup.h">
       <Filter>GameObjects</Filter>
@@ -139,13 +130,13 @@
     <ClInclude Include="KatamariAIBehaviourTree.h">
       <Filter>AIBehaviours</Filter>
     </ClInclude>
+    <ClInclude Include="PrefabGenerator.h">
+      <Filter>Game Factory Functions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GameObjects">
       <UniqueIdentifier>{e67735bf-1869-4050-8403-eacb8c3d056d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Prefabs">
-      <UniqueIdentifier>{be00578a-ea85-4e5f-95c2-bb9ae50ea7ea}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game States">
       <UniqueIdentifier>{70cfff44-507c-4815-8a04-d51642863890}</UniqueIdentifier>
@@ -159,7 +150,7 @@
     <Filter Include="AIBehaviours">
       <UniqueIdentifier>{55e5a9c3-e954-43f1-9370-2a4eb8e4fa5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Level Functions">
+    <Filter Include="Game Factory Functions">
       <UniqueIdentifier>{743a0835-5c3d-4052-ba52-ee9187577c96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

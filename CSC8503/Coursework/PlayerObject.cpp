@@ -23,13 +23,14 @@ PlayerObject::~PlayerObject() {
 void PlayerObject::OnUpdate(float dt) {
 	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
 
-	//Update player object
+	//Update player object, lock orientation.
 	Quaternion orientation = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);
 	transform.SetOrientation(orientation);
 }
 
 void PlayerObject::UpdateControls(Camera* camera) {
 
+	//Receive input
 	pitch += (Window::GetMouse()->GetRelativePosition().y);
 	pitch = max(-15.0f, min(90.0f, pitch));
 	yaw -= Window::GetMouse()->GetRelativePosition().x;
@@ -52,7 +53,7 @@ void PlayerObject::UpdateControls(Camera* camera) {
 	Vector3 cameraFocusPoint = transform.GetPosition() + Vector3(0, 2, 0);
 	camera->SetPosition(cameraFocusPoint + cameraOffset);
 
-
+	//Update movement
 	if (lastCollisionTimer < 0.1f && !game->IsPaused()) {
 		Vector3 direction = Vector3(0, 0, 0);
 		if (Window::GetKeyboard()->KeyDown(KeyboardKeys::W)) {

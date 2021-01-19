@@ -9,7 +9,6 @@
 using namespace NCL::CSC8503;
 
 PracticeState::PracticeState(Game* game) : GameState(game) {
-	gameOver = false;
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitPracticeWorld();
 	scoreTracker = 0.0f;
@@ -18,10 +17,6 @@ PracticeState::PracticeState(Game* game) : GameState(game) {
 }
 
 PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** newState) {
-
-	if (gameOver)
-		return PushdownResult::Pop;
-
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;
 	}
@@ -61,16 +56,14 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 
 	//Check if player is colliding with the goal bounds
 	if (game->GetGoal()->ReachedCheckpoint(player)) {
-		gameOver = true;
 		*newState = new EndState(game, "You Win!", "Score: " + std::to_string(player->GetScore()));
-		return PushdownResult::Push;
+		return PushdownResult::Replace;
 	}
 
 	//Score hits 0
 	if (player->GetScore() <= 0) {
-		gameOver = true;
 		*newState = new EndState(game, "You Lose!", "You ran out of score.");
-		return PushdownResult::Push;
+		return PushdownResult::Replace;
 	}
 
 	return PushdownResult::NoChange;

@@ -17,7 +17,6 @@ namespace NCL {
 			~KatamariState();
 
 		protected:
-			bool gameOver;
 
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;
 			void OnAwake() override;

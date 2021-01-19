@@ -22,58 +22,77 @@ BoidObject::~BoidObject() {
 
 void BoidObject::Update(float dt) {
 
+	float speed = 0.8f;
+
 	if (!(*swarm))
 		return;
 
 	Vector3 sumofPoints = (*swarm)->SumOfPoints();
 	Vector3 currPos = transform.GetPosition();
 
-	//Remove this objects contribution to the sum
-	sumofPoints -= currPos;
-
-	//Find the average position of all other boids in the swarm.
-	Vector3 targetPos = sumofPoints / ((*swarm)->BoidCount() - 1);
-
 	//Move towards centre of swarm
-	Vector3 targetDir = (targetPos - currPos) / 100.0f;
-
-
-	Vector3 targetVelocity = (*swarm)->SumOfVelocities();
-	targetVelocity -= physicsObject->GetLinearVelocity();
-	targetVelocity /= ((*swarm)->BoidCount() - 1);
-	targetVelocity = (targetVelocity - physicsObject->GetLinearVelocity()) / 20;
-
-	Vector3 boidAvoidDir;
-	auto nearbyBoids = game->GetWorld()->ObjectsWithinRadius(currPos, 5.0f, "boid");
-	for (auto boid : nearbyBoids)
+	Vector3 swarmCentreDir;
 	{
-		if (boid == this)
-			continue;
+		float swarmCentreStrength = 0.005f;
 
-		Vector3 displacement = boid->GetTransform().GetPosition() - currPos;
-		float strength = 1 / exp(displacement.Length());
+		sumofPoints -= currPos;
 
-		boidAvoidDir -= displacement * strength;
+		//Find the average position of all other boids in the swarm.
+		Vector3 targetPos = sumofPoints / ((*swarm)->BoidCount() - 1);
+
+		swarmCentreDir = (targetPos - currPos) * swarmCentreStrength;
 	}
 
-	for (auto target : (*swarm)->avoidTargets) {
-		Vector3 displacement = target->GetTransform().GetPosition() - currPos;
+	//Attempt to match velocity with other boids
+	Vector3 matchVelocity = (*swarm)->SumOfVelocities();
+	{
+		float matchVelocityStrength = 0.05f;
 
-		if (displacement.Length() < 10.0f) {
-			boidAvoidDir -= displacement * 2;
+		matchVelocity -= physicsObject->GetLinearVelocity();
+		matchVelocity /= ((*swarm)->BoidCount() - 1);
+		matchVelocity = (matchVelocity - physicsObject->GetLinearVelocity()) * matchVelocityStrength;
+	}
+
+	//Avoid other nearby boids as well as targets swarm has been assigned to avoid.
+	Vector3 avoidDir;
+	{
+		float avoidBoidDistance = 20.0f;
+		float avoidTargetsDistance = 12.0f;
+		float avoidStrength = 2.5f;
+		auto nearbyBoids = game->GetWorld()->ObjectsWithinRadius(currPos, avoidBoidDistance, "boid");
+
+		for (auto boid : nearbyBoids)
+		{
+			if (boid == this)
+				continue;
+
+			Vector3 displacement = boid->GetTransform().GetPosition() - currPos;
+
+			//Falls of exponentially with distance.
+			float strength = 1 / exp(displacement.Length());
+			avoidDir -= displacement * strength;
+		}
+
+		for (auto target : (*swarm)->avoidTargets) {
+			Vector3 displacement = target->GetTransform().GetPosition() - currPos;
+
+			if (displacement.Length() < avoidTargetsDistance) {
+				avoidDir -= displacement * avoidStrength;
+			}
 		}
 	}
 
 	//Tend slightly towards the center. This is to avoid boids getting clumped in edges and corners.
-	Vector3 centreDir = (Vector3() - currPos) / 300.0f;
+	float worldCentreStrength = 0.003f;
+	Vector3 centreDir = (Vector3() - currPos) * worldCentreStrength;
 
-	Vector3 finalDir = targetDir + boidAvoidDir + targetVelocity + centreDir;
+	//Combine our calculated forces and normalise to get a single direction vector
+	Vector3 finalDir = swarmCentreDir + avoidDir + matchVelocity + centreDir;
 	finalDir.y = 0.0f;
 	finalDir.Normalise();
 
-	physicsObject->AddForce(finalDir * 0.8f);
+	physicsObject->AddForce(finalDir * speed);
 }
-
 
 void BoidObject::OnCollisionBegin(GameObject* otherObject) {
 	
@@ -86,7 +105,7 @@ void BoidObject::OnCollisionBegin(GameObject* otherObject) {
 
 		CapsuleVolume* volume = (CapsuleVolume*)actor->GetBoundingVolume();
 		volume->SetHalfHeight(volume->GetHalfHeight() + 0.08f);
-		volume->SetRadius(volume->GetRadius() + 0.08f);
+		volume->SetRadius(volume->GetRadius() + 0.03f);
 	
 		isActive = false;
 	}

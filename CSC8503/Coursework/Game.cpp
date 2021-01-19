@@ -81,13 +81,6 @@ void Game::SetUseGravity(bool val) {
 }
 
 void Game::UpdateKeys() {
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1)) {
-		InitPracticeWorld(); //We can reset the simulation at any time with F1
-	}
-
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F2)) {
-		InitCamera(); //F2 will reset the camera to a specific default place
-	}
 
 	//Running certain physics updates in a consistent order might cause some
 	//bias in the calculations - the same objects might keep 'winning' the constraint
@@ -121,6 +114,7 @@ void Game::Clear() {
 	world->ClearAndErase();
 
 	physics->Clear();
+	useGravity = true; 
 	physics->SetGravity(Vector3(0.0f, -9.8f, 0.0f));
 
 	path.clear();
