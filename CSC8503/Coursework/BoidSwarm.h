@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../../Common/Vector3.h"
-
 #include <set>
+
+//Boid reference: https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/modeling-natural-systems/boids.html
 
 namespace NCL {
 	namespace CSC8503 {

@@ -18,6 +18,7 @@ KatamariAIBehaviourTree::KatamariAIBehaviourTree(Game* g, AIObject* a) : Behavio
 	AddChild(root);
 
 	root->AddChild(new BehaviourAction("Hunt nearest boid", [&](float dt, BehaviourState state)->BehaviourState {
+		actor->SetCurrentState("Chasing Boids");
 		auto boids = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 100.0f, "boid");
 
 		if (boids.empty())

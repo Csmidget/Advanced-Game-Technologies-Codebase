@@ -23,7 +23,7 @@ AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float 
 	currentGoal = respawnPosition;
 	nextNode = respawnPosition;
 
-	this->coinHuntRange = coinHuntRange;
+	this->cointDetectRange = coinHuntRange;
 	this->coinMaxDistance = coinMaxDistance;
 	this->angerThreshold = angerThreshold;
 	this->strength = strength;
@@ -52,6 +52,8 @@ void AIObject::OnCollisionBegin(GameObject* otherObject) {
 			//That's better :)
 			currentAnger = 0.0f;
 		}
+
+		UpdateAngerColour();
 	}
 
 	//When we collide with collectables we don't want to reset the collision timer...
@@ -90,6 +92,7 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 		return true;
 	}
 
+	//If there is no navigation grid in the game, revert to moving directly towards goal.
 	if (!game->HasGrid()) {
 		nextNode = newGoal;
 		currentGoal = newGoal;
@@ -113,28 +116,29 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 }
 
 void AIObject::OnUpdate(float dt) {
-
 	//Don't update behaviour every frame.
 	behaviourUpdateCooldown -= dt;
-	behaviourUpdateCooldown = max(0.0f, behaviourUpdateCooldown);
-
-	//Set the objects colour based on its current anger level.
-	float angerColIntensity = currentAnger / angerThreshold;
-	angerColIntensity = max(0.0f, angerColIntensity);
-	renderObject->SetColour(Vector4(1, 1-angerColIntensity, 1-angerColIntensity, 1));
-	
 
 	if (!asleep && behaviourUpdateCooldown < 0.0001f && behaviourTree) {
 		behaviourTree->Execute(dt);
 		behaviourUpdateCooldown = 0.1f;
 	}
 
+	UpdateOrientation();
+
+	UpdateMovement();
+
+	//Force angular velocity to 0. We don't want our character rolling around on the floor.
+	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
+}
+
+void AIObject::UpdateOrientation() {
 	//Get velocity on the x/z plane, this will inform the orientation (We don't want it to be looking up or down,
-	//just straight forward.
+	//just straight forward).
 	Vector3 vel = physicsObject->GetLinearVelocity();
 	vel.y = 0.0f;
 	float epsilon = 0.1f;
-	
+
 	//If the character is moving in a direction, turn them to face the direction of travel.
 	if (vel.Length() > epsilon) {
 		vel.Normalise();
@@ -156,8 +160,9 @@ void AIObject::OnUpdate(float dt) {
 	//Force the transform orientation to match the aiObject orientation
 	transform.SetOrientation(orientation);
 	//////////
+}
 
-	//Movement//
+void AIObject::UpdateMovement() {
 	if (!asleep && lastCollisionTimer < 0.1f) {
 		Vector3 xzPos = transform.GetPosition();
 		xzPos.y = 0.0f;
@@ -179,17 +184,24 @@ void AIObject::OnUpdate(float dt) {
 		direction.Normalise();
 		physicsObject->AddForce(direction * speed);
 	}
-	//////////////
+}
 
-	//Force angular velocity to 0. We don't want our character rolling around on the floor.
-	physicsObject->SetAngularVelocity(Vector3(0, 0, 0));
+void AIObject::UpdateAngerColour() {
+	//Set the objects colour based on its current anger level.
 
-#ifdef _DEBUG
-	DisplayPath();
-#endif
+	if (angerThreshold == 0.0f)
+		renderObject->SetColour(Debug::RED);
+	else {
+		float angerColIntensity = currentAnger / angerThreshold;
+		angerColIntensity = max(0.0f, angerColIntensity);
+		renderObject->SetColour(Vector4(1, 1 - angerColIntensity, 1 - angerColIntensity, 1));
+	}
 }
 
 void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+
+	ActorObject::ObjectSpecificDebugInfo(currLine, lineSpacing);
+
 	std::stringstream stream;
 
 	DisplayPath();
@@ -201,6 +213,10 @@ void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
 	stream.str("");
 
 	stream << "Current Target: " << currentGoal;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Coin Detection Range: " << cointDetectRange;
 	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
 	stream.str("");
 

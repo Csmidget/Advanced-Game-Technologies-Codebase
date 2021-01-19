@@ -1,6 +1,9 @@
 #include "ActorObject.h" 
 #include "Checkpoint.h"
 #include "Game.h"
+#include <sstream>
+#include <iomanip>
+#include "../CSC8503Common/Debug.h"
 
 using namespace NCL::CSC8503;
 
@@ -44,4 +47,17 @@ void ActorObject::OnCollisionBegin(GameObject* otherObject) {
 	//When we collide with collectables we don't want to reset the collision timer...
 	if (otherObject->GetPhysicsObject() && otherObject->IsStatic())
 		lastCollisionTimer = 0.0f;
+}
+
+void ActorObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+
+	RespawningObject::ObjectSpecificDebugInfo(currLine, lineSpacing);
+
+	std::stringstream stream;
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "Last Collision Timer: " << lastCollisionTimer;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
 }

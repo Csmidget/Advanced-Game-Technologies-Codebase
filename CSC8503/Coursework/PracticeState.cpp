@@ -17,21 +17,24 @@ PracticeState::PracticeState(Game* game) : GameState(game) {
 }
 
 PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** newState) {
+
+	Debug::Print("Press 'Backspace' to return to the menu.", Vector2(45, 91), Debug::YELLOW, 1.2f);
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;
 	}
 
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
-		*newState = new DebugState(game);
-		return PushdownResult::Push;
-	}
+	Debug::Print("Press 'P' to pause the game", Vector2(45, 94), Debug::YELLOW, 1.2f);
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
 		game->SetPause(!game->IsPaused());
 	}
 
+	Debug::Print("Press 'Tab' to enter debug mode",Vector2(45,97),Debug::YELLOW,1.2f);
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
+		*newState = new DebugState(game);
+		return PushdownResult::Push;
+	}
 
 	PlayerObject* player = game->GetPlayerObject();
-
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::NUM1)) {
 		player->GetTransform().SetPosition(Vector3(-100, 10, 100));
 	}

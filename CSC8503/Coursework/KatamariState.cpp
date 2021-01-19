@@ -35,16 +35,20 @@ KatamariState::~KatamariState() {
 
 PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** newState) {
 
+	Debug::Print("Press 'Backspace' to return to the menu.", Vector2(45, 91), Debug::YELLOW, 1.2f);
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;
 	}
 
+	Debug::Print("Press 'P' to pause the game", Vector2(45, 94), Debug::YELLOW, 1.2f);
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
+		game->SetPause(!game->IsPaused());
+	}
+
+	Debug::Print("Press 'Tab' to enter debug mode", Vector2(45, 97), Debug::YELLOW, 1.2f);
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
 		*newState = new DebugState(game);
 		return PushdownResult::Push;
-	}
-	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::P)) {
-		game->SetPause(!game->IsPaused());
 	}
 
 	Debug::Print("Catch balls and be the first to 50 points!", Vector2(15, 5), Vector4(1, 1, 0, 1), 1.5f);

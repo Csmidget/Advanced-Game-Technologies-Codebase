@@ -13,7 +13,6 @@
 #include "../CSC8503Common/PositionConstraint.h"
 #include "../CSC8503Common/OrientationConstraint.h"
 #include "../CSC8503Common/AngularImpulseConstraint.h"
-#include "../CSC8503Common/LinearImpulseConstraint.h"
 
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
@@ -99,7 +98,6 @@ GameObject* PrefabGenerator::CreateOBBCube(GameWorld* world, Vector3 position, Q
 	cube->GetPhysicsObject()->SetElasticity(1.5f);
 	cube->GetPhysicsObject()->SetFriction(0.7f);
 
-
 	cube->SetIsStatic(isStatic);
 
 	return world->AddGameObject(cube);
@@ -121,7 +119,6 @@ GameObject* PrefabGenerator::CreateFloor(GameWorld* world, Vector3 position, Vec
 	floor->GetPhysicsObject()->InitCubeInertia();
 
 	floor->SetIsStatic(true);
-
 
 	return world->AddGameObject(floor);
 }
@@ -267,7 +264,6 @@ GameObject* PrefabGenerator::CreatePathBlocker(GameWorld* world, const Vector2& 
 	return world->AddGameObject(pathBlocker);
 }
 
-
 GameObject* PrefabGenerator::CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) const {
 	GameObject* treadmill = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
 
@@ -352,7 +348,6 @@ AIObject* PrefabGenerator::CreateRaceAI(Game* game, const Vector3& position, std
 		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
 		.SetPosition(position);
 
-
 	if (rand() % 2) {
 		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));
 	}
@@ -365,6 +360,8 @@ AIObject* PrefabGenerator::CreateRaceAI(Game* game, const Vector3& position, std
 	aiPlayer->GetPhysicsObject()->InitCubeInertia();
 	aiPlayer->GetPhysicsObject()->SetElasticity(0.8f);
 	aiPlayer->GetPhysicsObject()->SetFriction(0.1f);
+
+	aiPlayer->UpdateAngerColour();
 
 	game->GetWorld()->AddGameObject(aiPlayer);
 
@@ -402,6 +399,8 @@ AIObject* PrefabGenerator::CreateKatamariAI(Game* game, const Vector3& position,
 	aiPlayer->GetPhysicsObject()->InitCubeInertia();
 	aiPlayer->GetPhysicsObject()->SetElasticity(0.8f);
 	aiPlayer->GetPhysicsObject()->SetFriction(0.1f);
+
+	aiPlayer->UpdateAngerColour();
 
 	game->GetWorld()->AddGameObject(aiPlayer);
 

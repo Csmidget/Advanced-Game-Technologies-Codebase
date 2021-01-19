@@ -24,6 +24,8 @@ namespace NCL {
 			}
 
 		    void Update(float dt) override;
+
+			//Using OnUpdate() for children to 'force' the ActorObject Update function to be called first.
 			virtual void OnUpdate(float dt) = 0;
 			virtual void Respawn();
 			virtual void OnCollisionBegin(GameObject* otherObject) override;
@@ -37,6 +39,7 @@ namespace NCL {
 			float GetSpeed() const { return speed; }
 
 			void AddTimedConstraint(Constraint* constraint, float time);
+			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) override;
 
 			void SetCheckpoint(Checkpoint* cp) { currentCheckpoint = cp; }
 			const Checkpoint* GetCheckpoint() const { return currentCheckpoint; }

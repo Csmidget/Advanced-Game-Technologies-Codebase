@@ -40,7 +40,7 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 			return BehaviourState::Success;
 		}
 
-		auto bonusesInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), actor->GetCoinHuntRange(), "bonus");
+		auto bonusesInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), actor->GetCoinDetectRange(), "bonus");
 
 		if (bonusesInRange.size() == 0)
 			return BehaviourState::Failure;

@@ -19,7 +19,7 @@ namespace NCL {
 			void OnUpdate(float dt) override;
 			bool SetGoal(Vector3 newGoal, float maxCost = INFINITY, bool force = false);
 
-			float GetCoinHuntRange() const { return coinHuntRange; }
+			float GetCoinDetectRange() const { return cointDetectRange; }
 
 			float GetCoinMaxDistance() const { return coinMaxDistance; }
 
@@ -38,9 +38,13 @@ namespace NCL {
 
 			void SetBehaviourTree(BehaviourNode* tree) { behaviourTree = tree; }
 
+			void UpdateAngerColour();
 
 		protected:
 			void DisplayPath();
+
+			void UpdateMovement();
+			void UpdateOrientation();
 
 			bool asleep;
 
@@ -49,7 +53,7 @@ namespace NCL {
 			float strength;
 
 			float behaviourUpdateCooldown;
-			float coinHuntRange;
+			float cointDetectRange;
 			float coinMaxDistance;
 			std::string currentState;
 

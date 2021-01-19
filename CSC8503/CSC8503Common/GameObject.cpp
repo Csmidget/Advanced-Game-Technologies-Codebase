@@ -34,6 +34,7 @@ void GameObject::UpdateBroadphaseAABB() {
 	if (!boundingVolume) {
 		return;
 	}
+
 	if (boundingVolume->type == VolumeType::AABB) {
 		broadphaseAABB = ((AABBVolume&)*boundingVolume).GetHalfDimensions();
 	}

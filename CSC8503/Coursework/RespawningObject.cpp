@@ -1,4 +1,7 @@
 #include "RespawningObject.h"
+#include <sstream>
+#include <iomanip>
+#include "../CSC8503Common/Debug.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -55,5 +58,16 @@ void RespawningObject::Update(float dt) {
 void RespawningObject::OnKill() {
 	Respawn();
 }
+
+void RespawningObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+	std::stringstream stream;
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "Spawn point: " << spawnPosition;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+}
+
 
 

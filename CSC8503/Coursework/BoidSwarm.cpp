@@ -20,11 +20,10 @@ void BoidSwarm::Update() {
 			activeBoids.erase(boid);
 		}
 	}
-
-
 	sumOfPoints = Vector3();
 	sumOfVelocities = Vector3();
 
+	//Calculating these once for the whole swarm saves on individual boid processing.
 	for (auto boid : activeBoids) {
 		sumOfPoints += boid->GetTransform().GetPosition();
 		sumOfVelocities += boid->GetPhysicsObject()->GetLinearVelocity();

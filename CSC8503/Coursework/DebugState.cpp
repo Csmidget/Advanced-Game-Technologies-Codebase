@@ -64,8 +64,13 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 		Debug::Print("(G)ravity off", Vector2(5, 95));
 	}
 
-	if (selectionObject)
+	if (selectionObject) {
+		if (selectionObject->GetRenderObject()->GetColour() != Debug::GREEN) {
+			selectionObjectColour = selectionObject->GetRenderObject()->GetColour();
+			selectionObject->GetRenderObject()->SetColour(Debug::GREEN);
+		}
 		selectionObject->PrintDebugInfo();
+	}
 
 	if (!selectionMode) {
 		camera->UpdateCamera(dt);
@@ -82,7 +87,7 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 			if (world->Raycast(ray, closestCollision, true,true)) {
 				selectionObject = (GameObject*)closestCollision.node;
 				selectionObjectColour = selectionObject->GetRenderObject()->GetColour();
-				selectionObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+				selectionObject->GetRenderObject()->SetColour(Debug::GREEN);
 			}
 		}
 	}

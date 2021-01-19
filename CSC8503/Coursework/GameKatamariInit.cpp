@@ -17,6 +17,7 @@ void Game::InitKatamariBaseGeometry() {
 	prefabGenerator->CreateAABBCube(world, Vector3( 48, 3,   0), Vector3(2, 3, 50), 0.0f, true);
 	prefabGenerator->CreateAABBCube(world, Vector3(-48, 3,   0), Vector3(2, 3, 50), 0.0f, true);
 
+	//Slightly higher gravity than normal to reduce chances of being knocked out of the arena.
 	physics->SetGravity(Vector3(0, -20.0f, 0));
 }
 void Game::InitKatamariKillPlanes() {

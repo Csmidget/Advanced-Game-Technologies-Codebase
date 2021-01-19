@@ -1,11 +1,16 @@
 #pragma once
 #include "GameState.h"
+#include <vector>
 
 namespace NCL {
 
 	class Camera;
 
 	namespace CSC8503 {
+
+		class PlayerObject;
+		class AIObject;
+
 		class RaceState : public GameState {
 
 		public:
@@ -13,8 +18,8 @@ namespace NCL {
 
 		protected:
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;
-			void OnAwake() override;
-			void OnSleep() override;
+			void UpdateScores(float dt, PlayerObject* player, std::vector<AIObject*>& opponents);
+			bool CheckForFinishes(PlayerObject* player, std::vector<AIObject*>& opponents);
 
 			Camera* camera;
 			float scoreTracker;

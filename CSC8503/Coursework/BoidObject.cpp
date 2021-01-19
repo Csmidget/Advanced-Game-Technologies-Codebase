@@ -2,6 +2,9 @@
 #include "ActorObject.h"
 #include "BoidSwarm.h"
 #include "Game.h"
+#include <sstream>
+#include <iomanip>
+#include "../CSC8503Common/Debug.h"
 
 using namespace NCL::CSC8503;
 
