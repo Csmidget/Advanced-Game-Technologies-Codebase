@@ -1,10 +1,12 @@
 #include "PracticeState.h"
+
 #include "PlayerObject.h"
 #include "DebugState.h"
 #include "EndState.h"
 #include "Game.h"
-#include "../CSC8503Common/CollisionDetection.h"
 #include "Checkpoint.h"
+
+#include "../CSC8503Common/CollisionDetection.h"
 
 using namespace NCL::CSC8503;
 
@@ -12,7 +14,7 @@ PracticeState::PracticeState(Game* game) : GameState(game) {
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitPracticeWorld();
 	scoreTracker = 0.0f;
-	game->GetPlayerObject()->AddScore(1000.0f);
+	game->GetPlayerObject()->AddScore(1000);
 
 }
 
@@ -48,7 +50,8 @@ PushdownState::PushdownResult PracticeState::OnUpdate(float dt, PushdownState** 
 	scoreTracker += dt;
 
 	if (scoreTracker > 1) {
-		int scoreIncrement = std::floor(scoreTracker);
+		//This will floor the value of scoreTracker.
+		int scoreIncrement = (int)scoreTracker;
 		player->AddScore(-scoreIncrement * 10);
 		scoreTracker -= scoreIncrement;
 	}

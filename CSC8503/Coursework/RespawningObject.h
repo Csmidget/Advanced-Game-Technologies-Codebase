@@ -6,15 +6,17 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class RespawningObject : public GameObject {
+			
+			friend class PrefabFactory;
 
-		public:
+		protected:
 			RespawningObject(Vector3 spawnPosition, string name, bool randomizeOrientation = false);
 
+		public:
 			virtual void Respawn();
 			virtual void OnRespawn() {};
 			virtual void Update(float dt) override;
 			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) override;
-
 
 			void SetRespawnPosition(Vector3 val) { spawnPosition = val; }
 

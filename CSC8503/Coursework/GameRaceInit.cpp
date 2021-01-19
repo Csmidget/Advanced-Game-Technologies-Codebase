@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Checkpoint.h"
+#include "PrefabFactory.h"
 #include "../CSC8503Common/NavigationGrid.h"
 
 
@@ -26,84 +27,84 @@ void Game::InitRaceWorld(int players) {
 void Game::InitRaceBaseGeometry() {
 
 	//Starting zone
-	prefabGenerator->CreateFloor(world, Vector3(-100, -0.5f, 100), Vector2(20, 20));
+	prefabFactory->CreateFloor(world, Vector3(-100, -0.5f, 100), Vector2(20, 20));
 
 	//First Gauntlet
 	{
 		//Floor
-		prefabGenerator->CreateFloor(world, Vector3(-100, -0.5f, 0.0f), Vector2(15, 80));
+		prefabFactory->CreateFloor(world, Vector3(-100, -0.5f, 0.0f), Vector2(15, 80));
 
 		//First section
 		{
 			//Front wall
-			prefabGenerator->CreateAABBCube(world, Vector3(-100, 2, 80), Vector3(7.5f, 2, 1.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-85, 2, 80), Vector3(2.5f, 2, 1.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-115, 2, 80), Vector3(2.5f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-100, 2, 80), Vector3(7.5f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-85, 2, 80), Vector3(2.5f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-115, 2, 80), Vector3(2.5f, 2, 1.25f), 0.0f, true);
 
 			//Coin room Walls
-			prefabGenerator->CreateAABBCube(world, Vector3(-106.25, 2, 72.5), Vector3(1.25f, 2, 6.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-93.75, 2, 72.5), Vector3(1.25f, 2, 6.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-95, 2, 65.0f), Vector3(2.5f, 2, 1.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-105, 2, 65.0f), Vector3(2.5f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-106.25, 2, 72.5), Vector3(1.25f, 2, 6.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-93.75, 2, 72.5), Vector3(1.25f, 2, 6.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-95, 2, 65.0f), Vector3(2.5f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-105, 2, 65.0f), Vector3(2.5f, 2, 1.25f), 0.0f, true);
 
 			//Coin room coins
-			prefabGenerator->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 68.75f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 68.75f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 76.25f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 76.25f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 72.5f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 72.5f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 68.75f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 68.75f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 76.25f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 76.25f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-102.5f, 1.0f, 72.5f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-97.5f, 1.0f, 72.5f), 30.0f);
 
 			//Coin room Tunnel
-			prefabGenerator->CreateAABBCube(world, Vector3(-103.75, 2, 57.5f), Vector3(1.25f, 2, 6.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-96.25, 2, 57.5f), Vector3(1.25f, 2, 6.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-103.75, 2, 57.5f), Vector3(1.25f, 2, 6.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-96.25, 2, 57.5f), Vector3(1.25f, 2, 6.25f), 0.0f, true);
 
 			//Back wall
-			prefabGenerator->CreateAABBCube(world, Vector3(-108.75, 2, 40), Vector3(6.25f, 2, 1.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-91.25, 2, 40), Vector3(6.25, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-108.75, 2, 40), Vector3(6.25f, 2, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-91.25, 2, 40), Vector3(6.25, 2, 1.25f), 0.0f, true);
 		}
 
 		//Swamp Section
 		{
 			//Central swamp
-			prefabGenerator->CreateSwampFloor(world, Vector3(-100, -0.499f, 20.0f), Quaternion(), Vector2(10, 10));
-			prefabGenerator->CreateSwampFloor(world, Vector3(-112.51, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 2.5f));
-			prefabGenerator->CreateSwampFloor(world, Vector3(-87.49, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 1.25f));
+			prefabFactory->CreateSwampFloor(world, Vector3(-100, -0.499f, 20.0f), Quaternion(), Vector2(10, 10));
+			prefabFactory->CreateSwampFloor(world, Vector3(-112.51f, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 2.5f));
+			prefabFactory->CreateSwampFloor(world, Vector3(-87.49f, -0.499f, 20.0f), Quaternion(), Vector2(2.51f, 1.25f));
 
 			//Coins
-			prefabGenerator->CreateScoreBonus(world, Vector3(-105.0f, 1.0f, 15.0f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-105.0f, 1.0f, 25.0f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-95.0f, 1.0f, 15.0f), 30.0f);
-			prefabGenerator->CreateScoreBonus(world, Vector3(-95.0f, 1.0f, 25.0f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-105.0f, 1.0f, 15.0f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-105.0f, 1.0f, 25.0f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-95.0f, 1.0f, 15.0f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-95.0f, 1.0f, 25.0f), 30.0f);
 
 			//Back wall
-			prefabGenerator->CreateAABBCube(world, Vector3(-108.75, 1, 0), Vector3(6.25f, 1, 1.25f), 0.0f, true);
-			prefabGenerator->CreateAABBCube(world, Vector3(-91.25, 1, 0), Vector3(6.25, 1, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-108.75, 1, 0), Vector3(6.25f, 1, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-91.25, 1, 0), Vector3(6.25, 1, 1.25f), 0.0f, true);
 		}
 
 		//Maze Section
 		{
 			//Left Coin
-			prefabGenerator->CreateScoreBonus(world, Vector3(-112.5f, 1.0f, -3.75f), 30.0f);
+			prefabFactory->CreateScoreBonus(world, Vector3(-112.5f, 1.0f, -3.75f), 30.0f);
 
 			//First horizontal wall
-			prefabGenerator->CreateAABBCube(world, Vector3(-103.75, 1, -7.5f), Vector3(11.25, 1, 1.25f), 0.0f, true);
+			prefabFactory->CreateAABBCube(world, Vector3(-103.75, 1, -7.5f), Vector3(11.25, 1, 1.25f), 0.0f, true);
 
 
 		}
 
 		//Spinning block
 		{
-			prefabGenerator->CreateSpinningBlock(world, Vector3(-100, 2.5f, -30), Vector3(0, 1, 0), -12500.0f, 15.0f);
-			prefabGenerator->CreatePathBlocker(world, Vector2(-95.0f, -30.0f), Vector2(10.0f, 15.0f));
+			prefabFactory->CreateSpinningBlock(world, Vector3(-100, 2.5f, -30), Vector3(0, 1, 0), -12500.0f, 15.0f);
+			prefabFactory->CreatePathBlocker(world, Vector2(-95.0f, -30.0f), Vector2(10.0f, 15.0f));
 		}
 
-		prefabGenerator->CreateAABBCube(world, Vector3(-100, 2, -57.5), Vector3(6.25, 2, 1.25), 0.0f, true);
-		prefabGenerator->CreateAABBCube(world, Vector3(-105, 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true);
-		prefabGenerator->CreateAABBCube(world, Vector3(-95, 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true);
+		prefabFactory->CreateAABBCube(world, Vector3(-100, 2, -57.5), Vector3(6.25, 2, 1.25), 0.0f, true);
+		prefabFactory->CreateAABBCube(world, Vector3(-105, 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true);
+		prefabFactory->CreateAABBCube(world, Vector3(-95, 2, -65), Vector3(1.25, 2, 6.25), 0.0f, true);
 	}
 	//Checkpoint1
-	prefabGenerator->CreateFloor(world, Vector3(-100, -0.5f, -100.0f), Vector2(20, 20));
+	prefabFactory->CreateFloor(world, Vector3(-100, -0.5f, -100.0f), Vector2(20, 20));
 }
 
 void Game::InitRaceKillPlanes() {
@@ -118,23 +119,23 @@ void Game::InitRaceCheckpoints() {
 }
 
 void Game::InitRacePlayers(int opponentCount) {
-	player = prefabGenerator->CreatePlayer(this, Vector3(-100, 5, 95));
+	player = prefabFactory->CreatePlayer(this, Vector3(-100, 5, 95));
 
 	Vector3 firstSpawn(-110, 5, 100);
 
 	//The first few opponents are predetermined.
 	if (opponentCount >= 1)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-110, 5, 100), "Enemy 1"));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-110, 5, 100), "Enemy 1"));
 	if (opponentCount >= 2)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-105, 5, 100), "Enemy 2", 50.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-105, 5, 100), "Enemy 2", 50.0f));
 	if (opponentCount >= 3)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-100, 5, 100), "Enemy 3", 70.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-100, 5, 100), "Enemy 3", 70.0f));
 	if (opponentCount >= 4)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-95, 5, 100), "Enemy 4", 100.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-95, 5, 100), "Enemy 4", 100.0f));
 	if (opponentCount >= 5)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-90, 5, 100), "Enemy 5", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-90, 5, 100), "Enemy 5", 100.0f, 0.0f, 3.0f));
 	if (opponentCount >= 6)
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, Vector3(-110, 5, 103), "Enemy 6", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-110, 5, 103), "Enemy 6", 100.0f, 0.0f, 3.0f));
 
 	for (int i = 7; i <= opponentCount; ++i) {
 
@@ -143,19 +144,14 @@ void Game::InitRacePlayers(int opponentCount) {
 		Vector3 spawnPos = firstSpawn + Vector3(x * 5.0f, 0, y * 5.0f);
 
 		//1-30
-		float coinHuntRange = (rand() % 30) + 1;
+		float coinHuntRange = (float)(rand() % 30) + 1;
 		//cointHuntRange-100
-		float maxCoinDistance = (rand() % 101 - coinHuntRange) + coinHuntRange;
+		float maxCoinDistance = (float)(rand() % 101 - coinHuntRange) + coinHuntRange;
 		//0-10
-		float angerThreshold = (rand() % 11);
+		float angerThreshold = (float)(rand() % 11);
 		//1-4
 		float strength = 1 + (float)(rand() % 30) / 10.0f;
 
-		opponents.push_back(prefabGenerator->CreateRaceAI(this, spawnPos, "Enemy " + std::to_string(i), coinHuntRange, maxCoinDistance, angerThreshold, strength));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, spawnPos, "Enemy " + std::to_string(i), coinHuntRange, maxCoinDistance, angerThreshold, strength));
 	}
-
-	prefabGenerator->CreateScoreBonus(world, Vector3(-100, 1.0f, 100), 15.0f);
-	//prefabGenerator->AddScoreBonus(world, Vector3(-110, 1.0f, 45.0f), 15.0f);
-	//prefabGenerator->AddScoreBonus(world, Vector3(-90, 1.0f, 0.0f), 15.0f);
-	//prefabGenerator->AddScoreBonus(world, Vector3(-100.0, 1.0f, -60.0f),15.0f);
 }

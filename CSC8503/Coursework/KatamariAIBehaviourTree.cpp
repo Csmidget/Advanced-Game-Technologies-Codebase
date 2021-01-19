@@ -1,10 +1,11 @@
 #include "KatamariAIBehaviourTree.h"
-#include "../CSC8503Common/BehaviourAction.h"
-#include "../CSC8503Common/BehaviourSequence.h"
+
 #include "BonusObject.h"
 #include "AIObject.h"
 #include "Game.h"
 
+#include "../CSC8503Common/BehaviourAction.h"
+#include "../CSC8503Common/BehaviourSequence.h"
 #include "../CSC8503Common/BehaviourSelector.h"
 
 using namespace NCL::CSC8503;
@@ -20,7 +21,6 @@ KatamariAIBehaviourTree::KatamariAIBehaviourTree(Game* g, AIObject* a) : Behavio
 	root->AddChild(new BehaviourAction("Hunt nearest boid", [&](float dt, BehaviourState state)->BehaviourState {
 		actor->SetCurrentState("Chasing Boids");
 		auto boids = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 100.0f, "boid");
-
 		if (boids.empty())
 			return BehaviourState::Failure;
 
@@ -31,5 +31,6 @@ KatamariAIBehaviourTree::KatamariAIBehaviourTree(Game* g, AIObject* a) : Behavio
 				return BehaviourState::Ongoing;
 			}
 		}		
+		return BehaviourState::Failure;
 	}));
 }

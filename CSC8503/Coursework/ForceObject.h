@@ -11,14 +11,16 @@ namespace NCL {
 		class GameWorld;
 		class ForceObject : public GameObject {
 
-		public:
+			friend class PrefabFactory;
 
-			ForceObject(GameWorld* world, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength, bool continuous = true);
+		public:
 			~ForceObject();
 			void OnCollisionBegin(GameObject* otherObject) override;
 			void OnCollisionEnd(GameObject* otherObject) override;
 
 		protected: 
+			ForceObject(GameWorld* world, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength, bool continuous = true);
+
 			bool continuous;
 			float strength;
 			Vector3 direction;

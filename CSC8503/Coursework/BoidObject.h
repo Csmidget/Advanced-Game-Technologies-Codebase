@@ -1,5 +1,6 @@
 #pragma once
 #include "RespawningObject.h"
+
 #include "../../Common/Vector2.h"
 
 namespace NCL {
@@ -10,14 +11,17 @@ namespace NCL {
 
 		class BoidObject : public RespawningObject {
 
+			friend class PrefabFactory;
+
 		public:
-			BoidObject(Game* game, BoidSwarm** swarm, Vector3 respawnPosition);
 			~BoidObject();
 
 			void Update(float dt) override;
 			void OnCollisionBegin(GameObject* otherObject) override;
 
 		protected:
+			BoidObject(Game* game, BoidSwarm** swarm, Vector3 respawnPosition);
+
 			Game* game;
 			BoidSwarm** swarm;
 		};

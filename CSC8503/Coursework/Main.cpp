@@ -1,12 +1,11 @@
-#include "../../Common/Window.h"
+#include "Game.h"
 
 #include "../CSC8503Common/StateMachine.h"
 #include "../CSC8503Common/StateTransition.h"
 #include "../CSC8503Common/State.h"
-
 #include "../CSC8503Common/NavigationGrid.h"
 
-#include "Game.h"
+#include "../../Common/Window.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -29,7 +28,7 @@ int main() {
 	if (!w->HasInitialised()) {
 		return -1;
 	}	
-	srand(time(0));
+	srand((unsigned int)time(0));
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 

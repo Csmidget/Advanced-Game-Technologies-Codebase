@@ -14,15 +14,9 @@ namespace NCL {
 
 		class ActorObject : public RespawningObject {
 
-		public:
-			ActorObject(Game* game, Vector3 respawnPosition, string objectName) :RespawningObject(respawnPosition, objectName,false) {
-				this->game = game;
-				tags.push_back("actor");
-				lastCollisionTimer = 0.0f;
-				currentCheckpoint = nullptr;
-				score = 0;
-			}
+			friend class PrefabFactory;
 
+		public:
 		    void Update(float dt) override;
 
 			//Using OnUpdate() for children to 'force' the ActorObject Update function to be called first.
@@ -45,6 +39,16 @@ namespace NCL {
 			const Checkpoint* GetCheckpoint() const { return currentCheckpoint; }
 
 		protected:
+
+			ActorObject(Game* game, Vector3 respawnPosition, string objectName) :RespawningObject(respawnPosition, objectName, false) {
+				this->game = game;
+				tags.push_back("actor");
+				lastCollisionTimer = 0.0f;
+				currentCheckpoint = nullptr;
+				score = 0;
+				speed = 4.0f;
+			}
+
 			int score;
 			Game* game;
 			std::map<Constraint*, float> timedConstraints;

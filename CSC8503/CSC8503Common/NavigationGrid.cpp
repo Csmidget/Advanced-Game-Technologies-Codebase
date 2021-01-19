@@ -27,8 +27,8 @@ NavigationGrid::NavigationGrid()	{
 
 //Builds a grid based on provided quadtree of objects. (In use, this will be the static quadtree of the game world)
 NavigationGrid::NavigationGrid(QuadTree<GameObject*>* objectTree, Vector3 offset, float maxHeight, Vector2 gridHalfDims, float nodeSize) {
-	gridWidth = gridHalfDims.x * 2;
-	gridHeight = gridHalfDims.y * 2;
+	gridWidth =  (int)gridHalfDims.x * 2;
+	gridHeight = (int)gridHalfDims.y * 2;
 	this->nodeSize = nodeSize;
 
 	this->offset = offset;
@@ -187,12 +187,12 @@ bool NavigationGrid::FindPath(const Vector3& rawFrom, const Vector3& rawTo, Navi
 	Vector3 to   = rawTo + offset;
 
 	//need to work out which node 'from' sits in, and 'to' sits in
-	int fromX = (round(from.x / nodeSize));
-	int fromZ = (round(from.z / nodeSize));
+	int fromX = ((int)round(from.x / nodeSize));
+	int fromZ = ((int)round(from.z / nodeSize));
 
 	//Round before casting to ensure closest node (cast to int will floor the value)
-	int toX = (round(to.x / nodeSize));
-	int toZ = (round(to.z / nodeSize));
+	int toX = ((int)round(to.x / nodeSize));
+	int toZ = ((int)round(to.z / nodeSize));
 
 	if (fromX < 0 || fromX > gridWidth - 1 ||
 		fromZ < 0 || fromZ > gridHeight - 1) {

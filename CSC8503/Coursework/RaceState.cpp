@@ -1,11 +1,14 @@
 #include "RaceState.h"
+
 #include "AIObject.h"
 #include "PlayerObject.h"
 #include "DebugState.h"
 #include "EndState.h"
 #include "Game.h"
-#include "../CSC8503Common/CollisionDetection.h"
 #include "Checkpoint.h"
+
+#include "../CSC8503Common/CollisionDetection.h"
+
 #include <algorithm>
 
 using namespace NCL::CSC8503;
@@ -16,9 +19,9 @@ RaceState::RaceState(Game* game, int opponents) : GameState(game) {
 	game->InitRaceWorld(opponents);
 	camera = game->GetWorld()->GetMainCamera();
 
-	game->GetPlayerObject()->AddScore(500.0f);
+	game->GetPlayerObject()->AddScore(500);
 	for (auto opponent : game->GetOpponents()) {
-		opponent->AddScore(500.0f);
+		opponent->AddScore(500);
 	}
 }
 
@@ -49,7 +52,7 @@ PushdownState::PushdownResult RaceState::OnUpdate(float dt, PushdownState** newS
 	Debug::Print("Player: " + std::to_string(player->GetScore()), Vector2(2, 5),playerFinished ? Debug::YELLOW : Debug::WHITE);
 
 	for (int i = 0; i < opponents.size(); ++i) {
-		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()),Vector2(2,8 + i*3), opponents[i]->IsAsleep() ? Debug::YELLOW : Debug::WHITE);
+		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()),Vector2(2,8.0f + i*3.0f), opponents[i]->IsAsleep() ? Debug::YELLOW : Debug::WHITE);
 	}
 
 	bool opponentsFinished = CheckForFinishes(player,opponents);
@@ -118,7 +121,8 @@ void RaceState::UpdateScores(float dt, PlayerObject* player, std::vector<AIObjec
 		scoreTracker += dt;
 
 		if (scoreTracker > 1) {
-			int scoreIncrement = std::floor(scoreTracker);
+			//This will floor scoretracker
+			int scoreIncrement = (int)scoreTracker;
 
 			if (!playerFinished) {
 				player->AddScore(-scoreIncrement * 10);

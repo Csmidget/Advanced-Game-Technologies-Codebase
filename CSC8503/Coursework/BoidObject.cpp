@@ -2,9 +2,11 @@
 #include "ActorObject.h"
 #include "BoidSwarm.h"
 #include "Game.h"
+
+#include "../CSC8503Common/Debug.h"
+
 #include <sstream>
 #include <iomanip>
-#include "../CSC8503Common/Debug.h"
 
 using namespace NCL::CSC8503;
 
@@ -41,7 +43,7 @@ void BoidObject::Update(float dt) {
 		sumofPoints -= currPos;
 
 		//Find the average position of all other boids in the swarm.
-		Vector3 targetPos = sumofPoints / ((*swarm)->BoidCount() - 1);
+		Vector3 targetPos = sumofPoints / ((*swarm)->BoidCount() - 1.0f);
 
 		swarmCentreDir = (targetPos - currPos) * swarmCentreStrength;
 	}
@@ -52,7 +54,7 @@ void BoidObject::Update(float dt) {
 		float matchVelocityStrength = 0.05f;
 
 		matchVelocity -= physicsObject->GetLinearVelocity();
-		matchVelocity /= ((*swarm)->BoidCount() - 1);
+		matchVelocity /= ((*swarm)->BoidCount() - 1.0f);
 		matchVelocity = (matchVelocity - physicsObject->GetLinearVelocity()) * matchVelocityStrength;
 	}
 
@@ -104,7 +106,7 @@ void BoidObject::OnCollisionBegin(GameObject* otherObject) {
 
 		actor->AddScore(1);
 		actor->AddSpeed(0.02f);
-		actor->GetTransform().SetScale(actor->GetTransform().GetScale() + Vector3(0.1, 0.1, 0.1));
+		actor->GetTransform().SetScale(actor->GetTransform().GetScale() + Vector3(0.1f, 0.1f, 0.1f));
 
 		CapsuleVolume* volume = (CapsuleVolume*)actor->GetBoundingVolume();
 		volume->SetHalfHeight(volume->GetHalfHeight() + 0.08f);

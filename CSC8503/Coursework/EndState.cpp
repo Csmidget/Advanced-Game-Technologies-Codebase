@@ -1,6 +1,8 @@
 #include "EndState.h"
-#include "DebugState.h"
+
 #include "Game.h"
+#include "DebugState.h"
+
 #include "../CSC8503Common/Debug.h"
 
 using namespace NCL::CSC8503;

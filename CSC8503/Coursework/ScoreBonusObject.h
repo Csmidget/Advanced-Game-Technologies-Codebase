@@ -6,11 +6,16 @@ namespace NCL {
 	namespace CSC8503 {
 
 		class ScoreBonusObject : public BonusObject {
+
+			friend class PrefabFactory;
+
 		public:
-			ScoreBonusObject(Vector3 respawnPosition, int score,float respawnDelay = 5.0f);
 			~ScoreBonusObject() {};
 
 		protected:
+			ScoreBonusObject(Vector3 respawnPosition, int score, float respawnDelay = 5.0f);
+
+
 			void ApplyBonus(ActorObject* target) override;
 			int score;
 		};

@@ -1,7 +1,9 @@
 #include "RespawningObject.h"
+
+#include "../CSC8503Common/Debug.h"
+
 #include <sstream>
 #include <iomanip>
-#include "../CSC8503Common/Debug.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -28,9 +30,9 @@ void RespawningObject::Respawn() {
 	}
 	else {
 		Quaternion newRot =
-			Matrix3::Rotation(rand() % 360, Vector3(1, 0, 0)) *
-			Matrix3::Rotation(rand() % 360, Vector3(0, 1, 0)) *
-			Matrix3::Rotation(rand() % 360, Vector3(0, 0, 1));
+			Matrix3::Rotation((float)(rand() % 360), Vector3(1, 0, 0)) *
+			Matrix3::Rotation((float)(rand() % 360), Vector3(0, 1, 0)) *
+			Matrix3::Rotation((float)(rand() % 360), Vector3(0, 0, 1));
 
 		transform.SetOrientation(newRot);
 	}

@@ -1,9 +1,11 @@
 #include "MainMenuState.h"
+
 #include "PracticeState.h"
 #include "KatamariState.h"
 #include "DebugState.h"
 #include "RaceState.h"
 #include "Game.h"
+
 #include "../CSC8503Common/GameWorld.h"
 
 using namespace NCL::CSC8503;

@@ -202,7 +202,7 @@ void GameWorld::GetConstraintIterators(
 	last	= constraints.end();
 }
 
-std::vector<GameObject*> GameWorld::ObjectsWithinRadius(Vector3 position, float radius, std::string tag) {
+std::vector<GameObject*> GameWorld::ObjectsWithinRadius(Vector3 position, float radius, std::string tag) const {
 
 	typedef std::pair<float, GameObject*> DistObjectPair;
 

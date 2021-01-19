@@ -11,14 +11,18 @@ namespace NCL {
 
 		class PlayerObject : public ActorObject {
 
+			friend class PrefabFactory;
+
 		public:
-			PlayerObject(Game* game, Vector3 respawnPosition);
 			~PlayerObject();
 
 			void OnUpdate(float dt) override;
 			void UpdateControls(Camera* camera);
 
 		protected:
+			PlayerObject(Game* game, Vector3 respawnPosition);
+
+
 			bool lockOrientation;
 
 			float yaw;

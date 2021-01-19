@@ -1,11 +1,15 @@
 #include "KatamariState.h"
+
 #include "PlayerObject.h"
 #include "AIObject.h"
 #include "DebugState.h"
 #include "EndState.h"
 #include "Game.h"
-#include "../CSC8503Common/CollisionDetection.h"
 #include "Checkpoint.h"
+#include "BoidSwarm.h"
+#include "PrefabFactory.h"
+
+#include "../CSC8503Common/CollisionDetection.h"
 
 using namespace NCL::CSC8503;
 
@@ -18,7 +22,7 @@ KatamariState::KatamariState(Game* game) : GameState(game) {
 	Vector3 start(-40.0, 2.0f, -40.0f);
 	for (int x = 0; x < 16; x++) {
 		for (int y = 0; y < 16; y++) {
-			game->GetPrefabGenerator()->CreateBoid(game, &boidSwarm, start + Vector3(x*5,0,y*5));
+			game->GetPrefabFactory()->CreateBoid(game, &boidSwarm, start + Vector3(x*5.0f,0,y*5.0f));
 		}
 	}
 
@@ -63,7 +67,7 @@ PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** 
 	Debug::Print("Player: " + std::to_string(playerScore), Vector2(2, 20), Debug::YELLOW, 1.1f);
 	auto opponents = game->GetOpponents();
 	for (int i = 0; i < opponents.size(); ++i) {
-		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()), Vector2(2, 23 + i * 3),Debug::YELLOW,1.1f);
+		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()), Vector2(2, 23.0f + i * 3.0f),Debug::YELLOW,1.1f);
 
 		if (opponents[i]->GetScore() >= 50) {
 			*newState = new EndState(game, "You lose!", "One of your opponents caught 50 first!");

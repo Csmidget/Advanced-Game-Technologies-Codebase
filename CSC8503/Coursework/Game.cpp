@@ -1,16 +1,11 @@
 #include "Game.h"
-#include "ForceObject.h"
+
 #include "PlayerObject.h"
-#include "AIObject.h"
 #include "MainMenuState.h"
-#include "../CSC8503Common/GameWorld.h"
-#include "../CSC8503Common/PositionConstraint.h"
-#include "../CSC8503Common/OrientationConstraint.h"
-#include "../CSC8503Common/AngularImpulseConstraint.h"
-#include "../CSC8503Common/LinearImpulseConstraint.h"
-#include "../CSC8503Common/CollisionDetection.h"
-#include "../CSC8503Common/NavigationGrid.h"
 #include "Checkpoint.h"
+#include "PrefabFactory.h"
+#include "GameTechRenderer.h"
+
 
 using namespace NCL;
 using namespace CSC8503;
@@ -19,7 +14,7 @@ Game::Game() {
 	world		= new GameWorld();
 	renderer	= new GameTechRenderer(*world);
 	physics		= new PhysicsSystem(*world);
-	prefabGenerator = new PrefabGenerator();
+	prefabFactory = new PrefabFactory();
 	goal = nullptr;
 
 	useGravity		= true;
@@ -41,7 +36,7 @@ Game::~Game()	{
 	delete physics;
 	delete renderer;
 	delete world;
-	delete prefabGenerator;
+	delete prefabFactory;
 	delete gameStateMachine;
 }
 
@@ -135,7 +130,7 @@ void Game::Clear() {
 
 }
 
-NavigationPath Game::GetPath(Vector3 start, Vector3 end, float maxCost) {
+NavigationPath Game::GetPath(Vector3 start, Vector3 end, float maxCost) const {
 
 	NavigationPath generatedPath;
 	navGrid->FindPath(start, end, generatedPath,maxCost);

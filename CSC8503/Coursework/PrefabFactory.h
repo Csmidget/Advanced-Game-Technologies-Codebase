@@ -11,11 +11,11 @@ namespace NCL {
 		class AIObject;
 		class Game;
 
-		class PrefabGenerator {
+		class PrefabFactory {
 
 		public:
-			PrefabGenerator();
-			~PrefabGenerator();
+			PrefabFactory();
+			~PrefabFactory();
 
 
 

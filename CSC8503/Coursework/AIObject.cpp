@@ -1,10 +1,13 @@
 #include "AIObject.h"
-#include "../../Common/Camera.h"
-#include "../../Common/Window.h"
-#include "RaceAIBehaviourTree.h";
-#include "../../Common/Maths.h"
-#include "../CSC8503Common/Debug.cpp"
+
+#include "RaceAIBehaviourTree.h"
 #include "Game.h"
+
+#include "../CSC8503Common/Debug.cpp"
+
+#include "../../Common/Camera.h"
+#include "../../Common/Maths.h"
+#include "../../Common/Window.h"
 
 #include <iomanip>
 #include <sstream>

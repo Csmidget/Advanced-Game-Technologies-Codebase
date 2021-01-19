@@ -56,9 +56,6 @@
     <ClCompile Include="KatamariAIBehaviourTree.cpp">
       <Filter>AIBehaviours</Filter>
     </ClCompile>
-    <ClCompile Include="PrefabGenerator.cpp">
-      <Filter>Game Factory Functions</Filter>
-    </ClCompile>
     <ClCompile Include="GameKatamariInit.cpp">
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
@@ -66,6 +63,9 @@
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
     <ClCompile Include="GameRaceInit.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="PrefabFactory.cpp">
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="PracticeState.h">
       <Filter>Game States</Filter>
-    </ClInclude>
-    <ClInclude Include="Powerup.h">
-      <Filter>GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="ActorObject.h">
       <Filter>GameObjects\Actor Objects</Filter>
@@ -130,7 +127,7 @@
     <ClInclude Include="KatamariAIBehaviourTree.h">
       <Filter>AIBehaviours</Filter>
     </ClInclude>
-    <ClInclude Include="PrefabGenerator.h">
+    <ClInclude Include="PrefabFactory.h">
       <Filter>Game Factory Functions</Filter>
     </ClInclude>
   </ItemGroup>

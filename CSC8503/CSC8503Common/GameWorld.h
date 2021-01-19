@@ -54,7 +54,7 @@ namespace NCL {
 
 			bool Raycast(Ray& r, RayCollision& closestCollision, bool closestObject = false, bool includeStatic = false) const;
 
-			std::vector<GameObject*> ObjectsWithinRadius(Vector3 position, float radius, std::string tag = "");
+			std::vector<GameObject*> ObjectsWithinRadius(Vector3 position, float radius, std::string tag = "") const;
 
 			virtual void UpdateWorld(float dt);
 

@@ -1,9 +1,12 @@
 #include "ActorObject.h" 
+
 #include "Checkpoint.h"
 #include "Game.h"
+
+#include "../CSC8503Common/Debug.h"
+
 #include <sstream>
 #include <iomanip>
-#include "../CSC8503Common/Debug.h"
 
 using namespace NCL::CSC8503;
 

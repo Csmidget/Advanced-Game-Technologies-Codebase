@@ -160,7 +160,7 @@
     <ClCompile Include="DebugState.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PracticeState.cpp" />
-    <ClCompile Include="PrefabGenerator.cpp" />
+    <ClCompile Include="PrefabFactory.cpp" />
     <ClCompile Include="RaceAIBehaviourTree.cpp" />
     <ClCompile Include="RaceState.cpp" />
     <ClCompile Include="RespawningObject.cpp" />
@@ -183,9 +183,8 @@
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="DebugState.h" />
     <ClInclude Include="PlayerObject.h" />
-    <ClInclude Include="Powerup.h" />
     <ClInclude Include="PracticeState.h" />
-    <ClInclude Include="PrefabGenerator.h" />
+    <ClInclude Include="PrefabFactory.h" />
     <ClInclude Include="RaceAIBehaviourTree.h" />
     <ClInclude Include="RaceState.h" />
     <ClInclude Include="RespawningObject.h" />

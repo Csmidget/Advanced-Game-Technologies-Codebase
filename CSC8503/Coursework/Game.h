@@ -1,8 +1,9 @@
 #pragma once
-#include "GameTechRenderer.h"
-#include "PrefabGenerator.h"
-#include "../CSC8503Common/PhysicsSystem.h"
+
 #include "../CSC8503Common/PushdownMachine.h"
+#include "../CSC8503Common/GameWorld.h"
+#include "../CSC8503Common/PhysicsSystem.h"
+#include "../CSC8503Common/NavigationGrid.h"
 #include "../CSC8503Common/NavigationPath.h"
 
 namespace NCL {
@@ -14,6 +15,9 @@ namespace NCL {
 		class AIObject;
 		class NavigationGrid;
 		class Checkpoint;
+		class PrefabFactory;
+		class GameTechRenderer;
+		class Checkpoint;
 
 		class Game {
 		public:
@@ -21,26 +25,26 @@ namespace NCL {
 			~Game();
 
 			virtual void UpdateGame(float dt);
-			bool ShouldQuit() { return quit; }
-			GameWorld* GetWorld() { return world;	}
 
-			PlayerObject* GetPlayerObject() { return player; }
-			std::vector<AIObject*> GetOpponents() { return opponents; }
 
 			bool GetUseGravity() const { return useGravity; }
 			void SetUseGravity(bool val);
 
-			const Checkpoint* GetGoal() const { return goal; }
 
-			bool HasGrid() const { return navGrid != nullptr; }
+			bool HasGrid() const	{ return navGrid != nullptr; }
+			bool ShouldQuit() const { return quit; }
 
-			const PrefabGenerator* GetPrefabGenerator() const { return prefabGenerator; }
+			NavigationPath			GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY) const;
+
+			GameWorld*				GetWorld() const			{ return world; }
+			PlayerObject*			GetPlayerObject() const		{ return player; }
+			std::vector<AIObject*>	GetOpponents() const		{ return opponents; }
+			const Checkpoint*		GetGoal() const				{ return goal; }
+			const PrefabFactory*	GetPrefabFactory() const	{ return prefabFactory; }
 
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
 			void InitKatamariWorld();
-
-			NavigationPath GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY);
 
 			void SetPause(bool val) { pause = val; }
 			bool IsPaused() const { return pause; }
@@ -68,7 +72,7 @@ namespace NCL {
 			void InitKatamariKillPlanes();
 			void InitKatamariPlayers(int opponentCount);
 
-			PrefabGenerator*	prefabGenerator;
+			PrefabFactory*	prefabFactory;
 			GameTechRenderer*	renderer;
 			PhysicsSystem*		physics;
 			GameWorld*			world;

@@ -1,5 +1,7 @@
 #include "GameTechRenderer.h"
+
 #include "../CSC8503Common/GameObject.h"
+
 #include "../../Common/Camera.h"
 #include "../../Common/Vector2.h"
 #include "../../Common/Vector3.h"

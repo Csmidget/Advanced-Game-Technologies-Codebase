@@ -21,7 +21,7 @@ namespace NCL {
 				this->game = game;
 			}
 
-			int BoidCount() const { return activeBoids.size(); }
+			int BoidCount() const { return (int)activeBoids.size(); }
 
 			Maths::Vector3 SumOfPoints() const { return sumOfPoints; }
 			Maths::Vector3 SumOfVelocities() const { return sumOfVelocities; }

@@ -1,10 +1,11 @@
 #include "RaceAIBehaviourTree.h"
-#include "../CSC8503Common/BehaviourAction.h"
-#include "../CSC8503Common/BehaviourSequence.h"
+  
 #include "BonusObject.h"
 #include "AIObject.h"
 #include "Game.h"
 
+#include "../CSC8503Common/BehaviourSequence.h"
+#include "../CSC8503Common/BehaviourAction.h"
 #include "../CSC8503Common/BehaviourSelector.h"
 
 using namespace NCL::CSC8503;

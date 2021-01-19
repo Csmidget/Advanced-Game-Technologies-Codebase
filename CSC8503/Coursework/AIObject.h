@@ -1,8 +1,10 @@
 #pragma once
 
 #include "ActorObject.h"
-#include "../../Common/Vector3.h"
+
 #include "../CSC8503Common/NavigationPath.h"
+
+#include "../../Common/Vector3.h"
 
 namespace NCL {
 
@@ -12,8 +14,9 @@ namespace NCL {
 
 		class AIObject : public ActorObject {
 
+			friend class PrefabFactory;
+
 		public:
-			AIObject(Game* game, Vector3 respawnPosition, std::string name = "enemy",float coinHuntRange = 10.0f, float coinMaxDistance = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 			~AIObject();
 
 			void OnUpdate(float dt) override;
@@ -41,6 +44,8 @@ namespace NCL {
 			void UpdateAngerColour();
 
 		protected:
+			AIObject(Game* game, Vector3 respawnPosition, std::string name = "enemy", float coinHuntRange = 10.0f, float coinMaxDistance = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
+
 			void DisplayPath();
 
 			void UpdateMovement();
