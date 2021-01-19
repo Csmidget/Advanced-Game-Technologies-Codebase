@@ -13,18 +13,22 @@
 
 using namespace NCL::CSC8503;
 
-KatamariState::KatamariState(Game* game) : GameState(game) {
+KatamariState::KatamariState(Game* game, int boidLayers) : GameState(game) {
 
 	camera = game->GetWorld()->GetMainCamera();
 	game->InitKatamariWorld();
 
 	boidSwarm = new BoidSwarm(game);
-	Vector3 start(-40.0, 2.0f, -40.0f);
-	for (int x = 0; x < 16; x++) {
-		for (int y = 0; y < 16; y++) {
-			game->GetPrefabFactory()->CreateBoid(game, &boidSwarm, start + Vector3(x*5.0f,0,y*5.0f));
+	Vector3 start(-40.0f, 2.0f, -40.0f);
+	float step = 40.0f / (boidLayers / 2);
+
+	for (int x = 0; x < boidLayers; x++) {
+		for (int y = 0; y < boidLayers; y++) {
+			game->GetPrefabFactory()->CreateBoid(game, &boidSwarm, start + Vector3(x* step,0,y* step));
 		}
 	}
+
+	requiredBoids = (int)pow(boidLayers, 2) / 5;
 
 	boidSwarm->Avoid(game->GetPlayerObject());
 
@@ -55,12 +59,12 @@ PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** 
 		return PushdownResult::Push;
 	}
 
-	Debug::Print("Catch balls and be the first to 50 points!", Vector2(15, 5), Vector4(1, 1, 0, 1), 1.5f);
+	Debug::Print("Catch balls and be the first to " + std::to_string(requiredBoids) + " points!", Vector2(15, 5), Vector4(1, 1, 0, 1), 1.5f);
 
 	int playerScore = game->GetPlayerObject()->GetScore();
 
-	if (playerScore >= 50) {
-		*newState = new EndState(game, "You win!", "You were the first to reach 50 points!");
+	if (playerScore >= requiredBoids) {
+		*newState = new EndState(game, "You win!", "You were the first to reach " + std::to_string(requiredBoids) + " points!");
 		return PushdownResult::Replace;
 	}
 
@@ -69,13 +73,11 @@ PushdownState::PushdownResult KatamariState::OnUpdate(float dt, PushdownState** 
 	for (int i = 0; i < opponents.size(); ++i) {
 		Debug::Print(opponents[i]->GetName() + ": " + std::to_string(opponents[i]->GetScore()), Vector2(2, 23.0f + i * 3.0f),Debug::YELLOW,1.1f);
 
-		if (opponents[i]->GetScore() >= 50) {
-			*newState = new EndState(game, "You lose!", "One of your opponents caught 50 first!");
+		if (opponents[i]->GetScore() >= requiredBoids) {
+			*newState = new EndState(game, "You lose!", "One of your opponents caught " + std::to_string(requiredBoids) + " first!");
 			return PushdownResult::Replace;
 		}
 	}
-
-
 
 	//camera->UpdateCamera(dt);
 	game->GetPlayerObject()->UpdateControls(camera);

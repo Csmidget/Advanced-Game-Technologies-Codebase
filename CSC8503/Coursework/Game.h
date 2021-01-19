@@ -54,6 +54,7 @@ namespace NCL {
 
 			void InitCamera();
 			void UpdateKeys();
+			void UpdateFramerateDisplay(float dt);
 
 			void InitPracticeKillPlanes();
 			void InitPracticeBaseGeometry();
@@ -77,6 +78,8 @@ namespace NCL {
 			PhysicsSystem*		physics;
 			GameWorld*			world;
 			PushdownMachine*    gameStateMachine;
+
+			std::vector<float> frameTimes;
 
 			bool useGravity;
 			bool pause;

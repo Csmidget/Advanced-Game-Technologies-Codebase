@@ -16,6 +16,7 @@ namespace NCL {
 			void OnAwake() override;
 			int selection;
 			int raceOpponents;
+			int katamariBoids;
 			float cameraYaw;
 			const GameWorld* world;
 		};

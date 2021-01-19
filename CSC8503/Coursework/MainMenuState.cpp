@@ -14,6 +14,7 @@ MainMenuState::MainMenuState(Game* game) : GameState(game) {
 	selection = 0;
 	world = game->GetWorld();
 	raceOpponents = 1;
+	katamariBoids = 8;
 };
 
 PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** newState) {
@@ -51,8 +52,22 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 
 		raceOpponents = max(1, min(14, raceOpponents));
 		std::string opponentsText = "Opponents:  < " + std::to_string(raceOpponents) + " >";
-		Debug::Print(opponentsText, Vector2(18, 40), Debug::YELLOW, 1.5f);
+		Debug::Print(opponentsText, Vector2(20, 40), Debug::YELLOW, 1.5f);
 	}
+
+	if (selection == 2) {
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RIGHT)) {
+			++katamariBoids;
+		}
+		if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::LEFT)) {
+			--katamariBoids;
+		}
+
+		katamariBoids = max(4, min(20, katamariBoids));
+		std::string opponentsText = "Boids:  < " + std::to_string((int)pow(katamariBoids,2)) + " >";
+		Debug::Print(opponentsText, Vector2(20, 50), Debug::YELLOW, 1.5f);
+	}
+
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::RETURN)) {
 		switch (selection) {
@@ -63,7 +78,7 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 			*newState = new RaceState(game,raceOpponents);
 			return PushdownResult::Push;
 		case 2:
-			*newState = new KatamariState(game);
+			*newState = new KatamariState(game,katamariBoids);
 			return PushdownResult::Push;
 		case 3:
 			return PushdownResult::Pop;

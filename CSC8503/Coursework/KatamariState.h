@@ -12,11 +12,12 @@ namespace NCL {
 		class KatamariState : public GameState {
 
 		public:
-			KatamariState(Game* game);
+			KatamariState(Game* game, int boidLayers);
 			~KatamariState();
 
 		protected:
 
+			int requiredBoids;
 			PushdownResult OnUpdate(float dt, PushdownState** newState) override;
 			void OnAwake() override;
 			void OnSleep() override;

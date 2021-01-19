@@ -50,6 +50,7 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 		{
 			if (!((BonusObject*)o)->IsPopped()) {
 				bonusTarget = (BonusObject*)o;
+				break;
 			}
 		}
 

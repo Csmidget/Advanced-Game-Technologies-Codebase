@@ -219,7 +219,7 @@ std::vector<GameObject*> GameWorld::ObjectsWithinRadius(Vector3 position, float 
 		if (tag == "" || !object->HasTag(tag))
 			continue;
 
-		float sqrDist = (object->GetTransform().GetPosition() - position).LengthSquared();
+		float sqrDist = (position - object->GetTransform().GetPosition()).LengthSquared();
 		if (sqrDist <= sqrRadius)
 			foundObjects.push_back({ sqrDist, object });
 	}

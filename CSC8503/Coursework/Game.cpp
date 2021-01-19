@@ -42,6 +42,7 @@ Game::~Game()	{
 
 void Game::UpdateGame(float dt) {
 
+	UpdateFramerateDisplay(dt);
 	UpdateKeys();
 
 	if (!pause) {
@@ -95,6 +96,25 @@ void Game::UpdateKeys() {
 		world->ShuffleObjects(false);
 	}
 
+}
+
+void Game::UpdateFramerateDisplay(float dt) {
+	frameTimes.push_back(dt);
+
+	if (frameTimes.size() > 500) {
+		frameTimes.erase(frameTimes.begin());
+	}
+
+	float frameRate{ 0 };
+
+	for (auto frameTime : frameTimes) {
+		frameRate += frameTime;
+	}
+
+	frameRate /= frameTimes.size();
+	frameRate = 1 / frameRate;
+
+	Debug::Print(std::to_string((int)frameRate), Vector2(95, 2), Debug::YELLOW, 1.2f);
 }
 
 void Game::InitCamera() {
