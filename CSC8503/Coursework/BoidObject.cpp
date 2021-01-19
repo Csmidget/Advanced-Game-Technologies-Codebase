@@ -64,10 +64,8 @@ void BoidObject::Update(float dt) {
 		}
 	}
 
-	//Tend towards the center. This is to avoid boids getting clumped in edges and corners.
+	//Tend slightly towards the center. This is to avoid boids getting clumped in edges and corners.
 	Vector3 centreDir = (Vector3() - currPos) / 300.0f;
-	//float strength = exp(centreDir.Length());
-	//centreDir *= strength;
 
 	Vector3 finalDir = targetDir + boidAvoidDir + targetVelocity + centreDir;
 	finalDir.y = 0.0f;
@@ -91,8 +89,5 @@ void BoidObject::OnCollisionBegin(GameObject* otherObject) {
 		volume->SetRadius(volume->GetRadius() + 0.08f);
 	
 		isActive = false;
-
-		std::cout << "boid caught";
 	}
-
 }

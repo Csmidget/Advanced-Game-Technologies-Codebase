@@ -378,6 +378,7 @@ AIObject* PrefabGenerator::CreateKatamariAI(Game* game, const Vector3& position,
 
 	AIObject* aiPlayer = new AIObject(game, position, name);
 
+	aiPlayer->SetSpeed(5.0f);
 	aiPlayer->SetBehaviourTree(new KatamariAIBehaviourTree(game, aiPlayer));
 
 	CapsuleVolume* volume = new CapsuleVolume(meshSize, 0.3f);

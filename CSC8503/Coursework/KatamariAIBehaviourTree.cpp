@@ -23,8 +23,12 @@ KatamariAIBehaviourTree::KatamariAIBehaviourTree(Game* g, AIObject* a) : Behavio
 		if (boids.empty())
 			return BehaviourState::Failure;
 
-		auto target = boids.front();
-		actor->SetGoal(target->GetTransform().GetPosition());
-		return BehaviourState::Ongoing;
+		for (auto boid : boids) {
+			if (boid->GetTransform().GetPosition().LengthSquared() < 2025) { //45 squared 
+				auto target = boid;
+				actor->SetGoal(target->GetTransform().GetPosition());
+				return BehaviourState::Ongoing;
+			}
+		}		
 	}));
 }

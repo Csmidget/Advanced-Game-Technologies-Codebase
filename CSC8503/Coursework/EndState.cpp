@@ -6,10 +6,10 @@ using namespace NCL::CSC8503;
 
 PushdownState::PushdownResult EndState::OnUpdate(float dt, PushdownState** newState) {
 
-	Debug::Print(mainText, Vector2(15, 30));
-	Debug::Print(subText, Vector2(15, 40));
+	Debug::Print(mainText, Vector2(15, 30),Debug::YELLOW,1.5f);
+	Debug::Print(subText, Vector2(15, 40), Debug::YELLOW, 1.5f);
 
-	Debug::Print("Press space to return to the main menu.", Vector2(15, 60));
+	Debug::Print("Press space to return to the main menu.", Vector2(15, 60), Debug::YELLOW, 1.5f);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::SPACE)) {
 		return PushdownResult::Pop;

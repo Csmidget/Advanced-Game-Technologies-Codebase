@@ -10,7 +10,7 @@ using namespace NCL::CSC8503;
 
 GameWorld::GameWorld() {
 	mainCamera = new Camera();
-	objectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 12, 6);
+	objectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 10, 6);
 	staticObjectTree = new QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
 	shuffleConstraints	= false;
 	shuffleObjects		= false;
