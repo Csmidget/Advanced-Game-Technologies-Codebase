@@ -65,6 +65,7 @@ namespace NCL {
 			BehaviourNode* behaviourTree;
 			Quaternion orientation;
 
+			float initialNextNodeDistance;
 			Vector3 nextNode;
 			Vector3 currentGoal;
 			NavigationPath currentPath;

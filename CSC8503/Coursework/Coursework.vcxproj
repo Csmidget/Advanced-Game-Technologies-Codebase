@@ -147,6 +147,7 @@
     <ClCompile Include="BonusObject.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="GameKatamariInit.cpp" />
+    <ClCompile Include="GameNavmeshInit.cpp" />
     <ClCompile Include="GamePracticeInit.cpp" />
     <ClCompile Include="GameRaceInit.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="DebugState.cpp" />
+    <ClCompile Include="NavmeshTestState.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="PracticeState.cpp" />
     <ClCompile Include="PrefabFactory.cpp" />
@@ -182,6 +184,7 @@
     <ClInclude Include="KatamariState.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="DebugState.h" />
+    <ClInclude Include="NavmeshTestState.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="PracticeState.h" />
     <ClInclude Include="PrefabFactory.h" />

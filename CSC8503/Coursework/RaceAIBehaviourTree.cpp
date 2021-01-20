@@ -3,6 +3,7 @@
 #include "BonusObject.h"
 #include "AIObject.h"
 #include "Game.h"
+#include "Checkpoint.h"
 
 #include "../CSC8503Common/BehaviourSequence.h"
 #include "../CSC8503Common/BehaviourAction.h"
@@ -24,7 +25,7 @@ RaceAIBehaviourTree::RaceAIBehaviourTree(Game* g, AIObject* a) : BehaviourParall
 	//If both anger and bonus sequences fail, continue towards the goal.
 	root->AddChild(new BehaviourAction("Go to goal", [&](float dt, BehaviourState state)->BehaviourState {
 		actor->SetCurrentState("Seeking goal");
-		actor->SetGoal(Vector3(-101.0f, 0.0f, -101.0f));
+		actor->SetGoal(game->GetGoal()->GetPosition());
 		return BehaviourState::Success;
 	}));
 }

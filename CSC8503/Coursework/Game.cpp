@@ -132,13 +132,11 @@ void Game::Clear() {
 	useGravity = true; 
 	physics->SetGravity(Vector3(0.0f, -9.8f, 0.0f));
 
-	path.clear();
-
 	//As this is a game object it will be deleted by  world ClearAndErase()
 	player = nullptr;
 
-	delete navGrid;
-	navGrid = nullptr;
+	delete navMap;
+	navMap = nullptr;
 	
 	for (auto cp : checkpoints) {
 		delete cp;
@@ -153,6 +151,14 @@ void Game::Clear() {
 NavigationPath Game::GetPath(Vector3 start, Vector3 end, float maxCost) const {
 
 	NavigationPath generatedPath;
-	navGrid->FindPath(start, end, generatedPath,maxCost);
+
+	if (!navMap) {
+		generatedPath.PushWaypoint(end);
+		
+	}
+	else {
+		navMap->FindPath(start, end, generatedPath, maxCost);
+	}
+
 	return generatedPath;
 }

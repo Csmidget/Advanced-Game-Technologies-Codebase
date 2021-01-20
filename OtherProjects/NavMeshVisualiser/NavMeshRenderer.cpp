@@ -13,7 +13,7 @@ using namespace NCL;
 NavMeshRenderer::NavMeshRenderer() : OGLRenderer(*Window::GetWindow())	{
 	navMesh = new OGLMesh();
 
-	std::ifstream mapFile(Assets::DATADIR + "test.navmesh");
+	std::ifstream mapFile(Assets::DATADIR + "simple.navmesh");
 
 	int vCount = 0;
 	int iCount = 0;

@@ -13,15 +13,7 @@ void Game::InitRaceWorld(int players) {
 	InitRacePlayers(players);
 
 	//navGrid = new NavigationGrid("RaceGrid.txt", Vector3(125, 0, 125));
-	navGrid = new NavigationGrid(world->GetStaticObjectTree(), Vector3(0, 0, 0), 1000, Vector2(200, 200), 2.5f);
-
-	NavigationPath outPath;
-	navGrid->FindPath(Vector3(-100, 0, 100), Vector3(-100, 0, -100), outPath);
-
-	Vector3 pos;
-	while (outPath.PopWaypoint(pos)) {
-		path.push_back(pos);
-	};
+	navMap = new NavigationGrid(world->GetStaticObjectTree(), Vector3(0, 0, 0), 1000, Vector2(200, 200), 2.5f);
 }
 
 void Game::InitRaceBaseGeometry() {

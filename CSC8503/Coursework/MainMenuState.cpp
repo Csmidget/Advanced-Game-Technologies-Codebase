@@ -2,6 +2,7 @@
 
 #include "PracticeState.h"
 #include "KatamariState.h"
+#include "NavmeshTestState.h"
 #include "DebugState.h"
 #include "RaceState.h"
 #include "Game.h"
@@ -23,7 +24,8 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 	Debug::Print("Practice", Vector2(5, 30), selection == 0 ? Debug::GREEN : Debug::WHITE,1.5f);
 	Debug::Print("Versus", Vector2(5, 40), selection == 1 ? Debug::GREEN : Debug::WHITE, 1.5f);
 	Debug::Print("Katamari", Vector2(5, 50), selection == 2 ? Debug::GREEN : Debug::WHITE,1.5f);
-	Debug::Print("Quit", Vector2(5, 60), selection == 3 ? Debug::GREEN : Debug::WHITE,1.5f);
+	Debug::Print("Navmesh Test", Vector2(5, 60), selection == 3 ? Debug::GREEN : Debug::WHITE, 1.5f);
+	Debug::Print("Quit", Vector2(5, 70), selection == 4 ? Debug::GREEN : Debug::WHITE,1.5f);
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB)) {
 		*newState = new DebugState(game);
@@ -36,10 +38,10 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::UP)) {
 		--selection;
 		if (selection < 0)
-			selection = 3;
+			selection = 4;
 	}
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::DOWN)) {
-		selection = (selection + 1) % 4;
+		selection = (selection + 1) % 5;
 	}
 
 	if (selection == 1) {
@@ -81,6 +83,9 @@ PushdownState::PushdownResult MainMenuState::OnUpdate(float dt, PushdownState** 
 			*newState = new KatamariState(game,katamariBoids);
 			return PushdownResult::Push;
 		case 3:
+			*newState = new NavmeshTestState(game);
+			return PushdownResult::Push;
+		case 4:
 			return PushdownResult::Pop;
 		}
 	}

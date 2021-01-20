@@ -25,7 +25,7 @@ AIObject::AIObject(Game* game, Vector3 respawnPosition, std::string name, float 
 
 	currentGoal = respawnPosition;
 	nextNode = respawnPosition;
-
+	initialNextNodeDistance = (transform.GetPosition() - nextNode).Length();
 	this->cointDetectRange = coinHuntRange;
 	this->coinMaxDistance = coinMaxDistance;
 	this->angerThreshold = angerThreshold;
@@ -95,13 +95,6 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 		return true;
 	}
 
-	//If there is no navigation grid in the game, revert to moving directly towards goal.
-	if (!game->HasGrid()) {
-		nextNode = newGoal;
-		currentGoal = newGoal;
-		return true;
-	}
-
 	//Generate a path
 	NavigationPath newPath = game->GetPath(transform.GetPosition(), newGoal,maxCost);
 
@@ -113,6 +106,7 @@ bool AIObject::SetGoal(Vector3 newGoal, float maxCost, bool force) {
 	//Setup the new path
 	currentPath = newPath;
 	currentPath.PopWaypoint(nextNode);
+	initialNextNodeDistance = (transform.GetPosition() - nextNode).Length();
 	currentGoal = newGoal;
 
 	return true;
@@ -176,11 +170,12 @@ void AIObject::UpdateMovement() {
 		Vector3 direction = xzNextNode - xzPos;
 		if (direction.Length() < 2.5f) {
 			currentPath.PopWaypoint(nextNode);
+			initialNextNodeDistance = (transform.GetPosition() - nextNode).Length();
 		}
 
 		//We're a long distance from this node, we should regenerate the path
 		//in case we've been knocked too far off course.
-		if (direction.Length() > 7.5f) {
+		if (direction.Length() > initialNextNodeDistance * 3) {
 			SetGoal(currentGoal, INFINITY, true);
 		}
 
@@ -241,6 +236,7 @@ void AIObject::OnRespawn() {
 	if (!SetGoal(currentGoal,INFINITY,true)) {
 		currentGoal = transform.GetPosition();
 		nextNode = currentGoal;
+		initialNextNodeDistance = (transform.GetPosition() - nextNode).Length();
 		currentPath.Clear();
 	}
 }

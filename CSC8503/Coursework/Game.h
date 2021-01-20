@@ -3,7 +3,7 @@
 #include "../CSC8503Common/PushdownMachine.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/PhysicsSystem.h"
-#include "../CSC8503Common/NavigationGrid.h"
+#include "../CSC8503Common/NavigationMap.h"
 #include "../CSC8503Common/NavigationPath.h"
 
 namespace NCL {
@@ -30,8 +30,6 @@ namespace NCL {
 			bool GetUseGravity() const { return useGravity; }
 			void SetUseGravity(bool val);
 
-
-			bool HasGrid() const	{ return navGrid != nullptr; }
 			bool ShouldQuit() const { return quit; }
 
 			NavigationPath			GetPath(Vector3 start, Vector3 end,float maxCost = INFINITY) const;
@@ -45,6 +43,7 @@ namespace NCL {
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
 			void InitKatamariWorld();
+			void InitNavmeshWorld();
 
 			void SetPause(bool val) { pause = val; }
 			bool IsPaused() const { return pause; }
@@ -73,6 +72,10 @@ namespace NCL {
 			void InitKatamariKillPlanes();
 			void InitKatamariPlayers(int opponentCount);
 
+			void InitNavmeshLvlBaseGeometry();
+			void InitNavmeshLvlKillPlanes();
+			void InitNavmeshLvlPlayers(int opponentCount);
+
 			PrefabFactory*	prefabFactory;
 			GameTechRenderer*	renderer;
 			PhysicsSystem*		physics;
@@ -88,8 +91,7 @@ namespace NCL {
 			PlayerObject* player;
 			std::vector<AIObject*> opponents;
 			std::vector<Checkpoint*> checkpoints;
-			std::vector<Vector3> path;
-			NavigationGrid* navGrid;
+			NavigationMap* navMap;
 			Checkpoint* goal;
 		};
 	}

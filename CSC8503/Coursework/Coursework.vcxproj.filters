@@ -68,6 +68,12 @@
     <ClCompile Include="PrefabFactory.cpp">
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
+    <ClCompile Include="GameNavmeshInit.cpp">
+      <Filter>Game Factory Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="NavmeshTestState.cpp">
+      <Filter>Game States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h" />
@@ -129,6 +135,9 @@
     </ClInclude>
     <ClInclude Include="PrefabFactory.h">
       <Filter>Game Factory Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="NavmeshTestState.h">
+      <Filter>Game States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
