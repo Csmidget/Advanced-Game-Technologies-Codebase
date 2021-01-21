@@ -91,6 +91,9 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 	const NavTri* start = GetTriForPosition(from);
 	const NavTri* end = GetTriForPosition(to);
 
+	if (!start || !end)
+		return false;
+
 	NodeSet openSet;
 	NodeSet closedSet;
 
@@ -209,8 +212,6 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 					path.push_back(left);
 					apex = left;
 					right = currRight;
-					--i;
-					continue;
 				}
 			}
 
@@ -227,8 +228,6 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 					apex = right;
 					right = apex;
 					left = currLeft;
-					--i;
-					continue;
 				}
 			}
 		}
