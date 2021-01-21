@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <set>
+
+//This article was handy for figuring out Simple Stupid Funnel Algorithm: http://jceipek.com/Olin-Coding-Tutorials/pathing.html
+
 namespace NCL {
 	namespace CSC8503 {
 

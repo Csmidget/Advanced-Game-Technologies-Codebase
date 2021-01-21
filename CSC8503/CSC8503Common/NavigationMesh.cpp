@@ -8,6 +8,7 @@ using namespace NCL;
 using namespace CSC8503;
 using namespace std;
 
+
 NavigationMesh::NavigationMesh()
 {
 }
@@ -93,6 +94,11 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 	if (!start || !end)
 		return false;
+
+	if (start == end) {
+		outPath.PushWaypoint(to);
+		return true;
+	}
 
 	NodeSet openSet;
 	NodeSet closedSet;
@@ -194,6 +200,11 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		Vector3 apex = from;
 		Vector3 left = allVerts[portals[0].first];
 		Vector3 right = allVerts[portals[0].second];
+
+		//We keep track of where in the list we assign our left and right values
+		//so that we can return there and continue from it when a new apex is found.
+		int leftInd = 0;
+		int rightInd = 0;
 		for (int i = 1; i < portals.size(); ++i) {
 			
 			std::pair<int, int> current = portals[i];
@@ -206,12 +217,16 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 				//If currRight is within the left bound, tighten the funnel
 				if (apex == right || IsRight(apex, left, currRight)) {
 					right = currRight;
+					rightInd = i;
 				}
 				//Otherwise, we have found a crossover point.
 				else {
 					path.push_back(left);
 					apex = left;
-					right = currRight;
+					//Return to the point in the list where we assigned the new apex and begin again
+					rightInd = leftInd;
+					i = leftInd;
+					continue;
 				}
 			}
 
@@ -221,13 +236,16 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 				//If currLeft is within the right bound, tighten the funnel
 				if (apex == left || IsLeft(apex, right, currLeft)) {
 					left = currLeft;
+					leftInd = i;
 				}
 				//Otherwise, we have found a crossover point.
 				else {
 					path.push_back(right);
 					apex = right;
-					right = apex;
-					left = currLeft;
+					//Return to the point in the list where we assigned the new apex and begin again
+					leftInd = rightInd;
+					i = leftInd;
+					continue;
 				}
 			}
 		}
