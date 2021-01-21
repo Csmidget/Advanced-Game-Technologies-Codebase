@@ -1,6 +1,10 @@
 #include "DebugState.h"
 #include "Game.h"
 
+#include "../CSC8503Common/GameWorld.h"
+#include "../CSC8503Common/Debug.h"
+#include "../../Common/Window.h"
+
 using namespace NCL::CSC8503;
 
 DebugState::DebugState(Game* game) : GameState(game) {
@@ -82,7 +86,7 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 		camera->UpdateCamera(dt);
 	}
 	else {
-		if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::LEFT)) {
+		if (Window::GetMouse()->ButtonPressed(NCL::MouseButtons::LEFT)) {
 			if (selectionObject) {	//set colour to deselected;
 				selectionObject->GetRenderObject()->SetColour(selectionObjectColour);
 				selectionObject = nullptr;

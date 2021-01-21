@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "PrefabFactory.h"
+#include "ObjectFactory.h"
 #include "../CSC8503Common/NavigationMesh.h"
 #include "Checkpoint.h"
 #include "AIObject.h"
@@ -19,29 +19,29 @@ void Game::InitNavmeshWorld() {
 void Game::InitNavmeshLvlBaseGeometry() {
 
 	//Main section
-	prefabFactory->CreateFloor(world, Vector3(0, 0, 0), Vector2(40, 40));
+	objectFactory->CreateFloor(world, Vector3(0, 0, 0), Vector2(40, 40));
 
-	prefabFactory->CreateAABBCube(world, Vector3( 26, 2, -13), Vector3(14, 2, 27), 0.0f, true);
-	prefabFactory->CreateAABBCube(world, Vector3(-10, 2, -5), Vector3(2, 2, 15), 0.0f, true);
-	prefabFactory->CreateAABBCube(world, Vector3(0, 2, 12), Vector3(12, 2, 2), 0.0f, true);
-	prefabFactory->CreateOBBCube(world, Vector3(26, 0.25, 17.35f),Matrix4::Rotation(25,Vector3(1,0,0)), Vector3(12, 2, 4.61f), 0.0f,false,true);
+	objectFactory->CreateAABBCube(world, Vector3( 26, 2, -13), Vector3(14, 2, 27), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(-10, 2, -5), Vector3(2, 2, 15), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(0, 2, 12), Vector3(12, 2, 2), 0.0f, true);
+	objectFactory->CreateOBBCube(world, Vector3(26, 0.25, 17.35f),Matrix4::Rotation(25,Vector3(1,0,0)), Vector3(12, 2, 4.61f), 0.0f,false,true);
 
-	prefabFactory->CreateScoreBonus(world, Vector3(-37, 1, 37), 30.0f);
-	prefabFactory->CreateScoreBonus(world, Vector3(-9.5, 5, 11.5), 30.0f);
+	objectFactory->CreateScoreBonus(world, Vector3(-37, 1, 37), 30.0f);
+	objectFactory->CreateScoreBonus(world, Vector3(-9.5, 5, 11.5), 30.0f);
 
 	goal = new Checkpoint(Vector3(26.5f, 4, -34.61f), Vector3(5, 5, 5), 1);
 
 
 	//Side Section
-	prefabFactory->CreateFloor(world, Vector3(48, 0, 30), Vector2(8, 10));
-	prefabFactory->CreateFloor(world, Vector3(71, 0, 0), Vector2(15, 40));
+	objectFactory->CreateFloor(world, Vector3(48, 0, 30), Vector2(8, 10));
+	objectFactory->CreateFloor(world, Vector3(71, 0, 0), Vector2(15, 40));
 
-	prefabFactory->CreateOBBCube(world, Vector3(67.5, 2, -27.5), Matrix3::Rotation(44, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
-	prefabFactory->CreateOBBCube(world, Vector3(71, 2, -12), Matrix3::Rotation(-90, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
-	prefabFactory->CreateOBBCube(world, Vector3(61.5, 2, 3.5), Matrix3::Rotation(-56, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
-	prefabFactory->CreateOBBCube(world, Vector3(80, 2, 2), Matrix3::Rotation(-127, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
-	prefabFactory->CreateOBBCube(world, Vector3(73, 2, 12.5), Matrix3::Rotation(-90, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
-	prefabFactory->CreateOBBCube(world, Vector3(48, 2, 26),Quaternion(), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(67.5, 2, -27.5), Matrix3::Rotation(44, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(71, 2, -12), Matrix3::Rotation(-90, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(61.5, 2, 3.5), Matrix3::Rotation(-56, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(80, 2, 2), Matrix3::Rotation(-127, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(73, 2, 12.5), Matrix3::Rotation(-90, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
+	objectFactory->CreateOBBCube(world, Vector3(48, 2, 26),Quaternion(), Vector3(2, 2, 6), 0.0f, false, true);
 
 }
 
@@ -50,8 +50,8 @@ void Game::InitNavmeshLvlKillPlanes() {
 }
 
 void Game::InitNavmeshLvlPlayers(int opponentCount) {
-	opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(0, 2, 0), "Enemy 1", 40.0f, 40.0f));
-	opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(83, 2, -36), "Enemy 1",40.0f,40.0f));
+	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(0, 2, 0), "Enemy 1", 40.0f, 40.0f));
+	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(83, 2, -36), "Enemy 1",40.0f,40.0f));
 	opponents[0]->SetSpeed(3.0f);
 	opponents[1]->SetSpeed(3.0f);
 }

@@ -11,7 +11,7 @@ namespace NCL {
 		class GameWorld;
 		class ForceObject : public GameObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 			~ForceObject();

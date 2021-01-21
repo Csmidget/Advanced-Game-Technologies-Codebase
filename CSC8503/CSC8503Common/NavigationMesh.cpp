@@ -255,7 +255,7 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		}
 
 		//The path has been generated start to finish, but we need to put it into the navpath finish to start
-		for (size_t i = path.size() - 1; i >= 0; --i)
+		for (int i = (int)path.size() - 1; i >= 0; --i)
 		{
 			outPath.PushWaypoint(path[i]);
 		}

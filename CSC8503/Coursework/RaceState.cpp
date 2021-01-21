@@ -8,6 +8,7 @@
 #include "Checkpoint.h"
 
 #include "../CSC8503Common/CollisionDetection.h"
+#include "../CSC8503Common/GameWorld.h"
 
 #include <algorithm>
 

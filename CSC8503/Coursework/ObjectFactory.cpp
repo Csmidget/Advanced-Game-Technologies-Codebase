@@ -1,4 +1,4 @@
-#include "PrefabFactory.h"
+#include "ObjectFactory.h"
 
 #include "ForceObject.h"
 #include "RespawningObject.h"
@@ -20,11 +20,10 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 
-
 using namespace NCL;
 using namespace CSC8503;
 
-PrefabFactory::PrefabFactory() {
+ObjectFactory::ObjectFactory() {
 	auto loadFunc = [](const string& name, OGLMesh** into) {
 		*into = new OGLMesh(name);
 		(*into)->SetPrimitiveType(GeometryPrimitive::Triangles);
@@ -44,7 +43,7 @@ PrefabFactory::PrefabFactory() {
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 }
 
-PrefabFactory::~PrefabFactory() {
+ObjectFactory::~ObjectFactory() {
 	delete cubeMesh;
 	delete sphereMesh;
 	delete charMeshA;
@@ -57,7 +56,7 @@ PrefabFactory::~PrefabFactory() {
 }
 
 
-GameObject* PrefabFactory::CreateAABBCube(GameWorld* world, Vector3 position, Vector3 dimensions, float inverseMass, bool isStatic) const {
+GameObject* ObjectFactory::CreateAABBCube(GameWorld* world, Vector3 position, Vector3 dimensions, float inverseMass, bool isStatic) const {
 	GameObject* cube = new GameObject("cube");
 
 	AABBVolume* volume = new AABBVolume(dimensions);
@@ -79,7 +78,7 @@ GameObject* PrefabFactory::CreateAABBCube(GameWorld* world, Vector3 position, Ve
 	return world->AddGameObject(cube);
 }
 
-GameObject* PrefabFactory::CreateOBBCube(GameWorld* world, Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) const {
+GameObject* ObjectFactory::CreateOBBCube(GameWorld* world, Vector3 position, Quaternion orientation, Vector3 dimensions, float inverseMass,bool respawning, bool isStatic) const {
 	GameObject* cube = respawning ? new RespawningObject(position,"respawningOrientedCube",true) : new GameObject("orientedCube");
 
 	OBBVolume* volume = new OBBVolume(dimensions);
@@ -103,7 +102,7 @@ GameObject* PrefabFactory::CreateOBBCube(GameWorld* world, Vector3 position, Qua
 
 	return world->AddGameObject(cube);
 }
-GameObject* PrefabFactory::CreateFloor(GameWorld* world, Vector3 position, Vector2 dimensions) const {
+GameObject* ObjectFactory::CreateFloor(GameWorld* world, Vector3 position, Vector2 dimensions) const {
 	GameObject* floor = new TraversableObject("floor");
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5, dimensions.y);
@@ -123,7 +122,7 @@ GameObject* PrefabFactory::CreateFloor(GameWorld* world, Vector3 position, Vecto
 
 	return world->AddGameObject(floor);
 }
-GameObject* PrefabFactory::CreateOrientedFloor(GameWorld* world, Vector3 position, Quaternion orientation, Vector2 dimensions, std::string name) const {
+GameObject* ObjectFactory::CreateOrientedFloor(GameWorld* world, Vector3 position, Quaternion orientation, Vector2 dimensions, std::string name) const {
 	GameObject* floor = new TraversableObject(name);
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.5f, dimensions.y);
@@ -148,7 +147,7 @@ GameObject* PrefabFactory::CreateOrientedFloor(GameWorld* world, Vector3 positio
 	return world->AddGameObject(floor);
 }
 
-GameObject* PrefabFactory::CreateSlipperyFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) const {
+GameObject* ObjectFactory::CreateSlipperyFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation,const Vector2& dimensions) const {
 	GameObject* floor = CreateOrientedFloor(world, position, orientation, dimensions,"slipperyFloor");
 	PhysicsObject* phys = floor->GetPhysicsObject();
 
@@ -159,7 +158,7 @@ GameObject* PrefabFactory::CreateSlipperyFloor(GameWorld* world, const Vector3& 
 	return floor;
 }
 
-GameObject* PrefabFactory::CreateSwampFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation, const Vector2& dimensions) const {
+GameObject* ObjectFactory::CreateSwampFloor(GameWorld* world, const Vector3& position, const Quaternion& orientation, const Vector2& dimensions) const {
 	GameObject* floor = new TraversableObject("swampFloor",'o');
 
 	Vector3 floorSize = Vector3(dimensions.x, 0.7f, dimensions.y);
@@ -188,7 +187,7 @@ GameObject* PrefabFactory::CreateSwampFloor(GameWorld* world, const Vector3& pos
 	return world->AddGameObject(floor);
 }
 
-GameObject* PrefabFactory::CreateCapsule(GameWorld* world, Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) const {
+GameObject* ObjectFactory::CreateCapsule(GameWorld* world, Vector3 position, Quaternion orientation, float halfHeight, float radius, float inverseMass, bool respawning, bool isStatic) const {
 	GameObject* capsule = respawning ? new RespawningObject(position,"respawningCapsule",true) : new GameObject("capsule");
 
 	CapsuleVolume* volume = new CapsuleVolume(halfHeight, radius);
@@ -211,7 +210,7 @@ GameObject* PrefabFactory::CreateCapsule(GameWorld* world, Vector3 position, Qua
 	return world->AddGameObject(capsule);
 }
 
-GameObject* PrefabFactory::CreateSphere(GameWorld* world, Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) const {
+GameObject* ObjectFactory::CreateSphere(GameWorld* world, Vector3 position, float radius, float inverseMass, bool respawning, bool isStatic) const {
 	GameObject* sphere = respawning ? new RespawningObject(position,"respawningSphere",true) : new GameObject("sphere");
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
@@ -236,7 +235,7 @@ GameObject* PrefabFactory::CreateSphere(GameWorld* world, Vector3 position, floa
 	return world->AddGameObject(sphere);
 }
 
-GameObject* PrefabFactory::CreateAnchor(GameWorld* world, const Vector3& position) const {
+GameObject* ObjectFactory::CreateAnchor(GameWorld* world, const Vector3& position) const {
 	GameObject* anchor = new GameObject("anchor");
 
 	anchor->GetTransform().SetPosition(position);
@@ -249,7 +248,7 @@ GameObject* PrefabFactory::CreateAnchor(GameWorld* world, const Vector3& positio
 }
 
 //This creates an invisible and non physical square that blocks path generation rays, essentially blocking AI from entering certain areas.
-GameObject* PrefabFactory::CreatePathBlocker(GameWorld* world, const Vector2& position, const Vector2& halfDimensions) const {
+GameObject* ObjectFactory::CreatePathBlocker(GameWorld* world, const Vector2& position, const Vector2& halfDimensions) const {
 	GameObject* pathBlocker = new GameObject("pathBlocker");
 
 	Vector3 halfDims = Vector3(halfDimensions.x, 0.01f, halfDimensions.y);
@@ -265,7 +264,7 @@ GameObject* PrefabFactory::CreatePathBlocker(GameWorld* world, const Vector2& po
 	return world->AddGameObject(pathBlocker);
 }
 
-GameObject* PrefabFactory::CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) const {
+GameObject* ObjectFactory::CreateTreadmill(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) const {
 	GameObject* treadmill = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 0, -1), strength);
 
 	treadmill->SetRenderObject( new RenderObject(&treadmill->GetTransform(), cubeMesh, basicTex, basicShader));
@@ -274,7 +273,7 @@ GameObject* PrefabFactory::CreateTreadmill(GameWorld* world, const Vector3& posi
 	return world->AddGameObject(treadmill);
 }
 
-GameObject* PrefabFactory::CreateBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) const {
+GameObject* ObjectFactory::CreateBouncePad(GameWorld* world, const Vector3& position, const Quaternion& orientation, float strength, const Vector2& dimensions) const {
 
 	GameObject* bouncePad = new ForceObject(world, position, Vector3(dimensions.x, 0.5f, dimensions.y), orientation, Vector3(0, 1, 0), strength,false);
 
@@ -284,7 +283,7 @@ GameObject* PrefabFactory::CreateBouncePad(GameWorld* world, const Vector3& posi
 	return world->AddGameObject(bouncePad);
 }
 
-GameObject* PrefabFactory::CreateSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force, float length) const {
+GameObject* ObjectFactory::CreateSpinningBlock(GameWorld* world, const Vector3& position, const Vector3& upVector, float force, float length) const {
 
 	GameObject* spinningBlock = CreateOBBCube(world, position, Quaternion(), Vector3(length, 2, 2), 0.01f);
 
@@ -299,7 +298,7 @@ GameObject* PrefabFactory::CreateSpinningBlock(GameWorld* world, const Vector3& 
 	return spinningBlock;
 }
 
-PlayerObject* PrefabFactory::CreatePlayer(Game* game, const Vector3& position) const {
+PlayerObject* ObjectFactory::CreatePlayer(Game* game, const Vector3& position) const {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
@@ -332,7 +331,7 @@ PlayerObject* PrefabFactory::CreatePlayer(Game* game, const Vector3& position) c
 	return player;
 }
 
-AIObject* PrefabFactory::CreateRaceAI(Game* game, const Vector3& position, std::string name, float coinDetectionRange, float maxCoinDistance, float angerThreshold, float strength) const {
+AIObject* ObjectFactory::CreateRaceAI(Game* game, const Vector3& position, std::string name, float coinDetectionRange, float maxCoinDistance, float angerThreshold, float strength) const {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
@@ -370,7 +369,7 @@ AIObject* PrefabFactory::CreateRaceAI(Game* game, const Vector3& position, std::
 	return aiPlayer;
 }
 
-AIObject* PrefabFactory::CreateKatamariAI(Game* game, const Vector3& position, std::string name) const {
+AIObject* ObjectFactory::CreateKatamariAI(Game* game, const Vector3& position, std::string name) const {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
@@ -410,7 +409,7 @@ AIObject* PrefabFactory::CreateKatamariAI(Game* game, const Vector3& position, s
 	return aiPlayer;
 }
 
-GameObject* PrefabFactory::CreateScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) const {
+GameObject* ObjectFactory::CreateScoreBonus(GameWorld* world, Vector3 position,float respawnDelay) const {
 
 	ScoreBonusObject* scoreObject = new ScoreBonusObject(position,25, respawnDelay);
 
@@ -428,7 +427,7 @@ GameObject* PrefabFactory::CreateScoreBonus(GameWorld* world, Vector3 position,f
 	return scoreObject;
 }
 
-BoidObject* PrefabFactory::CreateBoid(Game* game, BoidSwarm** swarm, const Vector3& position) const {
+BoidObject* ObjectFactory::CreateBoid(Game* game, BoidSwarm** swarm, const Vector3& position) const {
 
 	BoidObject* boid = new BoidObject(game, swarm, position);
 

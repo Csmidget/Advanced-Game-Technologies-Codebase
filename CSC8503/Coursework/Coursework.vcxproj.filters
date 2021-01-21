@@ -65,14 +65,14 @@
     <ClCompile Include="GameRaceInit.cpp">
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
-    <ClCompile Include="PrefabFactory.cpp">
-      <Filter>Game Factory Functions</Filter>
-    </ClCompile>
     <ClCompile Include="GameNavmeshInit.cpp">
       <Filter>Game Factory Functions</Filter>
     </ClCompile>
     <ClCompile Include="NavmeshTestState.cpp">
       <Filter>Game States</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectFactory.cpp">
+      <Filter>Game Factory Functions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,11 +133,11 @@
     <ClInclude Include="KatamariAIBehaviourTree.h">
       <Filter>AIBehaviours</Filter>
     </ClInclude>
-    <ClInclude Include="PrefabFactory.h">
-      <Filter>Game Factory Functions</Filter>
-    </ClInclude>
     <ClInclude Include="NavmeshTestState.h">
       <Filter>Game States</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactory.h">
+      <Filter>Game Factory Functions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

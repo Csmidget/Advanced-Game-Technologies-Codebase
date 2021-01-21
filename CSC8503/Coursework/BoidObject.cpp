@@ -4,6 +4,7 @@
 #include "Game.h"
 
 #include "../CSC8503Common/Debug.h"
+#include "../CSC8503Common/GameWorld.h"
 
 #include <sstream>
 #include <iomanip>

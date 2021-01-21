@@ -4,6 +4,7 @@
 #include "AIObject.h"
 #include "Game.h"
 
+#include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/BehaviourAction.h"
 #include "../CSC8503Common/BehaviourSequence.h"
 #include "../CSC8503Common/BehaviourSelector.h"

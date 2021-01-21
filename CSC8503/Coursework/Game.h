@@ -1,9 +1,5 @@
 #pragma once
 
-#include "../CSC8503Common/PushdownMachine.h"
-#include "../CSC8503Common/GameWorld.h"
-#include "../CSC8503Common/PhysicsSystem.h"
-#include "../CSC8503Common/NavigationMap.h"
 #include "../CSC8503Common/NavigationPath.h"
 
 namespace NCL {
@@ -15,9 +11,13 @@ namespace NCL {
 		class AIObject;
 		class NavigationGrid;
 		class Checkpoint;
-		class PrefabFactory;
+		class ObjectFactory;
 		class GameTechRenderer;
 		class Checkpoint;
+		class NavigationMap;
+		class PhysicsSystem;
+		class GameWorld;
+		class PushdownMachine;
 
 		class Game {
 		public:
@@ -38,7 +38,7 @@ namespace NCL {
 			PlayerObject*			GetPlayerObject() const		{ return player; }
 			std::vector<AIObject*>	GetOpponents() const		{ return opponents; }
 			const Checkpoint*		GetGoal() const				{ return goal; }
-			const PrefabFactory*	GetPrefabFactory() const	{ return prefabFactory; }
+			const ObjectFactory*	GetObjectFactory() const	{ return objectFactory; }
 
 			void InitPracticeWorld();
 			void InitRaceWorld(int opponents);
@@ -76,7 +76,7 @@ namespace NCL {
 			void InitNavmeshLvlKillPlanes();
 			void InitNavmeshLvlPlayers(int opponentCount);
 
-			PrefabFactory*	prefabFactory;
+			ObjectFactory*	objectFactory;
 			GameTechRenderer*	renderer;
 			PhysicsSystem*		physics;
 			GameWorld*			world;

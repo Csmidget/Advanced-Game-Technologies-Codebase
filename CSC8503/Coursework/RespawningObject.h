@@ -7,7 +7,7 @@ namespace NCL {
 
 		class RespawningObject : public GameObject {
 			
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		protected:
 			RespawningObject(Vector3 spawnPosition, string name, bool randomizeOrientation = false);

@@ -7,7 +7,7 @@ namespace NCL {
 
 		class ScoreBonusObject : public BonusObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 			~ScoreBonusObject() {};

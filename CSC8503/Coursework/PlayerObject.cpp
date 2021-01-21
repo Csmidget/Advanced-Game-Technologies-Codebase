@@ -33,12 +33,12 @@ void PlayerObject::UpdateControls(Camera* camera) {
 
 	//Receive input
 	pitch += (Window::GetMouse()->GetRelativePosition().y);
-	pitch = max(-15.0f, min(90.0f, pitch));
+	pitch = std::max(-15.0f, std::min(90.0f, pitch));
 	yaw -= Window::GetMouse()->GetRelativePosition().x;
 
 	if (Window::GetMouse()->WheelMoved()) {
 		cameraDistance -= Window::GetMouse()->GetWheelMovement();
-		cameraDistance = max(5.0f, cameraDistance);
+		cameraDistance = std::max(5.0f, cameraDistance);
 	}
 
 	Quaternion orientation = Quaternion::EulerAnglesToQuaternion(0, yaw, 0);

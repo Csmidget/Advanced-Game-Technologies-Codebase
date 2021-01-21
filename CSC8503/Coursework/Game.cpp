@@ -3,18 +3,25 @@
 #include "PlayerObject.h"
 #include "MainMenuState.h"
 #include "Checkpoint.h"
-#include "PrefabFactory.h"
+#include "ObjectFactory.h"
 #include "GameTechRenderer.h"
+
+#include "../CSC8503Common/PushdownMachine.h"
+#include "../CSC8503Common/PhysicsSystem.h"
+#include "../CSC8503Common/NavigationMap.h"
 
 
 using namespace NCL;
 using namespace CSC8503;
 
+
+// ###!! Init functions can be found under the Game Factory Functions filter !!###
+
 Game::Game() {
 	world		= new GameWorld();
 	renderer	= new GameTechRenderer(*world);
 	physics		= new PhysicsSystem(*world);
-	prefabFactory = new PrefabFactory();
+	objectFactory = new ObjectFactory();
 	goal = nullptr;
 
 	useGravity		= true;
@@ -36,7 +43,7 @@ Game::~Game()	{
 	delete physics;
 	delete renderer;
 	delete world;
-	delete prefabFactory;
+	delete objectFactory;
 	delete gameStateMachine;
 }
 

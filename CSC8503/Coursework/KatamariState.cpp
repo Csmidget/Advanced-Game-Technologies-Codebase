@@ -7,7 +7,7 @@
 #include "Game.h"
 #include "Checkpoint.h"
 #include "BoidSwarm.h"
-#include "PrefabFactory.h"
+#include "ObjectFactory.h"
 
 #include "../CSC8503Common/CollisionDetection.h"
 
@@ -24,7 +24,7 @@ KatamariState::KatamariState(Game* game, int boidLayers) : GameState(game) {
 
 	for (int x = 0; x < boidLayers; x++) {
 		for (int y = 0; y < boidLayers; y++) {
-			game->GetPrefabFactory()->CreateBoid(game, &boidSwarm, start + Vector3(x* step,0,y* step));
+			game->GetObjectFactory()->CreateBoid(game, &boidSwarm, start + Vector3(x* step,0,y* step));
 		}
 	}
 

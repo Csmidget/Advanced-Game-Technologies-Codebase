@@ -14,7 +14,7 @@ namespace NCL {
 
 		class AIObject : public ActorObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 			~AIObject();

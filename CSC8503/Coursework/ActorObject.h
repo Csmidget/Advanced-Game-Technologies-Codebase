@@ -14,7 +14,7 @@ namespace NCL {
 
 		class ActorObject : public RespawningObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 		    void Update(float dt) override;

@@ -8,6 +8,7 @@
 #include "../CSC8503Common/BehaviourSequence.h"
 #include "../CSC8503Common/BehaviourAction.h"
 #include "../CSC8503Common/BehaviourSelector.h"
+#include "../CSC8503Common/GameWorld.h"
 
 using namespace NCL::CSC8503;
 

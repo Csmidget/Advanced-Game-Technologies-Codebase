@@ -11,7 +11,7 @@ namespace NCL {
 
 		class PlayerObject : public ActorObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 			~PlayerObject();

@@ -11,7 +11,7 @@ namespace NCL {
 
 		class BoidObject : public RespawningObject {
 
-			friend class PrefabFactory;
+			friend class ObjectFactory;
 
 		public:
 			~BoidObject();
