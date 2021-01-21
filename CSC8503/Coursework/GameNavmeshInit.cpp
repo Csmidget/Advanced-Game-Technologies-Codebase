@@ -54,8 +54,8 @@ void Game::InitNavmeshLvlKillPlanes() {
 }
 
 void Game::InitNavmeshLvlPlayers(int opponentCount) {
-	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(0, 2, 0), "Enemy 1", 40.0f, 40.0f));
-	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(83, 2, -36), "Enemy 1",40.0f,40.0f));
+	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(0, 2, 0), "AI 1", 40.0f, 40.0f));
+	opponents.push_back(objectFactory->CreateRaceAI(this, Vector3(83, 2, -36), "AI 2",40.0f,40.0f));
 	opponents[0]->SetSpeed(3.0f);
 	opponents[1]->SetSpeed(3.0f);
 }
