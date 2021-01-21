@@ -261,15 +261,15 @@ void TutorialGame::InitWorld() {
 	//capsule->GetTransform().SetOrientation(Matrix4::Rotation(45, Vector3(0, 0, 1)));
 	//AddCubeToWorld(Vector3(-1.5, 8, 0), Vector3(1, 1, 1), 0.0f, true);
 
-	AddCapsuleToWorld(Vector3(4.5, 100, -150), 1.0f, 0.5f,10.0f,true);
+	AddCapsuleToWorld(Vector3(4.5f, 100, -150), 1.0f, 0.5f,10.0f,true);
 	AddCapsuleToWorld(Vector3(0, 100, -150), 1.0f, 0.5f,10.0f,true)->GetTransform().SetOrientation(Matrix3::Rotation(90,Vector3(0,0,1)));
 //	AddCapsuleToWorld(Vector3(5, 10, -10), 1.0f, 0.5f);
-	AddSphereToWorld(Vector3(-4.5, 10, -7.4), 1.0f);
-	AddSphereToWorld(Vector3(-4.5, 100, -150),1.0f,10.0f,true);
+	AddSphereToWorld(Vector3(-4.5f, 10, -7.4f), 1.0f);
+	AddSphereToWorld(Vector3(-4.5f, 100, -150),1.0f,10.0f,true);
 	//
-	AddOBBCubeToWorld(Vector3(10, 104.5, -150), Vector3(1, 1, 1), 10.0f,false,true)->GetTransform().SetOrientation(Matrix4::Rotation(0, Vector3(0, 0, 1)));
-	AddOBBCubeToWorld(Vector3(-4.5, 0, -3.5), Vector3(1, 1, 5));
-	AddOBBCubeToWorld(Vector3(-4.5, 5, -5), Vector3(1, 1, 1));
+	AddOBBCubeToWorld(Vector3(10, 104.5f, -150), Vector3(1, 1, 1), 10.0f,false,true)->GetTransform().SetOrientation(Matrix4::Rotation(0, Vector3(0, 0, 1)));
+	AddOBBCubeToWorld(Vector3(-4.5f, 0, -3.5f), Vector3(1, 1, 5));
+	AddOBBCubeToWorld(Vector3(-4.5f, 5, -5), Vector3(1, 1, 1));
 	AddOBBCubeToWorld(Vector3(0, 5, -5), Vector3(1,1,1));
 //	AddSphereToWorld(Vector3(-1, 15, -6), 1.0f);
 //	AddStateObjectToWorld(Vector3(0, 10, -15));

@@ -20,10 +20,10 @@ void Game::InitKatamariBaseGeometry() {
 	objectFactory->CreateAABBCube(world, Vector3( 48, 3,   0), Vector3(2, 3, 50), 0.0f, true);
 	objectFactory->CreateAABBCube(world, Vector3(-48, 3,   0), Vector3(2, 3, 50), 0.0f, true);
 
-	objectFactory->CreateAABBCube(world, Vector3(48.1, 2.5, 48.1), Vector3(2.1, 4, 2.1), 0.0f, true);
-	objectFactory->CreateAABBCube(world, Vector3(-48.1, 2.5, 48.1), Vector3(2.1, 4, 2.1), 0.0f, true);
-	objectFactory->CreateAABBCube(world, Vector3(48.1, 2.5, -48.1), Vector3(2.1, 4, 2.1), 0.0f, true);
-	objectFactory->CreateAABBCube(world, Vector3(-48.1, 2.5, -48.1), Vector3(2.1, 4, 2.1), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(48.1f, 2.5, 48.1f), Vector3(2.1f, 4, 2.1f), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(-48.1f, 2.5, 48.1f), Vector3(2.1f, 4, 2.1f), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(48.1f, 2.5, -48.1f), Vector3(2.1f, 4, 2.1f), 0.0f, true);
+	objectFactory->CreateAABBCube(world, Vector3(-48.1f, 2.5, -48.1f), Vector3(2.1f, 4, 2.1f), 0.0f, true);
 
 
 	//Slightly higher gravity than normal to reduce chances of being knocked out of the arena.

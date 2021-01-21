@@ -160,7 +160,7 @@ void TestBehaviourTree() {
 	BehaviourAction* findKey = new BehaviourAction("Find Key", [&](float dt, BehaviourState state)->BehaviourState {
 		if (state == BehaviourState::Initialise) {
 			std::cout << "Looking for a key!\n";
-			behaviourTimer = rand() % 100;
+			behaviourTimer = (float)(rand() % 100);
 			state = BehaviourState::Ongoing;
 		}
 		else if (state == BehaviourState::Ongoing) {
@@ -261,7 +261,7 @@ void TestBehaviourTree() {
 	for (int i = 0; i < 5; ++i) {
 		rootSequence->Reset();
 		behaviourTimer = 0.0f;
-		distanceToTarget = rand() % 250;
+		distanceToTarget = (float)(rand() % 250);
 		BehaviourState state = BehaviourState::Ongoing;
 		std::cout << "We're going on an adventure!\n";
 		
@@ -303,7 +303,7 @@ int main() {
 	if (!w->HasInitialised()) {
 		return -1;
 	}	
-	srand(time(0));
+	srand((unsigned int)time(0));
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
