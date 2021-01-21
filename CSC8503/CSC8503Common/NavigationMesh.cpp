@@ -68,6 +68,7 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
+// Is point p on the left side, or on top of, line ab?
 bool IsLeft(Vector3 a, Vector3 b, Vector3 p) {
 	Vector3 line = b - a;
 	Vector3 pointLine = p - a;
@@ -77,6 +78,7 @@ bool IsLeft(Vector3 a, Vector3 b, Vector3 p) {
 	return Vector3::Dot(cp, Vector3(0, 1, 0)) >= 0.0f;
 }
 
+// Is point p on the right side, or on top of, line ab?
 bool IsRight(Vector3 a, Vector3 b, Vector3 p) {
 	Vector3 line = b - a;
 	Vector3 pointLine = p - a;
@@ -192,7 +194,9 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 			node = node->parent;
 		}
 
-		//Flip the vector so it proceeds from start to end
+		//Flip the vector so it proceeds from start to end.
+		//Could skip this step and just iterate backwards. But from a readability
+		//standpoint, this is a lot cleaner.
 		std::reverse(portals.begin(), portals.end());
 
 		std::vector<Vector3> path;
@@ -250,7 +254,8 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 			}
 		}
 
-		for (int i = path.size() - 1; i >= 0; --i)
+		//The path has been generated start to finish, but we need to put it into the navpath finish to start
+		for (size_t i = path.size() - 1; i >= 0; --i)
 		{
 			outPath.PushWaypoint(path[i]);
 		}

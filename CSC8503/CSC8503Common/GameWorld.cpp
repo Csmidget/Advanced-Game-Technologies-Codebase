@@ -103,9 +103,9 @@ void GameWorld::UpdateWorld(float dt) {
 	for (auto g : gameObjects) {
 		if (!g->IsStatic() && g->IsActive()) {
 			g->UpdateBroadphaseAABB();
-
+			Vector3 gPos = g->GetTransform().GetPosition();
 			for (auto p : killPlanes) {
-				if (p->IsBehindPlane(g->GetTransform().GetPosition())) {
+				if (p->IsBehindPlane(gPos)) {
 					std::cout << "Object \"" << g->GetName() << "\" is out of bounds.\n";
 					g->OnKill();
 				}
@@ -116,7 +116,7 @@ void GameWorld::UpdateWorld(float dt) {
 				continue;
 			}
 
-			Vector3 pos = g->GetTransform().GetPosition();
+			Vector3 pos = gPos;
 			objectTree->Insert(g, pos, halfSizes);
 		}	
 	}

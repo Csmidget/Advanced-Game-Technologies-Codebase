@@ -7,8 +7,11 @@ using namespace CSC8503;
 
 void OrientationConstraint::UpdateConstraint(float dt) {
 
-	Vector3 targetOrientation = (targetObject->GetTransform().GetPosition() -
-		object->GetTransform().GetPosition()).Normalised();
+	Vector3 targetPos = targetObject->GetTransform().GetPosition();
+	Vector3 objectPos = object->GetTransform().GetPosition();
+
+	Vector3 targetOrientation = (targetPos -
+		objectPos).Normalised();
 
 	Vector3 currentOrientation = (object->GetTransform().GetOrientation() * axis).Normalised();
 

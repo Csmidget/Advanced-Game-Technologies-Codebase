@@ -25,9 +25,9 @@ KatamariAIBehaviourTree::KatamariAIBehaviourTree(Game* g, AIObject* a) : Behavio
 			return BehaviourState::Failure;
 
 		for (auto boid : boids) {
-			if (boid->GetTransform().GetPosition().LengthSquared() < 2025) { //45 squared 
-				auto target = boid;
-				actor->SetGoal(target->GetTransform().GetPosition());
+			Vector3 boidPos = boid->GetTransform().GetPosition();
+			if (boidPos.LengthSquared() < 2025) { //45 squared, this is just smaller than the size of the arena.
+				actor->SetGoal(boidPos);
 				return BehaviourState::Ongoing;
 			}
 		}		

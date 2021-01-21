@@ -77,7 +77,7 @@ BehaviourSequence* RaceAIBehaviourTree::CreateBonusSequence() {
 			return BehaviourState::Failure;
 		}
 
-		if ((targetPosition - actor->GetTransform().GetPosition()).Length() < 1.0f) {
+		if ((targetPosition - actor->GetTransform().GetPosition()).LengthSquared() < 1.0f) {
 			return BehaviourState::Success;
 		}
 		else {
@@ -103,14 +103,15 @@ BehaviourSequence* RaceAIBehaviourTree::CreateAngerSequence() {
 	//If there is a target for their anger within range, path towards them.
 	BehaviourAction* findTargetForAnger = new BehaviourAction("Find Anger Target", [&](float dt, BehaviourState state)->BehaviourState {
 
-		auto actorsInRange = game->GetWorld()->ObjectsWithinRadius(actor->GetTransform().GetPosition(), 15.0f, "actor");
+		Vector3 pos = actor->GetTransform().GetPosition();
+
+		auto actorsInRange = game->GetWorld()->ObjectsWithinRadius(pos, 15.0f, "actor");
 
 		if (actorsInRange.empty()) {
 			return BehaviourState::Failure;
 		}
 
 		GameWorld* world = game->GetWorld();
-		Vector3 pos = actor->GetTransform().GetPosition();
 		for (GameObject* o : actorsInRange)
 		{
 			//We are also an actor. So ignore ourselves.

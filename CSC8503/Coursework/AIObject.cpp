@@ -140,7 +140,7 @@ void AIObject::UpdateOrientation() {
 	float epsilon = 0.1f;
 
 	//If the character is moving in a direction, turn them to face the direction of travel.
-	if (vel.Length() > epsilon) {
+	if (vel.LengthSquared() > epsilon) {
 		vel.Normalise();
 		Vector3 forward = Vector3(0, 0, -1);
 

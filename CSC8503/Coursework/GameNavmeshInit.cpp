@@ -29,7 +29,7 @@ void Game::InitNavmeshLvlBaseGeometry() {
 	prefabFactory->CreateScoreBonus(world, Vector3(-37, 1, 37), 30.0f);
 	prefabFactory->CreateScoreBonus(world, Vector3(-9.5, 5, 11.5), 30.0f);
 
-	goal = new Checkpoint(Vector3(26.5, 4, -34.61), Vector3(5, 5, 5), 1);
+	goal = new Checkpoint(Vector3(26.5f, 4, -34.61f), Vector3(5, 5, 5), 1);
 
 
 	//Side Section

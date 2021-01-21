@@ -45,7 +45,7 @@ MeshMaterial::MeshMaterial(const std::string& filename) {
 			file >> entryData;
 			string channel;
 			string file;
-			int split = entryData.find_first_of(':');
+			int split = (int)entryData.find_first_of(':');
 			channel = entryData.substr(0, split);
 			file = entryData.substr(split + 1);
 

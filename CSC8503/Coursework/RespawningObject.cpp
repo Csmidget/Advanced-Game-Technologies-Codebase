@@ -44,6 +44,8 @@ void RespawningObject::Update(float dt) {
 
 	float posOffset = (prevPos - transform.GetPosition()).Length();
 
+	//If an object is stationary (Or close enough) for enough time, it respawns.
+
 	if (posOffset > 0.3f) {
 		respawnTimer = 0.0f;
 		prevPos = transform.GetPosition();
@@ -51,7 +53,7 @@ void RespawningObject::Update(float dt) {
 	else {
 		respawnTimer += dt;
 
-		if (respawnTimer > 2.0f) {
+		if (respawnTimer > 1.5f) {
 			Respawn();
 		}
 	}

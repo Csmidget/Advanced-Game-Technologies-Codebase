@@ -27,7 +27,7 @@ BoidObject::~BoidObject() {
 
 void BoidObject::Update(float dt) {
 
-	float speed = 0.8f;
+	const float speed = 0.8f;
 
 	if (!(*swarm))
 		return;
@@ -38,7 +38,7 @@ void BoidObject::Update(float dt) {
 	//Move towards centre of swarm
 	Vector3 swarmCentreDir;
 	{
-		float swarmCentreStrength = 0.005f;
+		const float swarmCentreStrength = 0.005f;
 
 		sumofPoints -= currPos;
 
@@ -51,7 +51,7 @@ void BoidObject::Update(float dt) {
 	//Attempt to match velocity with other boids
 	Vector3 matchVelocity = (*swarm)->SumOfVelocities();
 	{
-		float matchVelocityStrength = 0.05f;
+		const float matchVelocityStrength = 0.05f;
 
 		matchVelocity -= physicsObject->GetLinearVelocity();
 		matchVelocity /= ((*swarm)->BoidCount() - 1.0f);
@@ -61,9 +61,9 @@ void BoidObject::Update(float dt) {
 	//Avoid other nearby boids as well as targets swarm has been assigned to avoid.
 	Vector3 avoidDir;
 	{
-		float avoidBoidDistance = 20.0f;
-		float avoidTargetsDistance = 12.0f;
-		float avoidStrength = 2.5f;
+		const float avoidBoidDistance = 5.0f;
+		const float avoidTargetsDistanceSqrd = pow(12.0f,2.0f);
+		const float avoidStrength = 2.5f;
 		auto nearbyBoids = game->GetWorld()->ObjectsWithinRadius(currPos, avoidBoidDistance, "boid");
 
 		for (auto boid : nearbyBoids)
@@ -74,21 +74,21 @@ void BoidObject::Update(float dt) {
 			Vector3 displacement = boid->GetTransform().GetPosition() - currPos;
 
 			//Falls of exponentially with distance.
-			float strength = 1 / exp(displacement.Length());
+			float strength = 1 / displacement.LengthSquared();
 			avoidDir -= displacement * strength;
 		}
 
 		for (auto target : (*swarm)->avoidTargets) {
 			Vector3 displacement = target->GetTransform().GetPosition() - currPos;
 
-			if (displacement.Length() < avoidTargetsDistance) {
+			if (displacement.LengthSquared() < avoidTargetsDistanceSqrd) {
 				avoidDir -= displacement * avoidStrength;
 			}
 		}
 	}
 
 	//Tend slightly towards the center. This is to avoid boids getting clumped in edges and corners.
-	float worldCentreStrength = 0.003f;
+	const float worldCentreStrength = 0.003f;
 	Vector3 centreDir = (Vector3() - currPos) * worldCentreStrength;
 
 	//Combine our calculated forces and normalise to get a single direction vector
@@ -106,7 +106,8 @@ void BoidObject::OnCollisionBegin(GameObject* otherObject) {
 
 		actor->AddScore(1);
 		actor->AddSpeed(0.02f);
-		actor->GetTransform().SetScale(actor->GetTransform().GetScale() + Vector3(0.1f, 0.1f, 0.1f));
+		Transform& transform = actor->GetTransform();
+		transform.SetScale(transform.GetScale() + Vector3(0.1f, 0.1f, 0.1f));
 
 		CapsuleVolume* volume = (CapsuleVolume*)actor->GetBoundingVolume();
 		volume->SetHalfHeight(volume->GetHalfHeight() + 0.08f);

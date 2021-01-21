@@ -345,17 +345,18 @@ AIObject* PrefabFactory::CreateRaceAI(Game* game, const Vector3& position, std::
 	aiPlayer->SetBoundingVolume((CollisionVolume*)volume);
 
 	float modelScale = 1.15f;
-	aiPlayer->GetTransform()
+	Transform& transform = aiPlayer->GetTransform();
+	transform
 		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
 		.SetPosition(position);
 
 	if (rand() % 2) {
-		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));
+		aiPlayer->SetRenderObject(new RenderObject(&transform, charMeshA, nullptr, basicShader));
 	}
 	else {
-		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshB, nullptr, basicShader));
+		aiPlayer->SetRenderObject(new RenderObject(&transform, charMeshB, nullptr, basicShader));
 	}
-	aiPlayer->SetPhysicsObject(new PhysicsObject(&aiPlayer->GetTransform(), aiPlayer->GetBoundingVolume()));
+	aiPlayer->SetPhysicsObject(new PhysicsObject(&transform, aiPlayer->GetBoundingVolume()));
 
 	aiPlayer->GetPhysicsObject()->SetInverseMass(inverseMass);
 	aiPlayer->GetPhysicsObject()->InitCubeInertia();
@@ -383,18 +384,19 @@ AIObject* PrefabFactory::CreateKatamariAI(Game* game, const Vector3& position, s
 	aiPlayer->SetBoundingVolume((CollisionVolume*)volume);
 
 	float modelScale = 1.15f;
-	aiPlayer->GetTransform()
+	Transform& transform = aiPlayer->GetTransform();
+	transform
 		.SetScale(Vector3(meshSize * modelScale, meshSize * modelScale, meshSize * modelScale))
 		.SetPosition(position);
 
 
 	if (rand() % 2) {
-		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshA, nullptr, basicShader));
+		aiPlayer->SetRenderObject(new RenderObject(&transform, charMeshA, nullptr, basicShader));
 	}
 	else {
-		aiPlayer->SetRenderObject(new RenderObject(&aiPlayer->GetTransform(), charMeshB, nullptr, basicShader));
+		aiPlayer->SetRenderObject(new RenderObject(&transform, charMeshB, nullptr, basicShader));
 	}
-	aiPlayer->SetPhysicsObject(new PhysicsObject(&aiPlayer->GetTransform(), aiPlayer->GetBoundingVolume()));
+	aiPlayer->SetPhysicsObject(new PhysicsObject(&transform, aiPlayer->GetBoundingVolume()));
 
 	aiPlayer->GetPhysicsObject()->SetInverseMass(inverseMass);
 	aiPlayer->GetPhysicsObject()->InitCubeInertia();
