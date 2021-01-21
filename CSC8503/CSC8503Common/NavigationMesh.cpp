@@ -65,7 +65,7 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
-
+//Didn't quite have time to clean this function up properly, a little messy.
 bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath, float maximumCost) {
 
 	const NavTri* start = GetTriForPosition(from);
@@ -79,7 +79,6 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 	startNode->g = 0.0f;
 	startNode->parent = nullptr;
 	startNode->tri = start;
-
 
 	openSet.emplace(startNode);
 

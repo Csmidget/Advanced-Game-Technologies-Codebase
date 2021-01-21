@@ -24,7 +24,13 @@ DebugState::~DebugState() {
 
 PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** newState) {
 
-	Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
+	if (selectionMode) {
+		Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
+	}
+	else {
+		Debug::Print("Press Q to change to selection mode!", Vector2(5, 85));
+
+	}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::TAB) || Window::GetKeyboard()->KeyPressed(KeyboardKeys::BACK)) {
 		return PushdownResult::Pop;

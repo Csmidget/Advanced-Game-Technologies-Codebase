@@ -332,11 +332,11 @@ PlayerObject* PrefabFactory::CreatePlayer(Game* game, const Vector3& position) c
 	return player;
 }
 
-AIObject* PrefabFactory::CreateRaceAI(Game* game, const Vector3& position, std::string name, float coinHuntRange, float maxCoinDistance, float angerThreshold, float strength) const {
+AIObject* PrefabFactory::CreateRaceAI(Game* game, const Vector3& position, std::string name, float coinDetectionRange, float maxCoinDistance, float angerThreshold, float strength) const {
 	float meshSize = 0.8f;
 	float inverseMass = 5.0f;
 
-	AIObject* aiPlayer = new AIObject(game, position, name, coinHuntRange, maxCoinDistance, angerThreshold, strength);
+	AIObject* aiPlayer = new AIObject(game, position, name, coinDetectionRange, maxCoinDistance, angerThreshold, strength);
 
 	aiPlayer->SetBehaviourTree(new RaceAIBehaviourTree(game,aiPlayer));
 

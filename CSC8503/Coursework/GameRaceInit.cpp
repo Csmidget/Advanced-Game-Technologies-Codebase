@@ -135,15 +135,15 @@ void Game::InitRacePlayers(int opponentCount) {
 	if (opponentCount >= 1)
 		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-110, 5, 100), "Enemy 1"));
 	if (opponentCount >= 2)
-		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-105, 5, 100), "Enemy 2", 50.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-105, 5, 100), "Enemy 2", 15.0f, 50.0f));
 	if (opponentCount >= 3)
-		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-100, 5, 100), "Enemy 3", 70.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-100, 5, 100), "Enemy 3", 20.0f, 70.0f));
 	if (opponentCount >= 4)
-		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-95, 5, 100), "Enemy 4", 100.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-95, 5, 100), "Enemy 4", 70.0f, 100.0f));
 	if (opponentCount >= 5)
-		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-90, 5, 100), "Enemy 5", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-90, 5, 100), "Enemy 5",50.0f , 100.0f, 0.0f, 3.0f));
 	if (opponentCount >= 6)
-		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-110, 5, 103), "Enemy 6", 100.0f, 0.0f, 3.0f));
+		opponents.push_back(prefabFactory->CreateRaceAI(this, Vector3(-110, 5, 103), "Enemy 6", 60.0f, 100.0f, 0.0f, 3.0f));
 
 	for (int i = 7; i <= opponentCount; ++i) {
 
