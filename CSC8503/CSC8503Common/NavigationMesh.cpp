@@ -2,6 +2,8 @@
 #include "../../Common/Assets.h"
 #include "../../Common/Maths.h"
 #include <fstream>
+#include <stack>
+#include <algorithm>
 using namespace NCL;
 using namespace CSC8503;
 using namespace std;
@@ -63,6 +65,24 @@ NavigationMesh::NavigationMesh(const std::string& filename)
 
 NavigationMesh::~NavigationMesh()
 {
+}
+
+bool IsLeft(Vector3 a, Vector3 b, Vector3 p) {
+	Vector3 line = b - a;
+	Vector3 pointLine = p - a;
+
+	auto cp = Vector3::Cross(line, pointLine);
+
+	return Vector3::Dot(cp, Vector3(0, 1, 0)) >= 0.0f;
+}
+
+bool IsRight(Vector3 a, Vector3 b, Vector3 p) {
+	Vector3 line = b - a;
+	Vector3 pointLine = p - a;
+
+	auto cp = Vector3::Cross(line, pointLine);
+
+	return Vector3::Dot(cp, Vector3(0, 1, 0)) <= 0.0f;
 }
 
 //Didn't quite have time to clean this function up properly, a little messy.
@@ -139,9 +159,83 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		PathNode* node = currentBestNode;
 		outPath.PushWaypoint(to);
 
-		while (node != nullptr) {
-			outPath.PushWaypoint(node->tri->centroid);
+		//This will fill from end to start.
+		std::vector<std::pair<int, int>> portals;
+
+		while (node->parent != nullptr) {
+			std::pair<int, int> portal;
+
+			for (int i = 0; i < 3; ++i) {
+				for (int j = 0; j < 3; ++j) {
+					if (node->tri->indices[i] == node->parent->tri->indices[j]) {
+
+						if (IsLeft(node->parent->tri->centroid, node->tri->centroid, allVerts[node->tri->indices[i]])) {
+							portal.first = node->tri->indices[i];
+						}
+						else {
+							portal.second = node->tri->indices[i];
+						}
+					}
+				}
+			}
+
+			portals.push_back(portal);
 			node = node->parent;
+		}
+
+		//Flip the vector so it proceeds from start to end
+		std::reverse(portals.begin(), portals.end());
+
+		std::vector<Vector3> path;
+
+		Vector3 apex = from;
+		Vector3 left = allVerts[portals[0].first];
+		Vector3 right = allVerts[portals[0].second];
+		for (int i = 1; i < portals.size(); ++i) {
+			
+			std::pair<int, int> current = portals[i];
+			Vector3 currLeft = allVerts[current.first];
+			Vector3 currRight = allVerts[current.second];
+
+			//If currRight is within the current right bound of the funnel
+			if (IsLeft(apex, right, currRight)) {
+
+				//If currRight is within the left bound, tighten the funnel
+				if (apex == right || IsRight(apex, left, currRight)) {
+					right = currRight;
+				}
+				//Otherwise, we have found a crossover point.
+				else {
+					path.push_back(left);
+					apex = left;
+					right = currRight;
+					--i;
+					continue;
+				}
+			}
+
+			//If currLeft is within the current left bound of the funnel
+			if (IsRight(apex, left, currLeft)) {
+
+				//If currLeft is within the right bound, tighten the funnel
+				if (apex == left || IsLeft(apex, right, currLeft)) {
+					left = currLeft;
+				}
+				//Otherwise, we have found a crossover point.
+				else {
+					path.push_back(right);
+					apex = right;
+					right = apex;
+					left = currLeft;
+					--i;
+					continue;
+				}
+			}
+		}
+
+		for (int i = path.size() - 1; i >= 0; --i)
+		{
+			outPath.PushWaypoint(path[i]);
 		}
 	}
 
@@ -152,7 +246,7 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		delete node;
 	}
 
-	return false; //open list emptied out with no path!
+	return endFound; //open list emptied out with no path!
 }
 
 PathNode* NavigationMesh::NodeInSet(PathNode* n, NodeSet& set) const {
@@ -168,7 +262,6 @@ PathNode* NavigationMesh::NodeInSet(PathNode* n, NodeSet& set) const {
 If you have triangles on top of triangles in a full 3D environment, you'll need to change this slightly,
 as it is currently ignoring height. You might find tri/plane raycasting is handy.
 */
-
 const NavTri* NavigationMesh::GetTriForPosition(const Vector3& pos) const {
 //	Vector3 testPos = pos;
 //	testPos.z = -testPos.z;
