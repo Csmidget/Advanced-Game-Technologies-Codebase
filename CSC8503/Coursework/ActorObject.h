@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RespawningObject.h"
-#include "../../Common/Vector2.h"
 #include <map>
 
 namespace NCL {
@@ -33,7 +32,7 @@ namespace NCL {
 			float GetSpeed() const { return speed; }
 
 			void AddTimedConstraint(Constraint* constraint, float time);
-			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) override;
+			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const override;
 
 			void SetCheckpoint(Checkpoint* cp) { currentCheckpoint = cp; }
 			const Checkpoint* GetCheckpoint() const { return currentCheckpoint; }

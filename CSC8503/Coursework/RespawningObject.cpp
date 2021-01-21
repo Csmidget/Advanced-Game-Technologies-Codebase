@@ -63,7 +63,7 @@ void RespawningObject::OnKill() {
 	Respawn();
 }
 
-void RespawningObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+void RespawningObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);

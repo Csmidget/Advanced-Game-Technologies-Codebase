@@ -26,7 +26,7 @@ namespace NCL {
 
 			float GetCoinMaxDistance() const { return coinMaxDistance; }
 
-			void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) override;
+			void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const override;
 
 			void SetCurrentState(std::string str) { currentState = str; }
 
@@ -46,7 +46,7 @@ namespace NCL {
 		protected:
 			AIObject(Game* game, Vector3 respawnPosition, std::string name = "enemy", float coinHuntRange = 10.0f, float coinMaxDistance = 30.0f, float angerThreshold = 3.0f, float strength = 2.0f);
 
-			void DisplayPath();
+			void DisplayPath() const;
 
 			void UpdateMovement();
 			void UpdateOrientation();

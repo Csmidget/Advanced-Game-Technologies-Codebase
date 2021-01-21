@@ -12,7 +12,7 @@
 
 using namespace NCL;
 
-void AABBVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
+void AABBVolume::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);
@@ -26,7 +26,7 @@ void AABBVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
 	stream.str("");
 }
 
-void OBBVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
+void OBBVolume::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);
@@ -40,7 +40,7 @@ void OBBVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
 	stream.str("");
 }
 
-void SphereVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
+void SphereVolume::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);
@@ -54,7 +54,7 @@ void SphereVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
 	stream.str("");
 }
 
-void CapsuleVolume::PrintDebugInfo(int& currLine, float lineSpacing) {
+void CapsuleVolume::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);

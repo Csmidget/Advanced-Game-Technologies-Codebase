@@ -1,6 +1,8 @@
 #include "ForceObject.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../CSC8503Common/LinearImpulseConstraint.h"
+#include <sstream>
+#include <iomanip>
 
 using namespace NCL;
 using namespace CSC8503;
@@ -55,3 +57,21 @@ void ForceObject::OnCollisionEnd(GameObject* otherObject) {
 	}
 }
 
+void ForceObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const {
+
+	std::stringstream stream;
+
+	stream << std::fixed << std::setprecision(2);
+
+	stream << "Force Direction: " << direction;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Force Strength: " << strength;
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+
+	stream << "Force Type: " << (continuous ? "Continuous" : "Instantaneous");
+	Debug::Print(stream.str(), Vector2(1, ++currLine * lineSpacing));
+	stream.str("");
+}

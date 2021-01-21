@@ -53,7 +53,7 @@ void ActorObject::OnCollisionBegin(GameObject* otherObject) {
 		lastCollisionTimer = 0.0f;
 }
 
-void ActorObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+void ActorObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const {
 
 	RespawningObject::ObjectSpecificDebugInfo(currLine, lineSpacing);
 

@@ -29,7 +29,7 @@ namespace NCL {
             radius = newRadius;
         }
 
-        void PrintDebugInfo(int& currLine, float lineSpacing) override;
+        void PrintDebugInfo(int& currLine, float lineSpacing) const override;
 
 
     protected:

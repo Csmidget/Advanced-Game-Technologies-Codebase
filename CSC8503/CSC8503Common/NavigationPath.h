@@ -25,7 +25,7 @@ namespace NCL {
 				return true;
 			}
 
-			std::vector<Vector3> GetWaypoints() {
+			std::vector<Vector3> GetWaypoints() const {
 				return waypoints;
 			}
 

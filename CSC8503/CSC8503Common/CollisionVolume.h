@@ -22,7 +22,7 @@ namespace NCL {
 		bool IsActive() const { return active; }
 		void SetActive(bool val) { active = val; }
 
-		virtual void PrintDebugInfo(int& currLine, float lineSpacing) = 0;
+		virtual void PrintDebugInfo(int& currLine, float lineSpacing) const = 0;
 
 		VolumeType type;
 

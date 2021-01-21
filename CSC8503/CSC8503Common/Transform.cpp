@@ -40,7 +40,7 @@ Transform& Transform::SetOrientation(const Quaternion& worldOrientation) {
 	return *this;
 }
 
-void Transform::PrintDebugInfo(int& currLine, float lineSpacing) {
+void Transform::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);

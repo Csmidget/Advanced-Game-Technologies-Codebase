@@ -5,9 +5,7 @@
 
 #include "../CSC8503Common/Debug.cpp"
 
-#include "../../Common/Camera.h"
 #include "../../Common/Maths.h"
-#include "../../Common/Window.h"
 
 #include <iomanip>
 #include <sstream>
@@ -67,7 +65,7 @@ void AIObject::OnCollisionBegin(GameObject* otherObject) {
 }
 
 
-void AIObject::DisplayPath() {
+void AIObject::DisplayPath() const {
 	auto path = currentPath.GetWaypoints();
 	
 	//Position to next node
@@ -199,7 +197,7 @@ void AIObject::UpdateAngerColour() {
 	}
 }
 
-void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {
+void AIObject::ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const {
 
 	ActorObject::ObjectSpecificDebugInfo(currLine, lineSpacing);
 

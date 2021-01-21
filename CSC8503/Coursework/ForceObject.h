@@ -18,6 +18,8 @@ namespace NCL {
 			void OnCollisionBegin(GameObject* otherObject) override;
 			void OnCollisionEnd(GameObject* otherObject) override;
 
+			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const override;
+
 		protected: 
 			ForceObject(GameWorld* world, Vector3 position, Vector3 dimensions, Quaternion orientation, Vector3 direction, float strength, bool continuous = true);
 

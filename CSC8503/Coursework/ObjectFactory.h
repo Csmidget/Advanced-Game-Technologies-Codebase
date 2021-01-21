@@ -2,6 +2,10 @@
 
 #include "GameTechRenderer.h"
 
+//This class is used to instantiate the various types of gameobject in the game.
+//It is used so that there is a single place where meshes/textures/shaders are loaded,
+//rather than having to load them in for every single object type.
+
 namespace NCL {
 	namespace CSC8503 {
 

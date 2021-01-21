@@ -26,10 +26,10 @@ namespace NCL {
 
 			virtual void Update(float dt) {};
 
-			void PrintDebugInfo();
+			void PrintDebugInfo() const;
 			
 			//Override to add debug info
-			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) {};
+			virtual void ObjectSpecificDebugInfo(int& currLine, float lineSpacing) const {};
 
 			virtual void OnKill() { isActive = false; }
 

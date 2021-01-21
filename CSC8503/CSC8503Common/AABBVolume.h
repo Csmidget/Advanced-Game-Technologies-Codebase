@@ -18,7 +18,7 @@ namespace NCL {
 			return halfSizes;
 		}
 
-		void PrintDebugInfo(int& currLine, float lineSpacing) override;
+		void PrintDebugInfo(int& currLine, float lineSpacing) const override;
 
 
 	protected:

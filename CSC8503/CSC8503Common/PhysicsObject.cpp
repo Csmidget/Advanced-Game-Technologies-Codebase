@@ -106,7 +106,7 @@ void PhysicsObject::UpdateInertiaTensor() {
 	inverseInteriaTensor = orientation * Matrix3::Scale(inverseInertia) *invOrientation;
 }
 
-void PhysicsObject::PrintDebugInfo(int& currLine, float lineSpacing) {
+void PhysicsObject::PrintDebugInfo(int& currLine, float lineSpacing) const {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2);

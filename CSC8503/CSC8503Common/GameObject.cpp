@@ -57,7 +57,7 @@ void GameObject::UpdateBroadphaseAABB() {
 	}
 }
 
-void GameObject::PrintDebugInfo() {
+void GameObject::PrintDebugInfo() const {
 	int currLine = 0;
 	float lineSpacing = 3;
 

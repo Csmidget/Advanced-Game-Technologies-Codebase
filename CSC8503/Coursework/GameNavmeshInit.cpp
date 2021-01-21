@@ -3,10 +3,14 @@
 #include "../CSC8503Common/NavigationMesh.h"
 #include "Checkpoint.h"
 #include "AIObject.h"
-
+#include "../../Common/Camera.h"
 
 void Game::InitNavmeshWorld() {
 	Clear();
+
+	world->GetMainCamera()->SetPosition(Vector3(30, 25, 60));
+	world->GetMainCamera()->SetPitch(-30.0f);
+	world->GetMainCamera()->SetYaw(0.0f);
 
 	InitNavmeshLvlBaseGeometry();
 	InitNavmeshLvlKillPlanes();
@@ -31,7 +35,6 @@ void Game::InitNavmeshLvlBaseGeometry() {
 
 	goal = new Checkpoint(Vector3(26.5f, 4, -34.61f), Vector3(5, 5, 5), 1);
 
-
 	//Side Section
 	objectFactory->CreateFloor(world, Vector3(48, 0, 30), Vector2(8, 10));
 	objectFactory->CreateFloor(world, Vector3(71, 0, 0), Vector2(15, 40));
@@ -43,6 +46,7 @@ void Game::InitNavmeshLvlBaseGeometry() {
 	objectFactory->CreateOBBCube(world, Vector3(73, 2, 12.5), Matrix3::Rotation(-90, Vector3(0, 1, 0)), Vector3(2, 2, 6), 0.0f, false, true);
 	objectFactory->CreateOBBCube(world, Vector3(48, 2, 26),Quaternion(), Vector3(2, 2, 6), 0.0f, false, true);
 
+	objectFactory->CreateScoreBonus(world, Vector3(59, 1, -1), 20.0f);
 }
 
 void Game::InitNavmeshLvlKillPlanes() {

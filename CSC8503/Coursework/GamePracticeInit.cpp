@@ -91,8 +91,17 @@ void Game::InitPracticeSlope() {
 void Game::InitPracticeGauntlet2() {
 	float y = 101.5f;
 
+
+	//Checkpoint decorations
+	objectFactory->CreateBouncePad(world, Vector3(115.0f, y + 1.3f, -115.0f), Matrix4::Rotation(-45, Vector3(0, 1, 0)) * Matrix4::Rotation(45, Vector3(1, 0, 0)), 5.85f, Vector2(4.95f, 2.25f));
+	objectFactory->CreateBouncePad(world, Vector3(85.0f, y + 1.3f, -85.0f), Matrix4::Rotation(-45, Vector3(0, 1, 0)) * Matrix4::Rotation(-45, Vector3(1, 0, 0)), 5.85f, Vector2(4.95f, 2.25f));
+
+	objectFactory->CreateBouncePad(world, Vector3(85.0f, y + 0.5f, -115.0f),Quaternion(), 5.85f, Vector2(4.5f, 4.5f));
+	objectFactory->CreateSphere(world, Vector3(85.0f, y + 10.0f, -115.0f), 1.0f, 4.0f, true);
+
+	//Gauntlet
 	objectFactory->CreateSlipperyFloor(world, Vector3(115.0f, y, -60.0f), Quaternion(), Vector2(5.0f, 20.0f));
-	objectFactory->CreateBouncePad(world, Vector3(115.0f, y - 1.1f, -38.25f), Matrix4::Rotation(30, Vector3(1, 0, 0)), 5.2f, Vector2(4.95f, 2.25f));
+	objectFactory->CreateBouncePad(world, Vector3(115.0f, y - 1.1f, -38.25f), Matrix4::Rotation(30, Vector3(1, 0, 0)), 5.3f, Vector2(4.95f, 2.25f));
 
 	objectFactory->CreateSlipperyFloor(world, Vector3(100.0f, y, -45.0f), Quaternion(), Vector2(10.0f, 1.5f));
 

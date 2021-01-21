@@ -74,6 +74,7 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 		Debug::Print("(G)ravity off", Vector2(5, 95));
 	}
 
+	//Display debug info for selected object
 	if (selectionObject) {
 		if (selectionObject->GetRenderObject()->GetColour() != Debug::GREEN) {
 			selectionObjectColour = selectionObject->GetRenderObject()->GetColour();
@@ -101,7 +102,6 @@ PushdownState::PushdownResult DebugState::OnUpdate(float dt, PushdownState** new
 			}
 		}
 	}
-
 
 	return PushdownResult::NoChange;
 }
