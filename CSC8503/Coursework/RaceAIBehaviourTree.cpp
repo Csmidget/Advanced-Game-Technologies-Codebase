@@ -109,14 +109,25 @@ BehaviourSequence* RaceAIBehaviourTree::CreateAngerSequence() {
 			return BehaviourState::Failure;
 		}
 
+		GameWorld* world = game->GetWorld();
+		Vector3 pos = actor->GetTransform().GetPosition();
 		for (GameObject* o : actorsInRange)
 		{
 			//We are also an actor. So ignore ourselves.
 			if (actor == o)
 				continue;
 
+			Vector3 targetPos = o->GetTransform().GetPosition();
+			
+			//Check whether we can SEE the target. If not, ignore.
+			RayCollision col;
+			Ray r = Ray(pos, targetPos - pos);
+			if (world->Raycast(r, col, true, true) && (GameObject*)col.node != (GameObject*)o) {
+				continue;
+			}
+
 			//Only go for a target it the path to them isn't too long.
-			if (actor->SetGoal(o->GetTransform().GetPosition(),17.5f)) {
+			if (actor->SetGoal(targetPos,17.5f)) {
 				actor->SetCurrentState("Fighting");
 				return BehaviourState::Ongoing;
 			}
